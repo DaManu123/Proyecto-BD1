@@ -5,20 +5,24 @@ import os
 class MainView:
     def __init__(self, master):
         self.master = master
-        self.master.title("Sistema de Inventario - Universidad de Sonora - Manuel Munguia Rubio")
-        self.master.geometry("900x650")
-        self.master.configure(bg="#f0f0f0")
-        self.master.resizable(True, True)
-        self.master.minsize(750, 550)
         
-        # Intentar establecer el icono de la ventana con el logo
-        try:
-            logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'unilogo.gif')
-            if os.path.exists(logo_path):
-                icon = tk.PhotoImage(file=logo_path)
-                self.master.iconphoto(True, icon)
-        except Exception as e:
-            print(f"No se pudo establecer el icono: {e}")
+        # Solo configurar propiedades de ventana si master es una ventana Tk, no un Frame
+        if hasattr(master, 'title'):
+            self.master.title("Sistema de Inventario - Universidad de Sonora - Manuel Munguia Rubio")
+            self.master.geometry("900x650")
+            self.master.resizable(True, True)
+            self.master.minsize(750, 550)
+            
+            # Intentar establecer el icono de la ventana con el logo
+            try:
+                logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'unilogo.gif')
+                if os.path.exists(logo_path):
+                    icon = tk.PhotoImage(file=logo_path)
+                    self.master.iconphoto(True, icon)
+            except Exception as e:
+                print(f"No se pudo establecer el icono: {e}")
+        
+        self.master.configure(bg="#f0f0f0")
         
         # Configurar el grid principal para que sea responsivo
         self.master.grid_rowconfigure(0, weight=1)

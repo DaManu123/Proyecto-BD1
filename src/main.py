@@ -1,10 +1,9 @@
 from tkinter import Tk
-from controllers.main_controller import MainController
+from controllers.integrated_controller import IntegratedController
 
 def main():
     root = Tk()
-    root.title("Databases Inventory App")
-    app = MainController(root)
+    app = IntegratedController(root)
     root.mainloop()
 
 if __name__ == "__main__":
