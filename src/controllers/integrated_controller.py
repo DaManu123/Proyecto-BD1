@@ -81,48 +81,8 @@ class IntegratedController:
         self.main_view.btn_productos.config(command=self.show_productos_frame)
         self.main_view.btn_almacenes.config(command=self.show_almacenes_frame)
         
-        # Agregar botón de cerrar sesión en la vista principal
-        self.add_logout_button()
-    
-    def add_logout_button(self):
-        """Agrega un botón de cerrar sesión a la vista principal"""
-        from tkinter import Button
-        
-        # Obtener el frame de inicio de la vista principal
-        inicio_frame = self.main_view.frames["inicio"]
-        
-        # Buscar el frame de botones en la vista de inicio
-        for widget in inicio_frame.winfo_children():
-            if hasattr(widget, 'winfo_children'):
-                for child in widget.winfo_children():
-                    if hasattr(child, 'winfo_children'):
-                        for grandchild in child.winfo_children():
-                            if hasattr(grandchild, 'winfo_children'):
-                                for ggchild in grandchild.winfo_children():
-                                    if str(ggchild.__class__.__name__) == "Frame":
-                                        # Este podría ser el frame de botones
-                                        try:
-                                            # Intentar agregar el botón de logout
-                                            logout_btn = Button(ggchild, text="Cerrar Sesión", 
-                                                              font=("Arial", 11, "bold"), 
-                                                              bg="#e67e22", fg="white",
-                                                              width=14, height=2, 
-                                                              relief="raised", cursor="hand2",
-                                                              borderwidth=2,
-                                                              command=self.logout)
-                                            logout_btn.grid(row=1, column=0, columnspan=2, padx=20, pady=10)
-                                            
-                                            # Efectos hover
-                                            def on_enter_logout(e):
-                                                logout_btn.config(bg="#d35400")
-                                            def on_leave_logout(e):
-                                                logout_btn.config(bg="#e67e22")
-                                            
-                                            logout_btn.bind("<Enter>", on_enter_logout)
-                                            logout_btn.bind("<Leave>", on_leave_logout)
-                                            break
-                                        except:
-                                            continue
+        # Configurar el botón de cerrar sesión
+        self.main_view.btn_cerrar_sesion.config(command=self.logout)
     
     def handle_login(self, credentials):
         """Maneja el proceso de login"""

@@ -138,24 +138,31 @@ class MainView:
         buttons_container.grid(row=6, column=0, sticky="ew", pady=20)
         buttons_container.grid_columnconfigure(0, weight=1)
         
-        # Frame interno para centrar los botones
+        # Frame interno para centrar los botones con distribución elegante
         buttons_frame = Frame(buttons_container, bg="#f0f0f0")
         buttons_frame.grid(row=0, column=0)
         
-        # Botones de navegación con mejor espaciado
-        self.btn_productos = Button(buttons_frame, text="Productos", 
+        # Distribución en una fila con mejor espaciado y diseño
+        self.btn_productos = Button(buttons_frame, text="📦 Productos", 
                                    font=("Arial", 13, "bold"), bg="#3498db", fg="white",
-                                   width=14, height=3, relief="raised", cursor="hand2",
+                                   width=15, height=3, relief="raised", cursor="hand2",
                                    borderwidth=2,
                                    command=lambda: self.show_frame("productos"))
-        self.btn_productos.grid(row=0, column=0, padx=20, pady=10)
+        self.btn_productos.grid(row=0, column=0, padx=12, pady=15)
         
-        self.btn_almacenes = Button(buttons_frame, text="Almacenes", 
+        self.btn_almacenes = Button(buttons_frame, text="🏪 Almacenes", 
                                    font=("Arial", 13, "bold"), bg="#e74c3c", fg="white",
-                                   width=14, height=3, relief="raised", cursor="hand2",
+                                   width=15, height=3, relief="raised", cursor="hand2",
                                    borderwidth=2,
                                    command=lambda: self.show_frame("almacenes"))
-        self.btn_almacenes.grid(row=0, column=1, padx=20, pady=10)
+        self.btn_almacenes.grid(row=0, column=1, padx=12, pady=15)
+        
+        # Botón de cerrar sesión con estilo diferenciado
+        self.btn_cerrar_sesion = Button(buttons_frame, text="🚪 Cerrar Sesión", 
+                                       font=("Arial", 12, "bold"), bg="#e67e22", fg="white",
+                                       width=15, height=3, relief="raised", cursor="hand2",
+                                       borderwidth=2)
+        self.btn_cerrar_sesion.grid(row=0, column=2, padx=12, pady=15)
         
         # Efectos hover
         def on_enter_productos(e):
@@ -166,11 +173,17 @@ class MainView:
             self.btn_almacenes.config(bg="#c0392b")
         def on_leave_almacenes(e):
             self.btn_almacenes.config(bg="#e74c3c")
+        def on_enter_cerrar_sesion(e):
+            self.btn_cerrar_sesion.config(bg="#d35400")
+        def on_leave_cerrar_sesion(e):
+            self.btn_cerrar_sesion.config(bg="#e67e22")
             
         self.btn_productos.bind("<Enter>", on_enter_productos)
         self.btn_productos.bind("<Leave>", on_leave_productos)
         self.btn_almacenes.bind("<Enter>", on_enter_almacenes)
         self.btn_almacenes.bind("<Leave>", on_leave_almacenes)
+        self.btn_cerrar_sesion.bind("<Enter>", on_enter_cerrar_sesion)
+        self.btn_cerrar_sesion.bind("<Leave>", on_leave_cerrar_sesion)
         
         # Espacio adicional al final para asegurar que todo sea visible
         spacer = Frame(main_content, bg="#f0f0f0", height=50)
