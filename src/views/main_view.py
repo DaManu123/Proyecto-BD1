@@ -143,14 +143,14 @@ class MainView:
         buttons_frame.grid(row=0, column=0)
         
         # Distribución en una fila con mejor espaciado y diseño
-        self.btn_productos = Button(buttons_frame, text="📦 Productos", 
+        self.btn_productos = Button(buttons_frame, text="Productos", 
                                    font=("Arial", 13, "bold"), bg="#3498db", fg="white",
                                    width=15, height=3, relief="raised", cursor="hand2",
                                    borderwidth=2,
                                    command=lambda: self.show_frame("productos"))
         self.btn_productos.grid(row=0, column=0, padx=12, pady=15)
         
-        self.btn_almacenes = Button(buttons_frame, text="🏪 Almacenes", 
+        self.btn_almacenes = Button(buttons_frame, text="Almacenes", 
                                    font=("Arial", 13, "bold"), bg="#e74c3c", fg="white",
                                    width=15, height=3, relief="raised", cursor="hand2",
                                    borderwidth=2,
@@ -158,7 +158,7 @@ class MainView:
         self.btn_almacenes.grid(row=0, column=1, padx=12, pady=15)
         
         # Botón de cerrar sesión con estilo diferenciado
-        self.btn_cerrar_sesion = Button(buttons_frame, text="🚪 Cerrar Sesión", 
+        self.btn_cerrar_sesion = Button(buttons_frame, text="Cerrar Sesión", 
                                        font=("Arial", 12, "bold"), bg="#e67e22", fg="white",
                                        width=15, height=3, relief="raised", cursor="hand2",
                                        borderwidth=2)
