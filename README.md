@@ -168,7 +168,7 @@ CREATE TABLE almacenes (
 
 **Manuel Munguia Rubio**  
 Universidad de Sonora  
-Carrera: Ingeniería en Sistemas Computacionales  
+Carrera: Ingeniería en Sistemas de Información  
 Materia: Bases de Datos 1
 
 ## Licencia

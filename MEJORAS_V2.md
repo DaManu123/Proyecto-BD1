@@ -12,7 +12,7 @@
 ### 👨‍🎓 **Información del Estudiante Actualizada**
 
 - **Nombre**: Manuel Munguia Rubio
-- **Carrera**: Ingeniería en Sistemas Computacionales
+- **Carrera**: Ingeniería en Sistemas de Información
 - **Universidad**: Universidad de Sonora
 - **Materia**: Bases de Datos 1
 
@@ -24,7 +24,7 @@
 Universidad de Sonora
 Sistema de Inventario - Base de Datos 1
 Manuel Munguia Rubio
-Carrera: Ingeniería en Sistemas Computacionales
+Carrera: Ingeniería en Sistemas de Información
 
 [📦 Productos]  [🏪 Almacenes]
 ```
@@ -119,7 +119,7 @@ Universidad de Sonora
 Universidad de Sonora
 Sistema de Inventario - Base de Datos 1
 Manuel Munguia Rubio
-Carrera: Ingeniería en Sistemas Computacionales
+Carrera: Ingeniería en Sistemas de Información
 [📦 Productos] [🏪 Almacenes]
 ```
 

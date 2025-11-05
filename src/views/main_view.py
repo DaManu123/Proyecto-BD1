@@ -125,7 +125,7 @@ class MainView:
         nombres.grid(row=4, column=0, pady=(10, 5), sticky="ew")
         
         # Información adicional
-        info = Label(main_content, text="Carrera: Ingeniería en Sistemas Computacionales", 
+        info = Label(main_content, text="Carrera: Ingeniería en Sistemas de Información", 
                     font=("Arial", 11), bg="#f0f0f0", fg="#7f8c8d")
         info.grid(row=5, column=0, pady=(0, 25), sticky="ew")
         
