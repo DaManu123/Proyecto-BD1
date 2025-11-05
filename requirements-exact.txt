@@ -1,0 +1,4 @@
+# Dependencias específicas del proyecto
+# Generado con pip freeze
+
+pillow==12.0.0

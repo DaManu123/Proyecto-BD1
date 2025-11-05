@@ -1,0 +1,43 @@
+# ====================================================
+# Dependencias para Sistema de Inventario - BD1
+# Universidad de Sonora - Manuel Munguia Rubio
+# ====================================================
+
+# Librerías requeridas:
+Pillow>=9.0.0               # Para manejo de imágenes (logo universitario)
+
+# Librerías estándar utilizadas (ya incluidas en Python):
+# - tkinter     (Interfaz gráfica de usuario)
+# - sqlite3     (Base de datos SQLite)
+# - os          (Operaciones del sistema)
+# - sys         (Variables y funciones del sistema)
+
+# ====================================================
+# Instalación del entorno virtual:
+# 
+# 1. Crear entorno virtual:
+#    python -m venv venv
+#
+# 2. Activar entorno virtual:
+#    Windows: venv\Scripts\activate
+#    Linux/Mac: source venv/bin/activate
+#
+# 3. No hay paquetes externos que instalar para este proyecto
+#
+# 4. Para ejecutar la aplicación:
+#    python src\main.py
+# ====================================================
+
+# Dependencias opcionales para desarrollo futuro:
+# (Descomenta si necesitas alguna de estas funcionalidades)
+
+# pandas>=1.5.0          # Para análisis de datos avanzado
+# matplotlib>=3.6.0       # Para gráficos y visualizaciones
+# pillow>=9.0.0           # Para manejo de imágenes
+# openpyxl>=3.0.0         # Para exportar a Excel
+# reportlab>=3.6.0        # Para generar reportes PDF
+
+# ====================================================
+# Versión de Python recomendada: 3.7+
+# Proyecto creado con Python 3.13.7
+# ====================================================

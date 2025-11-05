@@ -1,0 +1,48 @@
+# Archivo de dependencias específicas del entorno virtual
+# Generado automáticamente desde: pip freeze
+
+# ====================================================
+# ESTADO ACTUAL DEL ENTORNO VIRTUAL
+# ====================================================
+# Este entorno virtual está limpio y solo contiene pip
+# No hay dependencias externas instaladas
+
+# Versión de pip en el entorno virtual:
+# pip==25.2
+
+# ====================================================
+# COMANDOS ÚTILES PARA EL ENTORNO VIRTUAL
+# ====================================================
+
+# Crear entorno virtual:
+# python -m venv venv
+
+# Activar entorno virtual:
+# Windows PowerShell: venv\Scripts\Activate.ps1
+# Windows CMD: venv\Scripts\activate.bat
+# Linux/Mac: source venv/bin/activate
+
+# Verificar paquetes instalados:
+# pip list
+
+# Generar requirements.txt:
+# pip freeze > venv-requirements.txt
+
+# Instalar desde requirements.txt:
+# pip install -r requirements.txt
+
+# Desactivar entorno virtual:
+# deactivate
+
+# ====================================================
+# INFORMACIÓN DEL PROYECTO
+# ====================================================
+# Proyecto: Sistema de Inventario - Base de Datos 1
+# Estudiante: Manuel Munguia Rubio
+# Universidad: Universidad de Sonora
+# Tecnologías: Python + Tkinter + SQLite + Pillow
+
+# ====================================================
+# ESTADO: ENTORNO LIMPIO ✅
+# No se requieren instalaciones adicionales
+# ====================================================
