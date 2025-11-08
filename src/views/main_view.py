@@ -7,22 +7,25 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
 from theme_unison import (
     COLOR_AZUL_UNISON, COLOR_AZUL_UNISON_OSCURO, COLOR_DORADO_UNISON,
-    COLOR_TEXTO_BLANCO, COLOR_TEXTO_NEGRO, COLOR_FONDO_BLANCO,
+    COLOR_TEXTO_BLANCO, COLOR_TEXTO_NEGRO, COLOR_FONDO_BLANCO, COLOR_FONDO_CLARO,
     FUENTE_UNISON, TAMAÑO_FUENTE_NORMAL, TAMAÑO_FUENTE_BOTON, TAMAÑO_FUENTE_LABEL,
     crear_boton_unison, crear_entry_unison, crear_label_unison, crear_frame_unison,
-    crear_titulo_unison
+    crear_titulo_unison, configurar_estilo_treeview
 )
 
 class MainView:
     def __init__(self, master):
         self.master = master
         
+        # Configurar estilos globales de Treeview
+        configurar_estilo_treeview()
+        
         # Solo configurar propiedades de ventana si master es una ventana Tk, no un Frame
         if hasattr(master, 'title'):
             self.master.title("Sistema de Inventario - Universidad de Sonora - Manuel Munguia Rubio")
-            self.master.geometry("900x650")
+            self.master.geometry("950x700")
             self.master.resizable(True, True)
-            self.master.minsize(750, 550)
+            self.master.minsize(800, 600)
             
             # Intentar establecer el icono de la ventana con el logo
             try:
@@ -33,7 +36,7 @@ class MainView:
             except Exception as e:
                 print(f"No se pudo establecer el icono: {e}")
         
-        self.master.configure(bg=COLOR_FONDO_BLANCO)
+        self.master.configure(bg=COLOR_FONDO_CLARO)
         
         # Configurar el grid principal para que sea responsivo
         self.master.grid_rowconfigure(0, weight=1)
@@ -72,7 +75,7 @@ class MainView:
     
     def create_inicio_frame(self):
         """Crea el frame de inicio con scroll y diseño responsivo"""
-        frame = Frame(self.container, bg="#f0f0f0")
+        frame = Frame(self.container, bg=COLOR_FONDO_CLARO)
         frame.grid(row=0, column=0, sticky="nsew")
         
         # Configurar el grid principal
@@ -80,9 +83,9 @@ class MainView:
         frame.grid_columnconfigure(0, weight=1)
         
         # Crear Canvas y Scrollbar para scroll vertical
-        canvas = tk.Canvas(frame, bg="#f0f0f0", highlightthickness=0)
+        canvas = tk.Canvas(frame, bg=COLOR_FONDO_CLARO, highlightthickness=0)
         scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = Frame(canvas, bg="#f0f0f0")
+        scrollable_frame = Frame(canvas, bg=COLOR_FONDO_CLARO)
         
         # Configurar el scroll
         scrollable_frame.bind(
@@ -101,7 +104,7 @@ class MainView:
         scrollable_frame.grid_columnconfigure(0, weight=1)
         
         # Contenido principal dentro del frame scrollable
-        main_content = Frame(scrollable_frame, bg="#f0f0f0")
+        main_content = Frame(scrollable_frame, bg=COLOR_FONDO_CLARO)
         main_content.grid(row=0, column=0, sticky="ew", padx=20, pady=20)
         main_content.grid_columnconfigure(0, weight=1)
         
@@ -113,35 +116,37 @@ class MainView:
                 logo_label = Label(main_content, image=self.logo_image, bg="#f0f0f0")
                 logo_label.grid(row=0, column=0, pady=(10, 8), sticky="n")
             else:
-                logo_placeholder = Label(main_content, text="UNISON", font=("Arial", 24, "bold"), bg="#f0f0f0", fg="#2c3e50")
+                logo_placeholder = Label(main_content, text="UNISON", font=(FUENTE_UNISON, 28, "bold"), 
+                                        bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON)
                 logo_placeholder.grid(row=0, column=0, pady=(10, 8), sticky="n")
         except Exception as e:
             print(f"Error cargando logo: {e}")
-            logo_placeholder = Label(main_content, text="UNISON", font=("Arial", 24, "bold"), bg="#f0f0f0", fg="#2c3e50")
+            logo_placeholder = Label(main_content, text="UNISON", font=(FUENTE_UNISON, 28, "bold"), 
+                                    bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON)
             logo_placeholder.grid(row=0, column=0, pady=(10, 8), sticky="n")
         
-        # Título Universidad (tamaño responsivo)
+        # Título Universidad con colores UNISON
         titulo = Label(main_content, text="Universidad de Sonora", 
-                      font=("Arial", 20, "bold"), bg="#f0f0f0", fg="#2c3e50")
+                      font=(FUENTE_UNISON, 22, "bold"), bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON)
         titulo.grid(row=1, column=0, pady=(0, 5), sticky="ew")
         
         # Subtítulo del sistema
         subtitulo = Label(main_content, text="Sistema de Inventario - Base de Datos 1", 
-                         font=("Arial", 12, "italic"), bg="#f0f0f0", fg="#34495e")
+                         font=(FUENTE_UNISON, 13, "italic"), bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON_OSCURO)
         subtitulo.grid(row=2, column=0, pady=(0, 15), sticky="ew")
         
-        # Separador visual
-        separator = Frame(main_content, height=2, bg="#bdc3c7")
+        # Separador visual con color UNISON dorado
+        separator = Frame(main_content, height=3, bg=COLOR_DORADO_UNISON)
         separator.grid(row=3, column=0, sticky="ew", padx=30, pady=10)
         
         # Nombres de estudiantes
         nombres = Label(main_content, text="Manuel Munguia Rubio", 
-                       font=("Arial", 16, "bold"), bg="#f0f0f0", fg="#34495e")
+                       font=(FUENTE_UNISON, 17, "bold"), bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON)
         nombres.grid(row=4, column=0, pady=(10, 5), sticky="ew")
         
         # Información adicional
         info = Label(main_content, text="Carrera: Ingeniería en Sistemas de Información", 
-                    font=("Arial", 11), bg="#f0f0f0", fg="#7f8c8d")
+                    font=(FUENTE_UNISON, 12), bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON_OSCURO)
         info.grid(row=5, column=0, pady=(0, 25), sticky="ew")
         
         # Container para botones con diseño centrado y responsivo
@@ -153,57 +158,36 @@ class MainView:
         buttons_frame = crear_frame_unison(buttons_container, azul=False)
         buttons_frame.grid(row=0, column=0)
         
-        # Distribución en una fila con mejor espaciado y diseño UNISON
+        # Distribución en una fila con mejor espaciado y colores UNISON oficiales
         self.btn_productos = crear_boton_unison(
             buttons_frame, 
-            "Productos",
+            "📦 PRODUCTOS",
             comando=lambda: self.show_frame("productos"),
             estilo="primario",
-            width=15, height=3
+            width=18, height=3
         )
-        self.btn_productos.grid(row=0, column=0, padx=12, pady=15)
+        self.btn_productos.grid(row=0, column=0, padx=15, pady=15)
         
         self.btn_almacenes = crear_boton_unison(
             buttons_frame, 
-            "Almacenes",
+            "🏪 ALMACENES",
             comando=lambda: self.show_frame("almacenes"),
             estilo="primario",
-            width=15, height=3
+            width=18, height=3
         )
-        self.btn_almacenes.grid(row=0, column=1, padx=12, pady=15)
+        self.btn_almacenes.grid(row=0, column=1, padx=15, pady=15)
         
-        # Botón de cerrar sesión con estilo dorado
+        # Botón de cerrar sesión con estilo dorado UNISON
         self.btn_cerrar_sesion = crear_boton_unison(
             buttons_frame, 
-            "Cerrar Sesión",
+            "🚪 CERRAR SESIÓN",
             estilo="dorado",
-            width=15, height=3
+            width=18, height=3
         )
-        self.btn_cerrar_sesion.grid(row=0, column=2, padx=12, pady=15)
-        
-        # Efectos hover
-        def on_enter_productos(e):
-            self.btn_productos.config(bg="#2980b9")
-        def on_leave_productos(e):
-            self.btn_productos.config(bg="#3498db")
-        def on_enter_almacenes(e):
-            self.btn_almacenes.config(bg="#c0392b")
-        def on_leave_almacenes(e):
-            self.btn_almacenes.config(bg="#e74c3c")
-        def on_enter_cerrar_sesion(e):
-            self.btn_cerrar_sesion.config(bg="#d35400")
-        def on_leave_cerrar_sesion(e):
-            self.btn_cerrar_sesion.config(bg="#e67e22")
-            
-        self.btn_productos.bind("<Enter>", on_enter_productos)
-        self.btn_productos.bind("<Leave>", on_leave_productos)
-        self.btn_almacenes.bind("<Enter>", on_enter_almacenes)
-        self.btn_almacenes.bind("<Leave>", on_leave_almacenes)
-        self.btn_cerrar_sesion.bind("<Enter>", on_enter_cerrar_sesion)
-        self.btn_cerrar_sesion.bind("<Leave>", on_leave_cerrar_sesion)
+        self.btn_cerrar_sesion.grid(row=0, column=2, padx=15, pady=15)
         
         # Espacio adicional al final para asegurar que todo sea visible
-        spacer = Frame(main_content, bg="#f0f0f0", height=50)
+        spacer = Frame(main_content, bg=COLOR_FONDO_CLARO, height=50)
         spacer.grid(row=7, column=0, sticky="ew")
         
         # Bind scroll con mouse wheel
@@ -225,30 +209,33 @@ class MainView:
     
     def create_productos_frame(self):
         """Crea el frame de gestión de productos"""
-        frame = Frame(self.container, bg="#f0f0f0")
+        frame = Frame(self.container, bg=COLOR_FONDO_CLARO)
         frame.grid(row=0, column=0, sticky="nsew")
         
         # Configurar grid responsivo
         frame.grid_rowconfigure(2, weight=1)  # El treeview se expande
         frame.grid_columnconfigure(0, weight=1)
         
-        # Header con título simplificado
-        header_frame = Frame(frame, bg="#34495e", height=50)
+        # Header con colores UNISON
+        header_frame = Frame(frame, bg=COLOR_AZUL_UNISON, height=60)
         header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 0))
         header_frame.grid_propagate(False)
         header_frame.grid_columnconfigure(1, weight=1)
         
-        # Título sin icono
-        titulo = Label(header_frame, text="Gestión de Productos", 
-                      font=("Arial", 18, "bold"), bg="#34495e", fg="white")
-        titulo.grid(row=0, column=0, sticky="w", padx=20, pady=12)
+        # Título con icono
+        titulo = Label(header_frame, text="📦 Gestión de Productos", 
+                      font=(FUENTE_UNISON, 20, "bold"), bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO)
+        titulo.grid(row=0, column=0, sticky="w", padx=25, pady=15)
         
-        # Botón de volver en el header
-        self.btn_volver_productos = Button(header_frame, text="Volver al Inicio", 
-                                          font=("Arial", 11, "bold"), bg="#95a5a6", fg="white",
-                                          relief="raised", cursor="hand2", borderwidth=1,
-                                          command=lambda: self.show_frame("inicio"))
-        self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=20, pady=10)
+        # Botón de volver con estilo UNISON dorado
+        self.btn_volver_productos = crear_boton_unison(
+            header_frame,
+            "⬅ Volver al Inicio",
+            comando=lambda: self.show_frame("inicio"),
+            estilo="dorado",
+            width=16
+        )
+        self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
         form_frame = Frame(frame, bg="white", relief="raised", bd=1)
@@ -285,21 +272,28 @@ class MainView:
                            font=("Arial", 9, "italic"), bg="white", fg="#7f8c8d")
         nota_almacen.grid(row=3, column=6, columnspan=6, padx=15, pady=(0, 10), sticky="w")
         
-        # Botones de acción en el formulario simplificados
+        # Botones de acción con colores UNISON
         btn_form_frame = Frame(form_frame, bg="white")
         btn_form_frame.grid(row=4, column=0, columnspan=12, pady=15)
         
-        self.btn_agregar_producto = Button(btn_form_frame, text="Agregar Producto", 
-                                          font=("Arial", 12, "bold"), bg="#27ae60", fg="white",
-                                          width=16, relief="raised", cursor="hand2", 
-                                          borderwidth=2, pady=5)
-        self.btn_agregar_producto.pack(side="left", padx=10)
+        self.btn_agregar_producto = crear_boton_unison(
+            btn_form_frame,
+            "✅ Agregar Producto",
+            estilo="primario",
+            width=18
+        )
+        self.btn_agregar_producto.pack(side="left", padx=12)
         
-        self.btn_eliminar_producto = Button(btn_form_frame, text="Eliminar Producto", 
-                                           font=("Arial", 12, "bold"), bg="#e74c3c", fg="white",
-                                           width=16, relief="raised", cursor="hand2", 
-                                           borderwidth=2, pady=5)
-        self.btn_eliminar_producto.pack(side="left", padx=10)
+        self.btn_eliminar_producto = crear_boton_unison(
+            btn_form_frame,
+            "❌ Eliminar Producto",
+            estilo="custom",
+            bg="#c0392b",
+            fg=COLOR_TEXTO_BLANCO,
+            hover_bg="#a93226",
+            width=18
+        )
+        self.btn_eliminar_producto.pack(side="left", padx=12)
         
         # Frame para la tabla con título
         table_frame = Frame(frame, bg="white", relief="raised", bd=1)
@@ -351,30 +345,33 @@ class MainView:
     
     def create_almacenes_frame(self):
         """Crea el frame de gestión de almacenes"""
-        frame = Frame(self.container, bg="#f0f0f0")
+        frame = Frame(self.container, bg=COLOR_FONDO_CLARO)
         frame.grid(row=0, column=0, sticky="nsew")
         
         # Configurar grid responsivo
         frame.grid_rowconfigure(2, weight=1)  # El treeview se expande
         frame.grid_columnconfigure(0, weight=1)
         
-        # Header con título simplificado
-        header_frame = Frame(frame, bg="#e74c3c", height=50)
+        # Header con colores UNISON
+        header_frame = Frame(frame, bg=COLOR_AZUL_UNISON, height=60)
         header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 0))
         header_frame.grid_propagate(False)
         header_frame.grid_columnconfigure(1, weight=1)
         
-        # Título sin icono
-        titulo = Label(header_frame, text="Gestión de Almacenes", 
-                      font=("Arial", 18, "bold"), bg="#e74c3c", fg="white")
-        titulo.grid(row=0, column=0, sticky="w", padx=20, pady=12)
+        # Título con icono
+        titulo = Label(header_frame, text="🏪 Gestión de Almacenes", 
+                      font=(FUENTE_UNISON, 20, "bold"), bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO)
+        titulo.grid(row=0, column=0, sticky="w", padx=25, pady=15)
         
-        # Botón de volver en el header
-        self.btn_volver_almacenes = Button(header_frame, text="Volver al Inicio", 
-                                          font=("Arial", 11, "bold"), bg="#95a5a6", fg="white",
-                                          relief="raised", cursor="hand2", borderwidth=1,
-                                          command=lambda: self.show_frame("inicio"))
-        self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=20, pady=10)
+        # Botón de volver con estilo UNISON dorado
+        self.btn_volver_almacenes = crear_boton_unison(
+            header_frame,
+            "⬅ Volver al Inicio",
+            comando=lambda: self.show_frame("inicio"),
+            estilo="dorado",
+            width=16
+        )
+        self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
         form_frame = Frame(frame, bg="white", relief="raised", bd=1)
@@ -405,21 +402,28 @@ class MainView:
         nombre_entry.grid(row=0, column=3, padx=0, pady=15, sticky="ew")
         self.almacen_entries["nombre"] = nombre_entry
         
-        # Botones de acción en el formulario simplificados
+        # Botones de acción con colores UNISON
         btn_form_frame = Frame(form_frame, bg="white")
         btn_form_frame.grid(row=2, column=0, columnspan=4, pady=15)
         
-        self.btn_agregar_almacen = Button(btn_form_frame, text="Agregar Almacén", 
-                                         font=("Arial", 12, "bold"), bg="#27ae60", fg="white",
-                                         width=16, relief="raised", cursor="hand2", 
-                                         borderwidth=2, pady=5)
-        self.btn_agregar_almacen.pack(side="left", padx=10)
+        self.btn_agregar_almacen = crear_boton_unison(
+            btn_form_frame,
+            "✅ Agregar Almacén",
+            estilo="primario",
+            width=18
+        )
+        self.btn_agregar_almacen.pack(side="left", padx=12)
         
-        self.btn_eliminar_almacen = Button(btn_form_frame, text="Eliminar Almacén", 
-                                          font=("Arial", 12, "bold"), bg="#e74c3c", fg="white",
-                                          width=16, relief="raised", cursor="hand2", 
-                                          borderwidth=2, pady=5)
-        self.btn_eliminar_almacen.pack(side="left", padx=10)
+        self.btn_eliminar_almacen = crear_boton_unison(
+            btn_form_frame,
+            "❌ Eliminar Almacén",
+            estilo="custom",
+            bg="#c0392b",
+            fg=COLOR_TEXTO_BLANCO,
+            hover_bg="#a93226",
+            width=18
+        )
+        self.btn_eliminar_almacen.pack(side="left", padx=12)
         
         # Frame para la tabla con título
         table_frame = Frame(frame, bg="white", relief="raised", bd=1)

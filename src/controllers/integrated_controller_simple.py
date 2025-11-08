@@ -9,7 +9,7 @@ import re
 import sys
 import os
 
-# Importar el sistema de temas UNISON
+# Importar el sistema de temas UNISON mejorado
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
 from theme_unison import COLOR_FONDO_BLANCO
 
@@ -22,6 +22,7 @@ class IntegratedController:
         self.root.configure(bg=COLOR_FONDO_BLANCO)
         self.root.resizable(True, True)
         self.root.minsize(800, 600)
+        
         
         # Inicializar el modelo (base de datos)
         self.model = DatabaseModel()
