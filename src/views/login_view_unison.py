@@ -3,8 +3,11 @@ from tkinter import Frame, Label, Button, Entry, Canvas
 import os
 import sys
 
-# Añadir el directorio utils al path para importar el tema
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+# Añadir el directorio utils al path para importar el tema - Ruta absoluta
+current_dir = os.path.dirname(os.path.abspath(__file__))
+utils_path = os.path.join(current_dir, '..', 'utils')
+if utils_path not in sys.path:
+    sys.path.insert(0, utils_path)
 from theme_unison import *
 
 class LoginViewUnisonDesign:

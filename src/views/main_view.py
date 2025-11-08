@@ -3,8 +3,11 @@ from tkinter import ttk, Frame, Label, Button, Entry, Canvas
 import os
 import sys
 
-# Importar el sistema de temas UNISON
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+# Importar el sistema de temas UNISON - Agregar ruta absoluta
+current_dir = os.path.dirname(os.path.abspath(__file__))
+utils_path = os.path.join(current_dir, '..', 'utils')
+if utils_path not in sys.path:
+    sys.path.insert(0, utils_path)
 from theme_unison import (
     COLOR_AZUL_UNISON, COLOR_AZUL_UNISON_OSCURO, COLOR_DORADO_UNISON,
     COLOR_TEXTO_BLANCO, COLOR_TEXTO_NEGRO, COLOR_FONDO_BLANCO, COLOR_FONDO_CLARO,

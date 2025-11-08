@@ -10,8 +10,11 @@ import re
 import sys
 import os
 
-# Importar el sistema de temas UNISON
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+# Importar el sistema de temas UNISON - Agregar ruta absoluta
+current_dir = os.path.dirname(os.path.abspath(__file__))
+utils_path = os.path.join(current_dir, '..', 'utils')
+if utils_path not in sys.path:
+    sys.path.insert(0, utils_path)
 from theme_unison import COLOR_FONDO_BLANCO
 
 class IntegratedController:
