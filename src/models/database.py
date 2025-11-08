@@ -94,6 +94,37 @@ class DatabaseModel:
                 )
             """)
             
+            # Crear tabla usuarios
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT NOT NULL UNIQUE,
+                    contraseña TEXT NOT NULL,
+                    ultimo_inicio_sesion DATETIME DEFAULT NULL
+                )
+            """)
+            
+            # Insertar usuarios por defecto si la tabla está vacía
+            cursor.execute("SELECT COUNT(*) FROM usuarios")
+            if cursor.fetchone()[0] == 0:
+                import hashlib
+                
+                # Usuarios por defecto con contraseñas hasheadas
+                usuarios_default = [
+                    ("Admin", hashlib.sha256("admin23".encode('utf-8')).hexdigest()),
+                    ("almacen", hashlib.sha256("almacen11".encode('utf-8')).hexdigest()),
+                    ("productos", hashlib.sha256("producto19".encode('utf-8')).hexdigest())
+                ]
+                
+                cursor.executemany("""
+                    INSERT INTO usuarios (nombre, contraseña) VALUES (?, ?)
+                """, usuarios_default)
+                
+                print("Usuarios por defecto creados:")
+                print("- Admin (contraseña: admin23)")
+                print("- almacen (contraseña: almacen11)")
+                print("- productos (contraseña: producto19)")
+            
             self.connection.commit()
             print("Tablas creadas o verificadas exitosamente")
             
@@ -215,3 +246,73 @@ class DatabaseModel:
         except sqlite3.Error as e:
             print(f"Error al verificar almacén: {e}")
             return False
+    
+    def validar_usuario(self, nombre_usuario, password):
+        """Valida las credenciales de un usuario contra la base de datos"""
+        if not self.connection:
+            print("No hay conexión a la base de datos")
+            return False
+        
+        try:
+            import hashlib
+            
+            # Generar hash SHA256 de la contraseña ingresada
+            password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            
+            cursor = self.connection.cursor()
+            cursor.execute("""
+                SELECT id, nombre FROM usuarios 
+                WHERE nombre = ? AND contraseña = ?
+            """, (nombre_usuario, password_hash))
+            
+            usuario = cursor.fetchone()
+            
+            if usuario:
+                # Actualizar último inicio de sesión
+                self.actualizar_ultimo_login(usuario[0])
+                print(f"Login exitoso para usuario: {usuario[1]}")
+                return True
+            else:
+                print(f"Credenciales incorrectas para usuario: {nombre_usuario}")
+                return False
+                
+        except sqlite3.Error as e:
+            print(f"Error al validar usuario: {e}")
+            return False
+    
+    def actualizar_ultimo_login(self, usuario_id):
+        """Actualiza la fecha/hora del último inicio de sesión"""
+        if not self.connection:
+            return False
+        
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("""
+                UPDATE usuarios 
+                SET ultimo_inicio_sesion = datetime('now') 
+                WHERE id = ?
+            """, (usuario_id,))
+            self.connection.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Error al actualizar último login: {e}")
+            return False
+    
+    def obtener_usuarios(self):
+        """Obtiene todos los usuarios (sin contraseñas) para propósitos administrativos"""
+        if not self.connection:
+            print("No hay conexión a la base de datos")
+            return []
+        
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("""
+                SELECT id, nombre, ultimo_inicio_sesion 
+                FROM usuarios 
+                ORDER BY nombre
+            """)
+            usuarios = cursor.fetchall()
+            return [tuple(usuario) for usuario in usuarios]
+        except sqlite3.Error as e:
+            print(f"Error al obtener usuarios: {e}")
+            return []

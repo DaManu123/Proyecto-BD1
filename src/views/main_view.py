@@ -5,7 +5,13 @@ import sys
 
 # Importar el sistema de temas UNISON
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
-from theme_unison import *
+from theme_unison import (
+    COLOR_AZUL_UNISON, COLOR_AZUL_UNISON_OSCURO, COLOR_DORADO_UNISON,
+    COLOR_TEXTO_BLANCO, COLOR_TEXTO_NEGRO, COLOR_FONDO_BLANCO,
+    FUENTE_UNISON, TAMAÑO_FUENTE_NORMAL, TAMAÑO_FUENTE_BOTON, TAMAÑO_FUENTE_LABEL,
+    crear_boton_unison, crear_entry_unison, crear_label_unison, crear_frame_unison,
+    crear_titulo_unison
+)
 
 class MainView:
     def __init__(self, master):
@@ -27,10 +33,7 @@ class MainView:
             except Exception as e:
                 print(f"No se pudo establecer el icono: {e}")
         
-        self.master.configure(bg=COLOR_FONDO_NEUTRAL)
-        
-        # Aplicar estilo global UNISON
-        aplicar_estilo_global_tkinter()
+        self.master.configure(bg=COLOR_FONDO_BLANCO)
         
         # Configurar el grid principal para que sea responsivo
         self.master.grid_rowconfigure(0, weight=1)

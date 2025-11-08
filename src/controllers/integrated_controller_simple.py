@@ -1,3 +1,6 @@
+"""
+Controlador integrado simplificado con login y aplicación principal
+"""
 from models.database import DatabaseModel
 from views.login_view_split import LoginViewUnisonSplit
 from views.main_view import MainView
@@ -8,7 +11,7 @@ import os
 
 # Importar el sistema de temas UNISON
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
-from theme_unison import *
+from theme_unison import COLOR_FONDO_BLANCO
 
 class IntegratedController:
     def __init__(self, root):
@@ -16,12 +19,9 @@ class IntegratedController:
         self.root = root
         self.root.title("Sistema de Inventario - Universidad de Sonora")
         self.root.geometry("1000x700")
-        self.root.configure(bg=COLOR_FONDO_NEUTRAL)
+        self.root.configure(bg=COLOR_FONDO_BLANCO)
         self.root.resizable(True, True)
         self.root.minsize(800, 600)
-        
-        # Aplicar estilo global UNISON
-        aplicar_estilo_global_tkinter()
         
         # Inicializar el modelo (base de datos)
         self.model = DatabaseModel()
@@ -32,13 +32,6 @@ class IntegratedController:
         # Variable para almacenar información del usuario logueado
         self.current_user = None
         
-        # Configurar el grid principal para que sea responsivo
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
-        
-        # Contenedor principal que alojará tanto el login como la vista principal
-        self.main_container = None
-        
         # Vistas
         self.login_view = None
         self.main_view = None
@@ -46,135 +39,110 @@ class IntegratedController:
         # Estado actual de la aplicación
         self.current_state = "login"  # "login" o "main"
         
-        # Inicializar las vistas
-        self.initialize_views()
-        
         # Mostrar la vista de login inicialmente
         self.show_login()
         
         # Vincular eventos de cierre de ventana
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
     
-    def initialize_views(self):
-        """Inicializa todas las vistas pero las mantiene ocultas"""
-        # Crear el contenedor principal con tema UNISON
-        self.main_container = crear_frame_unison(self.root, azul=False)
-        self.main_container.grid(row=0, column=0, sticky="nsew")
-        self.main_container.grid_rowconfigure(0, weight=1)
-        self.main_container.grid_columnconfigure(0, weight=1)
-        
-        # Crear la vista de login con nuevo diseño split
-        self.login_view = LoginViewUnisonSplit(self.main_container, self.handle_login)
-        
-        # Crear la vista principal (inicialmente oculta)
-        self.main_view = MainView(self.main_container)
-        
-        # Configurar los comandos de los botones de la vista principal
-        self.setup_main_view_commands()
-        
-        # Ocultar la vista principal inicialmente
-        self.main_view.container.grid_remove()
-    
-    def setup_main_view_commands(self):
-        """Configura los comandos de todos los botones de la vista principal"""
-        # Botones de agregar y eliminar
-        self.main_view.btn_agregar_producto.config(command=self.agregar_producto)
-        self.main_view.btn_eliminar_producto.config(command=self.eliminar_producto)
-        self.main_view.btn_agregar_almacen.config(command=self.agregar_almacen)
-        self.main_view.btn_eliminar_almacen.config(command=self.eliminar_almacen)
-        
-        # Override los botones de navegación para cargar datos
-        self.main_view.btn_productos.config(command=self.show_productos_frame)
-        self.main_view.btn_almacenes.config(command=self.show_almacenes_frame)
-        
-        # Configurar el botón de cerrar sesión
-        self.main_view.btn_cerrar_sesion.config(command=self.logout)
-    
-    def handle_login(self, username):
-        """Maneja el proceso de login exitoso"""
-        self.current_user = username
-        # Login exitoso - cambiar a la vista principal
-        self.show_main_application()
-    
-    def validate_login(self, username, password):
-        """
-        Valida las credenciales de login
-        Por ahora es una validación simple, pero puede integrarse con la base de datos
-        """
-        # Validación simple para demostración
-        # En una implementación real, verificarías contra la base de datos
-        return len(username) > 0 and len(password) > 0
-    
     def show_login(self):
-        """Muestra la vista de login y oculta la vista principal"""
-        if self.main_view:
-            self.main_view.pack_forget()
+        """Muestra la vista de login"""
+        # Limpiar ventana si hay contenido previo
+        for widget in self.root.winfo_children():
+            widget.destroy()
         
+        # Crear vista de login
+        self.login_view = LoginViewUnisonSplit(self.root, self.handle_login)
         self.current_state = "login"
-        
-        # Cambiar el título de la ventana
         self.root.title("Sistema de Inventario - Login - UNISON")
+    
+    def handle_login(self, username, password):
+        """Maneja el proceso de login con validación de base de datos"""
+        # Validar credenciales contra la base de datos
+        if self.model.validar_usuario(username, password):
+            self.current_user = username
+            messagebox.showinfo("Bienvenido", f"¡Bienvenido al sistema, {username}!")
+            self.show_main_application()
+        else:
+            messagebox.showerror("Error de Autenticación", 
+                               "Usuario o contraseña incorrectos.\n\n"
+                               "Por favor verifique sus credenciales e intente nuevamente.")
+            # Limpiar campos después de error
+            if hasattr(self, 'login_view') and self.login_view:
+                self.login_view.clear_fields()
     
     def show_main_application(self):
         """Muestra la vista principal y oculta la vista de login"""
-        # Destruir la vista de login
-        self.login_view.destroy()
+        # Limpiar ventana
+        for widget in self.root.winfo_children():
+            widget.destroy()
         
         # Crear y mostrar la vista principal
-        self.main_view = MainView(self.main_container)
+        self.main_view = MainView(self.root)
         self.setup_main_view_commands()
         
         self.current_state = "main"
-        
-        # Cambiar el título de la ventana
         self.root.title("Sistema de Inventario - Universidad de Sonora")
+        
+        # Mostrar el frame de inicio por defecto
+        self.main_view.show_frame("inicio")
+    
+    def setup_main_view_commands(self):
+        """Configura los comandos de todos los botones de la vista principal"""
+        if not self.main_view:
+            return
+            
+        # Buscar y configurar botones en las vistas
+        try:
+            # Buscar botones de productos
+            if hasattr(self.main_view, 'btn_agregar_producto'):
+                self.main_view.btn_agregar_producto.config(command=self.agregar_producto)
+            if hasattr(self.main_view, 'btn_eliminar_producto'):
+                self.main_view.btn_eliminar_producto.config(command=self.eliminar_producto)
+            
+            # Buscar botones de almacenes
+            if hasattr(self.main_view, 'btn_agregar_almacen'):
+                self.main_view.btn_agregar_almacen.config(command=self.agregar_almacen)
+            if hasattr(self.main_view, 'btn_eliminar_almacen'):
+                self.main_view.btn_eliminar_almacen.config(command=self.eliminar_almacen)
+            
+            # Buscar botones de navegación
+            if hasattr(self.main_view, 'btn_productos'):
+                self.main_view.btn_productos.config(command=self.show_productos_frame)
+            if hasattr(self.main_view, 'btn_almacenes'):
+                self.main_view.btn_almacenes.config(command=self.show_almacenes_frame)
+            
+            # Configurar el botón de cerrar sesión
+            if hasattr(self.main_view, 'btn_cerrar_sesion'):
+                self.main_view.btn_cerrar_sesion.config(command=self.logout)
+        except Exception as e:
+            print(f"Error configurando comandos: {e}")
     
     def logout(self):
         """Cierra sesión y vuelve a la pantalla de login"""
-        # Confirmar cierre de sesión
         if messagebox.askyesno("Cerrar Sesión", 
                               "¿Está seguro de que desea cerrar sesión?"):
-            # Limpiar datos de usuario
             self.current_user = None
-            
-            # Destruir vista principal
-            if self.main_view:
-                self.main_view.destroy()
-            
-            # Recrear vista de login
-            self.login_view = LoginViewUnisonSplit(self.main_container, self.handle_login)
-            
-            # Volver a la vista de login
             self.show_login()
-    
-    # Métodos heredados del MainController original para mantener funcionalidad
-    
-    def show_frame(self, frame_name):
-        """Muestra el frame especificado y carga los datos si es necesario"""
-        if self.current_state == "main":
-            self.main_view.show_frame(frame_name)
-            
-            # Cargar datos según el frame mostrado
-            if frame_name == "productos":
-                self.load_productos_data()
-            elif frame_name == "almacenes":
-                self.load_almacenes_data()
     
     def show_productos_frame(self):
         """Muestra el frame de productos y carga los datos"""
-        self.main_view.show_frame("productos")
-        self.load_productos_data()
+        if self.main_view:
+            self.main_view.show_frame("productos")
+            self.load_productos_data()
     
     def show_almacenes_frame(self):
         """Muestra el frame de almacenes y carga los datos"""
-        self.main_view.show_frame("almacenes")
-        self.load_almacenes_data()
+        if self.main_view:
+            self.main_view.show_frame("almacenes")
+            self.load_almacenes_data()
     
     def load_productos_data(self):
         """Carga los datos de productos desde la base de datos"""
         try:
             productos = self.model.get_all_productos()
-            self.main_view.update_productos_tree(productos)
+            if self.main_view:
+                self.main_view.update_productos_tree(productos)
             print(f"Cargados {len(productos)} productos")
         except Exception as e:
             print(f"Error al cargar productos: {e}")
@@ -183,28 +151,27 @@ class IntegratedController:
         """Carga los datos de almacenes desde la base de datos"""
         try:
             almacenes = self.model.get_all_almacenes()
-            self.main_view.update_almacenes_tree(almacenes)
+            if self.main_view:
+                self.main_view.update_almacenes_tree(almacenes)
             print(f"Cargados {len(almacenes)} almacenes")
         except Exception as e:
             print(f"Error al cargar almacenes: {e}")
     
-    # Funciones CRUD completas (copiadas del MainController original)
     def agregar_producto(self):
         """Función para agregar producto con validaciones"""
         try:
-            # Obtener datos del formulario
+            if not self.main_view:
+                return
+                
             data = self.main_view.get_producto_data()
             
-            # Validar campos requeridos
             if not self.validar_producto(data):
                 return
             
-            # Convertir tipos de datos
             precio = float(data['precio'])
             cantidad = int(data['cantidad'])
             almacen_id = int(data['almacen'])
             
-            # Validar que el almacén existe
             if not self.model.almacen_existe(almacen_id):
                 almacenes_info = self.get_almacenes_info()
                 messagebox.showerror("Error", 
@@ -212,7 +179,6 @@ class IntegratedController:
                     f"IDs de almacenes disponibles:\\n{almacenes_info}")
                 return
             
-            # Agregar producto a la base de datos
             if self.model.agregar_producto(data['nombre'], precio, cantidad, 
                                          data['departamento'], almacen_id):
                 messagebox.showinfo("Éxito", f"Producto '{data['nombre']}' agregado exitosamente")
@@ -221,15 +187,18 @@ class IntegratedController:
             else:
                 messagebox.showerror("Error", "No se pudo agregar el producto")
                 
-        except ValueError as e:
+        except ValueError:
             messagebox.showerror("Error de Validación", 
-                               "Precio debe ser un número decimal, Cantidad debe ser un número entero, y Almacén debe ser un ID numérico válido")
+                               "Precio debe ser un número decimal, Cantidad debe ser un número entero")
         except Exception as e:
             messagebox.showerror("Error", f"Error inesperado: {str(e)}")
     
     def eliminar_producto(self):
         """Función para eliminar producto seleccionado"""
         try:
+            if not self.main_view:
+                return
+                
             data = self.main_view.get_producto_data()
             
             if not data['id']:
@@ -258,6 +227,9 @@ class IntegratedController:
     def agregar_almacen(self):
         """Función para agregar almacén con validaciones"""
         try:
+            if not self.main_view:
+                return
+                
             data = self.main_view.get_almacen_data()
             
             if not self.validar_almacen(data):
@@ -276,6 +248,9 @@ class IntegratedController:
     def eliminar_almacen(self):
         """Función para eliminar almacén seleccionado"""
         try:
+            if not self.main_view:
+                return
+                
             data = self.main_view.get_almacen_data()
             
             if not data['id']:
@@ -391,8 +366,6 @@ class IntegratedController:
     def on_closing(self):
         """Función que se ejecuta al cerrar la aplicación"""
         print("Cerrando aplicación...")
-        # Cerrar conexión a la base de datos
         if self.model:
             self.model.disconnect()
-        # Cerrar la ventana
         self.root.destroy()

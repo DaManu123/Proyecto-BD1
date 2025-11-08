@@ -1,5 +1,5 @@
 from tkinter import Tk
-from controllers.integrated_controller import IntegratedController
+from controllers.integrated_controller_simple import IntegratedController
 
 def main():
     root = Tk()

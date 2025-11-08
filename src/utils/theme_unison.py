@@ -1,149 +1,75 @@
 """
 Configuración global de tema y estilos para la aplicación UNISON
-Define la paleta de colores oficial y configuraciones de estilo
+Define la paleta de colores oficial de la Universidad de Sonora
 """
 
-# Paleta de colores oficial UNISON
-COLOR_AZUL_PRINCIPAL = "#00529e"      # Fondo principal, cabeceras, botones primarios
-COLOR_AZUL_OSCURO = "#01509b"         # Hover/active para botones azules
-COLOR_DORADO_ACENTO = "#f8bb00"       # Botones secundarios, acentos
-COLOR_DORADO_OSCURO = "#d99e30"       # Hover/active para botones dorados
-COLOR_TEXTO_PRINCIPAL = "#FFFFFF"     # Texto sobre fondos azules
-COLOR_TEXTO_SECUNDARIO = "#000000"    # Texto sobre fondos claros/dorados
+# Paleta de colores oficial UNISON (Universidad de Sonora)
+COLOR_AZUL_UNISON = "#00529e"         # Azul principal UNISON
+COLOR_AZUL_UNISON_OSCURO = "#01509b"  # Azul UNISON oscuro para hover
+COLOR_DORADO_UNISON = "#f8bb00"       # Dorado UNISON
+COLOR_DORADO_UNISON_OSCURO = "#d99e30" # Dorado UNISON oscuro para hover
+COLOR_TEXTO_BLANCO = "#FFFFFF"        # Texto blanco sobre fondos oscuros
+COLOR_TEXTO_NEGRO = "#000000"         # Texto negro sobre fondos claros
 
-# Colores adicionales permitidos
+# Colores auxiliares
 COLOR_FONDO_CLARO = "#f8f9fa"         # Fondos claros
-COLOR_FONDO_NEUTRAL = "#ffffff"       # Fondo blanco
-COLOR_GRIS_SUAVE = "#e9ecef"          # Grises neutros
-COLOR_GRIS_TEXTO = "#6c757d"          # Texto gris
+COLOR_FONDO_BLANCO = "#ffffff"        # Fondo blanco
+COLOR_GRIS_CLARO = "#e9ecef"          # Grises neutros
+COLOR_GRIS_MEDIO = "#6c757d"          # Texto gris
 
-# Configuración de fuente
-FUENTE_PRINCIPAL = "Segoe UI"
+# Configuración de fuente UNISON
+FUENTE_UNISON = "Segoe UI"
 
 # Configuración de estilos
 BORDE_REDONDEADO = 8
-PADDING_STANDAR = 10
+PADDING_ESTANDAR = 10
 ESPACIADO_ELEMENTOS = 15
 
-# Configuración de tamaños
+# Configuración de tamaños de fuente
 TAMAÑO_FUENTE_TITULO = 16
 TAMAÑO_FUENTE_NORMAL = 11
 TAMAÑO_FUENTE_BOTON = 12
 TAMAÑO_FUENTE_LABEL = 10
 
 # Configuración de dimensiones
-ANCHO_BOTON_STANDAR = 140
-ALTO_BOTON_STANDAR = 35
-ANCHO_ENTRY_STANDAR = 200
+ANCHO_BOTON_ESTANDAR = 140
+ALTO_BOTON_ESTANDAR = 35
+ANCHO_ENTRY_ESTANDAR = 200
 
-def aplicar_estilo_global_tkinter():
+def aplicar_tema_ventana(ventana):
     """
-    Aplica los estilos globales para componentes Tkinter usando ttk.Style
+    Aplica el tema UNISON a una ventana completa
     """
-    import tkinter as tk
-    from tkinter import ttk
-    
-    # Crear un estilo personalizado
-    style = ttk.Style()
-    
-    # Configurar estilo para botones
-    style.configure(
-        "Unison.TButton",
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_BOTON, "bold"),
-        background=COLOR_AZUL_PRINCIPAL,
-        foreground=COLOR_TEXTO_PRINCIPAL,
-        borderwidth=1,
-        relief="flat",
-        padding=(PADDING_STANDAR, 8)
-    )
-    
-    style.map(
-        "Unison.TButton",
-        background=[('active', COLOR_AZUL_OSCURO), ('pressed', COLOR_AZUL_OSCURO)]
-    )
-    
-    # Configurar estilo para botones dorados
-    style.configure(
-        "UnisonGold.TButton",
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_BOTON, "bold"),
-        background=COLOR_DORADO_ACENTO,
-        foreground=COLOR_TEXTO_SECUNDARIO,
-        borderwidth=1,
-        relief="flat",
-        padding=(PADDING_STANDAR, 8)
-    )
-    
-    style.map(
-        "UnisonGold.TButton",
-        background=[('active', COLOR_DORADO_OSCURO), ('pressed', COLOR_DORADO_OSCURO)]
-    )
-    
-    # Configurar estilo para Entry
-    style.configure(
-        "Unison.TEntry",
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_NORMAL),
-        borderwidth=2,
-        relief="solid",
-        insertcolor=COLOR_AZUL_PRINCIPAL
-    )
-    
-    # Configurar estilo para Labels
-    style.configure(
-        "Unison.TLabel",
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_LABEL),
-        background=COLOR_FONDO_NEUTRAL,
-        foreground=COLOR_TEXTO_SECUNDARIO
-    )
-    
-    # Configurar estilo para Labels sobre fondo azul
-    style.configure(
-        "UnisonBlue.TLabel",
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_LABEL),
-        background=COLOR_AZUL_PRINCIPAL,
-        foreground=COLOR_TEXTO_PRINCIPAL
-    )
-    
-    # Configurar estilo para Frame principal
-    style.configure(
-        "Unison.TFrame",
-        background=COLOR_FONDO_NEUTRAL,
-        relief="flat"
-    )
-    
-    # Configurar estilo para Frame azul
-    style.configure(
-        "UnisonBlue.TFrame",
-        background=COLOR_AZUL_PRINCIPAL,
-        relief="flat"
-    )
-    
-    return style
+    ventana.configure(bg=COLOR_FONDO_BLANCO)
+    return ventana
 
 def crear_boton_unison(parent, texto, comando=None, estilo="primario", **kwargs):
     """
-    Crea un botón con el estilo UNISON aplicado
+    Crea un botón con el estilo UNISON y bordes redondeados (simulado)
     """
     import tkinter as tk
     
     if estilo == "primario":
-        bg_color = COLOR_AZUL_PRINCIPAL
-        fg_color = COLOR_TEXTO_PRINCIPAL
-        hover_color = COLOR_AZUL_OSCURO
+        bg_color = COLOR_AZUL_UNISON
+        fg_color = COLOR_TEXTO_BLANCO
+        hover_color = COLOR_AZUL_UNISON_OSCURO
     else:  # dorado/secundario
-        bg_color = COLOR_DORADO_ACENTO
-        fg_color = COLOR_TEXTO_SECUNDARIO
-        hover_color = COLOR_DORADO_OSCURO
+        bg_color = COLOR_DORADO_UNISON
+        fg_color = COLOR_TEXTO_NEGRO
+        hover_color = COLOR_DORADO_UNISON_OSCURO
     
     boton = tk.Button(
         parent,
         text=texto,
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_BOTON, "bold"),
+        font=(FUENTE_UNISON, TAMAÑO_FUENTE_BOTON, "bold"),
         bg=bg_color,
         fg=fg_color,
         relief="flat",
         borderwidth=0,
         cursor="hand2",
         command=comando,
+        pady=8,
+        padx=20,
         **kwargs
     )
     
@@ -161,17 +87,25 @@ def crear_boton_unison(parent, texto, comando=None, estilo="primario", **kwargs)
 
 def crear_entry_unison(parent, **kwargs):
     """
-    Crea un Entry con el estilo UNISON aplicado
+    Crea un Entry con el estilo UNISON
     """
     import tkinter as tk
     
-    entry = tk.Entry(
-        parent,
-        font=(FUENTE_PRINCIPAL, TAMAÑO_FUENTE_NORMAL),
-        relief="solid",
-        borderwidth=2,
-        **kwargs
-    )
+    # Configuración por defecto
+    config_default = {
+        'font': (FUENTE_UNISON, TAMAÑO_FUENTE_NORMAL),
+        'relief': 'solid',
+        'borderwidth': 2,
+        'bd': 1,
+        'highlightcolor': COLOR_AZUL_UNISON,
+        'highlightbackground': COLOR_GRIS_CLARO,
+        'insertbackground': COLOR_AZUL_UNISON
+    }
+    
+    # Actualizar con kwargs personalizados
+    config_default.update(kwargs)
+    
+    entry = tk.Entry(parent, **config_default)
     
     return entry
 
@@ -181,18 +115,18 @@ def crear_label_unison(parent, texto, sobre_azul=False, **kwargs):
     """
     import tkinter as tk
     
-    # Establecer colores por defecto pero permitir override
+    # Establecer colores por defecto
     if sobre_azul:
-        fg_color = kwargs.get('fg', COLOR_TEXTO_PRINCIPAL)
-        bg_color = kwargs.get('bg', COLOR_AZUL_PRINCIPAL)
+        fg_color = kwargs.get('fg', COLOR_TEXTO_BLANCO)
+        bg_color = kwargs.get('bg', COLOR_AZUL_UNISON)
     else:
-        fg_color = kwargs.get('fg', COLOR_TEXTO_SECUNDARIO)
-        bg_color = kwargs.get('bg', COLOR_FONDO_NEUTRAL)
+        fg_color = kwargs.get('fg', COLOR_TEXTO_NEGRO)
+        bg_color = kwargs.get('bg', COLOR_FONDO_BLANCO)
     
     # Establecer fuente por defecto si no se especifica una
-    font_default = kwargs.get('font', (FUENTE_PRINCIPAL, TAMAÑO_FUENTE_LABEL))
+    font_default = kwargs.get('font', (FUENTE_UNISON, TAMAÑO_FUENTE_LABEL))
     
-    # Remover parámetros que vamos a establecer explícitamente para evitar duplicados
+    # Remover parámetros que vamos a establecer explícitamente
     kwargs_clean = {k: v for k, v in kwargs.items() if k not in ['fg', 'bg', 'font']}
     
     label = tk.Label(
@@ -213,14 +147,36 @@ def crear_frame_unison(parent, azul=False, **kwargs):
     import tkinter as tk
     
     if azul:
-        bg_color = COLOR_AZUL_PRINCIPAL
+        bg_color = COLOR_AZUL_UNISON
     else:
-        bg_color = COLOR_FONDO_NEUTRAL
+        bg_color = COLOR_FONDO_BLANCO
     
-    frame = tk.Frame(
-        parent,
-        bg=bg_color,
-        **kwargs
-    )
+    # Configuración por defecto
+    config_default = {
+        'bg': bg_color,
+        'relief': 'flat'
+    }
+    
+    # Actualizar con kwargs personalizados
+    config_default.update(kwargs)
+    
+    frame = tk.Frame(parent, **config_default)
     
     return frame
+
+def crear_titulo_unison(parent, texto, **kwargs):
+    """
+    Crea un título con el estilo UNISON
+    """
+    import tkinter as tk
+    
+    config_default = {
+        'font': (FUENTE_UNISON, TAMAÑO_FUENTE_TITULO, "bold"),
+        'fg': COLOR_AZUL_UNISON,
+        'bg': COLOR_FONDO_BLANCO
+    }
+    
+    config_default.update(kwargs)
+    
+    titulo = tk.Label(parent, text=texto, **config_default)
+    return titulo
