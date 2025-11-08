@@ -5,11 +5,12 @@ from models.database import DatabaseModel
 from views.login_view_split import LoginViewUnisonSplit
 from views.main_view import MainView
 from tkinter import messagebox
+import tkinter as tk
 import re
 import sys
 import os
 
-# Importar el sistema de temas UNISON mejorado
+# Importar el sistema de temas UNISON
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
 from theme_unison import COLOR_FONDO_BLANCO
 
@@ -23,6 +24,9 @@ class IntegratedController:
         self.root.resizable(True, True)
         self.root.minsize(800, 600)
         
+        # Crear un frame contenedor principal que siempre permanecerá
+        self.main_container = tk.Frame(self.root, bg=COLOR_FONDO_BLANCO)
+        self.main_container.pack(fill=tk.BOTH, expand=True)
         
         # Inicializar el modelo (base de datos)
         self.model = DatabaseModel()
@@ -48,12 +52,12 @@ class IntegratedController:
     
     def show_login(self):
         """Muestra la vista de login"""
-        # Limpiar ventana si hay contenido previo
-        for widget in self.root.winfo_children():
+        # Limpiar solo el contenedor, no toda la ventana
+        for widget in self.main_container.winfo_children():
             widget.destroy()
         
-        # Crear vista de login
-        self.login_view = LoginViewUnisonSplit(self.root, self.handle_login)
+        # Crear vista de login dentro del contenedor
+        self.login_view = LoginViewUnisonSplit(self.main_container, self.handle_login)
         self.current_state = "login"
         self.root.title("Sistema de Inventario - Login - UNISON")
     
@@ -74,12 +78,12 @@ class IntegratedController:
     
     def show_main_application(self):
         """Muestra la vista principal y oculta la vista de login"""
-        # Limpiar ventana
-        for widget in self.root.winfo_children():
+        # Limpiar solo el contenedor, no toda la ventana
+        for widget in self.main_container.winfo_children():
             widget.destroy()
         
-        # Crear y mostrar la vista principal
-        self.main_view = MainView(self.root)
+        # Crear y mostrar la vista principal dentro del contenedor
+        self.main_view = MainView(self.main_container)
         self.setup_main_view_commands()
         
         self.current_state = "main"
