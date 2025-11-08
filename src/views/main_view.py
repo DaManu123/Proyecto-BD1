@@ -1,6 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, Frame, Label, Button, Entry, Canvas
 import os
+import sys
+
+# Importar el sistema de temas UNISON
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+from theme_unison import *
 
 class MainView:
     def __init__(self, master):
@@ -22,14 +27,17 @@ class MainView:
             except Exception as e:
                 print(f"No se pudo establecer el icono: {e}")
         
-        self.master.configure(bg="#f0f0f0")
+        self.master.configure(bg=COLOR_FONDO_NEUTRAL)
+        
+        # Aplicar estilo global UNISON
+        aplicar_estilo_global_tkinter()
         
         # Configurar el grid principal para que sea responsivo
         self.master.grid_rowconfigure(0, weight=1)
         self.master.grid_columnconfigure(0, weight=1)
         
         # Contenedor principal para todos los frames
-        self.container = Frame(self.master, bg="#f0f0f0")
+        self.container = crear_frame_unison(self.master, azul=False)
         self.container.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         
         # Configurar el contenedor para que sea responsivo
@@ -134,34 +142,40 @@ class MainView:
         info.grid(row=5, column=0, pady=(0, 25), sticky="ew")
         
         # Container para botones con diseño centrado y responsivo
-        buttons_container = Frame(main_content, bg="#f0f0f0")
+        buttons_container = crear_frame_unison(main_content, azul=False)
         buttons_container.grid(row=6, column=0, sticky="ew", pady=20)
         buttons_container.grid_columnconfigure(0, weight=1)
         
         # Frame interno para centrar los botones con distribución elegante
-        buttons_frame = Frame(buttons_container, bg="#f0f0f0")
+        buttons_frame = crear_frame_unison(buttons_container, azul=False)
         buttons_frame.grid(row=0, column=0)
         
-        # Distribución en una fila con mejor espaciado y diseño
-        self.btn_productos = Button(buttons_frame, text="Productos", 
-                                   font=("Arial", 13, "bold"), bg="#3498db", fg="white",
-                                   width=15, height=3, relief="raised", cursor="hand2",
-                                   borderwidth=2,
-                                   command=lambda: self.show_frame("productos"))
+        # Distribución en una fila con mejor espaciado y diseño UNISON
+        self.btn_productos = crear_boton_unison(
+            buttons_frame, 
+            "Productos",
+            comando=lambda: self.show_frame("productos"),
+            estilo="primario",
+            width=15, height=3
+        )
         self.btn_productos.grid(row=0, column=0, padx=12, pady=15)
         
-        self.btn_almacenes = Button(buttons_frame, text="Almacenes", 
-                                   font=("Arial", 13, "bold"), bg="#e74c3c", fg="white",
-                                   width=15, height=3, relief="raised", cursor="hand2",
-                                   borderwidth=2,
-                                   command=lambda: self.show_frame("almacenes"))
+        self.btn_almacenes = crear_boton_unison(
+            buttons_frame, 
+            "Almacenes",
+            comando=lambda: self.show_frame("almacenes"),
+            estilo="primario",
+            width=15, height=3
+        )
         self.btn_almacenes.grid(row=0, column=1, padx=12, pady=15)
         
-        # Botón de cerrar sesión con estilo diferenciado
-        self.btn_cerrar_sesion = Button(buttons_frame, text="Cerrar Sesión", 
-                                       font=("Arial", 12, "bold"), bg="#e67e22", fg="white",
-                                       width=15, height=3, relief="raised", cursor="hand2",
-                                       borderwidth=2)
+        # Botón de cerrar sesión con estilo dorado
+        self.btn_cerrar_sesion = crear_boton_unison(
+            buttons_frame, 
+            "Cerrar Sesión",
+            estilo="dorado",
+            width=15, height=3
+        )
         self.btn_cerrar_sesion.grid(row=0, column=2, padx=12, pady=15)
         
         # Efectos hover

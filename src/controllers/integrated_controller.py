@@ -1,18 +1,27 @@
 from models.database import DatabaseModel
-from views.login_view_integrated import LoginViewIntegrated
+from views.login_view_unison import LoginViewUnisonDesign
 from views.main_view import MainView
 from tkinter import messagebox
 import re
+import sys
+import os
+
+# Importar el sistema de temas UNISON
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+from theme_unison import *
 
 class IntegratedController:
     def __init__(self, root):
         """Inicializa el controlador integrado con login y aplicación principal"""
         self.root = root
         self.root.title("Sistema de Inventario - Universidad de Sonora")
-        self.root.geometry("900x650")
-        self.root.configure(bg="#f0f0f0")
+        self.root.geometry("1000x700")
+        self.root.configure(bg=COLOR_FONDO_NEUTRAL)
         self.root.resizable(True, True)
-        self.root.minsize(750, 550)
+        self.root.minsize(800, 600)
+        
+        # Aplicar estilo global UNISON
+        aplicar_estilo_global_tkinter()
         
         # Inicializar el modelo (base de datos)
         self.model = DatabaseModel()
@@ -48,15 +57,14 @@ class IntegratedController:
     
     def initialize_views(self):
         """Inicializa todas las vistas pero las mantiene ocultas"""
-        # Crear el contenedor principal
-        from tkinter import Frame
-        self.main_container = Frame(self.root, bg="#f0f0f0")
+        # Crear el contenedor principal con tema UNISON
+        self.main_container = crear_frame_unison(self.root, azul=False)
         self.main_container.grid(row=0, column=0, sticky="nsew")
         self.main_container.grid_rowconfigure(0, weight=1)
         self.main_container.grid_columnconfigure(0, weight=1)
         
-        # Crear la vista de login integrada
-        self.login_view = LoginViewIntegrated(self.main_container)
+        # Crear la vista de login integrada con tema UNISON
+        self.login_view = LoginViewUnisonDesign(self.main_container)
         self.login_view.set_login_callback(self.handle_login)
         self.login_view.bind_enter_key(self.root)
         
