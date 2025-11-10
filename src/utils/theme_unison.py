@@ -10,15 +10,18 @@ COLOR_DORADO_UNISON = "#f8bb00"       # Dorado UNISON
 COLOR_DORADO_UNISON_OSCURO = "#d99e30" # Dorado UNISON oscuro para hover
 COLOR_TEXTO_BLANCO = "#FFFFFF"        # Texto blanco sobre fondos oscuros
 COLOR_TEXTO_NEGRO = "#000000"         # Texto negro sobre fondos claros
+COLOR_TEXTO_SECUNDARIO = "#6c757d"    # Texto gris secundario
 
 # Colores auxiliares
 COLOR_FONDO_CLARO = "#f8f9fa"         # Fondos claros
 COLOR_FONDO_BLANCO = "#ffffff"        # Fondo blanco
+COLOR_FONDO_NEUTRAL = "#f8f9fa"       # Fondo neutral (igual a claro)
 COLOR_GRIS_CLARO = "#e9ecef"          # Grises neutros
 COLOR_GRIS_MEDIO = "#6c757d"          # Texto gris
 
 # Configuración de fuente UNISON
 FUENTE_UNISON = "Segoe UI"
+FUENTE_PRINCIPAL = "Segoe UI"  # Alias para compatibilidad
 
 # Configuración de estilos
 BORDE_REDONDEADO = 8
@@ -42,6 +45,20 @@ def aplicar_tema_ventana(ventana):
     """
     ventana.configure(bg=COLOR_FONDO_BLANCO)
     return ventana
+
+def aplicar_estilo_global_tkinter():
+    """
+    Aplica estilos globales de tkinter/ttk con tema UNISON
+    """
+    from tkinter import ttk
+    
+    style = ttk.Style()
+    style.theme_use('clam')
+    
+    # Configurar Treeview globalmente
+    configurar_estilo_treeview()
+    
+    return style
 
 def crear_boton_unison(parent, texto, comando=None, estilo="primario", **kwargs):
     """
@@ -74,7 +91,7 @@ def crear_boton_unison(parent, texto, comando=None, estilo="primario", **kwargs)
         borderwidth=0,
         highlightthickness=0,
         cursor="hand2",
-        command=comando,
+        command=comando if comando is not None else lambda: None,
         pady=10,
         padx=25,
         **kwargs
@@ -153,14 +170,16 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
     
     # Dibujar rectángulo redondeado (borde)
     border_color = COLOR_GRIS_CLARO
-    canvas.create_rounded_rect = lambda x1, y1, x2, y2, r, **opts: canvas.create_polygon(
-        x1+r, y1, x1+r, y1, x2-r, y1, x2-r, y1, x2, y1, x2, y1+r, x2, y1+r, 
-        x2, y2-r, x2, y2-r, x2, y2, x2-r, y2, x2-r, y2, x1+r, y2, x1+r, y2, 
-        x1, y2, x1, y2-r, x1, y2-r, x1, y1+r, x1, y1+r, x1, y1, smooth=True, **opts
-    )
+    
+    def create_rounded_rect(x1, y1, x2, y2, r, **opts):
+        return canvas.create_polygon(
+            x1+r, y1, x1+r, y1, x2-r, y1, x2-r, y1, x2, y1, x2, y1+r, x2, y1+r, 
+            x2, y2-r, x2, y2-r, x2, y2, x2-r, y2, x2-r, y2, x1+r, y2, x1+r, y2, 
+            x1, y2, x1, y2-r, x1, y2-r, x1, y1+r, x1, y1+r, x1, y1, smooth=True, **opts
+        )
     
     # Fondo del entry
-    canvas.create_rounded_rect(
+    create_rounded_rect(
         2, 2, width-2, height-2, corner_radius,
         fill=COLOR_FONDO_BLANCO, outline=border_color, width=2
     )
@@ -180,12 +199,10 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
     )
     
     # Posicionar el entry en el canvas
-    canvas.create_window(width//2, height//2, window=entry, width=width-20, height=height-10)
-    
     # Efectos de focus
     def on_focus_in(e):
         canvas.delete('all')
-        canvas.create_rounded_rect(
+        create_rounded_rect(
             2, 2, width-2, height-2, corner_radius,
             fill=COLOR_FONDO_BLANCO, outline=COLOR_AZUL_UNISON, width=2
         )
@@ -193,7 +210,7 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
     
     def on_focus_out(e):
         canvas.delete('all')
-        canvas.create_rounded_rect(
+        create_rounded_rect(
             2, 2, width-2, height-2, corner_radius,
             fill=COLOR_FONDO_BLANCO, outline=border_color, width=2
         )
@@ -203,7 +220,7 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
     entry.bind('<FocusOut>', on_focus_out)
     
     # Guardar referencia al entry en el container
-    container.entry = entry
+    setattr(container, 'entry', entry)
     
     return container
 
@@ -257,9 +274,9 @@ def crear_frame_unison(parent, azul=False, **kwargs):
     
     # Actualizar con kwargs personalizados
     config_default.update(kwargs)
-    
-    frame = tk.Frame(parent, **config_default)
-    
+
+    frame = tk.Frame(parent, config_default)
+
     return frame
 
 def crear_titulo_unison(parent, texto, **kwargs):
