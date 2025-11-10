@@ -198,7 +198,9 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
         **kwargs
     )
     
-    # Posicionar el entry en el canvas
+    # Posicionar el entry en el canvas INICIALMENTE
+    canvas.create_window(width//2, height//2, window=entry, width=width-20, height=height-10)
+    
     # Efectos de focus
     def on_focus_in(e):
         canvas.delete('all')
@@ -344,9 +346,12 @@ def configurar_estilo_treeview():
     return style
 
 def crear_boton_redondeado_canvas(parent, texto, comando=None, width=200, height=45, 
-                                  corner_radius=8, estilo="primario"):
+                                  corner_radius=8, estilo="primario", bg_custom=None, hover_custom=None):
     """
     Crea un botón con bordes redondeados reales usando Canvas (8px)
+    Parámetros adicionales:
+    - bg_custom: Color de fondo personalizado (opcional)
+    - hover_custom: Color hover personalizado (opcional)
     """
     import tkinter as tk
     
@@ -354,10 +359,18 @@ def crear_boton_redondeado_canvas(parent, texto, comando=None, width=200, height
         bg_color = COLOR_AZUL_UNISON
         hover_color = COLOR_AZUL_UNISON_OSCURO
         text_color = COLOR_TEXTO_BLANCO
-    else:  # dorado
+    elif estilo == "dorado":
         bg_color = COLOR_DORADO_UNISON
         hover_color = COLOR_DORADO_UNISON_OSCURO
         text_color = COLOR_TEXTO_NEGRO
+    elif estilo == "custom":
+        bg_color = bg_custom if bg_custom else "#c0392b"
+        hover_color = hover_custom if hover_custom else "#a93226"
+        text_color = COLOR_TEXTO_BLANCO
+    else:
+        bg_color = COLOR_AZUL_UNISON
+        hover_color = COLOR_AZUL_UNISON_OSCURO
+        text_color = COLOR_TEXTO_BLANCO
     
     # Frame contenedor
     container = tk.Frame(parent, bg=parent['bg'] if isinstance(parent, tk.Frame) else COLOR_FONDO_BLANCO)
@@ -420,5 +433,16 @@ def crear_boton_redondeado_canvas(parent, texto, comando=None, width=200, height
     canvas.bind('<Enter>', on_enter)
     canvas.bind('<Leave>', on_leave)
     canvas.bind('<Button-1>', on_click)
+    
+    # Agregar método config para compatibilidad con el controlador
+    def config(command=None, **kwargs):
+        if command:
+            # Desvincular el evento anterior y vincular el nuevo
+            canvas.unbind('<Button-1>')
+            canvas.bind('<Button-1>', lambda e: command())
+    
+    # Agregar el método config al container
+    setattr(container, 'config', config)
+    setattr(container, 'canvas', canvas)
     
     return container

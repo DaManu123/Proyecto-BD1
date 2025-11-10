@@ -11,8 +11,10 @@ if utils_path not in sys.path:
 from theme_unison import (
     COLOR_AZUL_UNISON, COLOR_AZUL_UNISON_OSCURO, COLOR_DORADO_UNISON,
     COLOR_TEXTO_BLANCO, COLOR_TEXTO_NEGRO, COLOR_FONDO_BLANCO, COLOR_FONDO_CLARO,
+    COLOR_GRIS_CLARO,
     FUENTE_UNISON, TAMAÑO_FUENTE_NORMAL, TAMAÑO_FUENTE_BOTON, TAMAÑO_FUENTE_LABEL,
-    crear_boton_unison, crear_entry_unison, crear_label_unison, crear_frame_unison,
+    BORDE_REDONDEADO,
+    crear_boton_redondeado_canvas, crear_entry_redondeado, crear_label_unison, crear_frame_unison,
     crear_titulo_unison, configurar_estilo_treeview
 )
 
@@ -162,30 +164,37 @@ class MainView:
         buttons_frame.grid(row=0, column=0)
         
         # Distribución en una fila con mejor espaciado y colores UNISON oficiales
-        self.btn_productos = crear_boton_unison(
+        self.btn_productos = crear_boton_redondeado_canvas(
             buttons_frame, 
-            "📦 PRODUCTOS",
+            texto="📦 PRODUCTOS",
             comando=lambda: self.show_frame("productos"),
-            estilo="primario",
-            width=18, height=3
+            width=220,
+            height=70,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
         )
         self.btn_productos.grid(row=0, column=0, padx=15, pady=15)
         
-        self.btn_almacenes = crear_boton_unison(
+        self.btn_almacenes = crear_boton_redondeado_canvas(
             buttons_frame, 
-            "🏪 ALMACENES",
+            texto="🏪 ALMACENES",
             comando=lambda: self.show_frame("almacenes"),
-            estilo="primario",
-            width=18, height=3
+            width=220,
+            height=70,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
         )
         self.btn_almacenes.grid(row=0, column=1, padx=15, pady=15)
         
         # Botón de cerrar sesión con estilo dorado UNISON
-        self.btn_cerrar_sesion = crear_boton_unison(
+        self.btn_cerrar_sesion = crear_boton_redondeado_canvas(
             buttons_frame, 
-            "🚪 CERRAR SESIÓN",
-            estilo="dorado",
-            width=18, height=3
+            texto="🚪 CERRAR SESIÓN",
+            comando=None,
+            width=220,
+            height=70,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="dorado"
         )
         self.btn_cerrar_sesion.grid(row=0, column=2, padx=15, pady=15)
         
@@ -230,15 +239,17 @@ class MainView:
                       font=(FUENTE_UNISON, 20, "bold"), bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO)
         titulo.grid(row=0, column=0, sticky="w", padx=25, pady=15)
         
-        # Botón de volver con estilo UNISON dorado
-        self.btn_volver_productos = crear_boton_unison(
+        # Botón de volver con estilo UNISON dorado y bordes redondeados
+        self.btn_volver_productos = crear_boton_redondeado_canvas(
             header_frame,
-            "⬅ Volver al Inicio",
+            texto="⬅ Volver al Inicio",
             comando=lambda: self.show_frame("inicio"),
-            estilo="dorado",
-            width=16
+            width=200,
+            height=40,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="dorado"
         )
-        self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=12)
+        self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=10)
         
         # Frame para formulario con mejor organización
         form_frame = Frame(frame, bg="white", relief="raised", bd=1)
@@ -258,16 +269,20 @@ class MainView:
         for i, campo in enumerate(campos[:3]):
             Label(form_frame, text=campo + ":", font=("Arial", 11, "bold"), 
                  bg="white", fg="#34495e").grid(row=1, column=i*2, padx=(15, 5), pady=10, sticky="e")
-            entry = Entry(form_frame, width=15, font=("Arial", 11), relief="solid", bd=1)
-            entry.grid(row=1, column=i*2+1, padx=(0, 15), pady=10, sticky="ew")
+            entry = Entry(form_frame, width=15, font=(FUENTE_UNISON, 11), 
+                         relief="flat", bd=0, highlightthickness=2,
+                         highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
+            entry.grid(row=1, column=i*2+1, padx=(0, 15), pady=10, ipady=5, sticky="ew")
             self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry
         
         # Segunda fila: Cantidad, Departamento, Almacén
         for i, campo in enumerate(campos[3:], 3):
             Label(form_frame, text=campo + ":", font=("Arial", 11, "bold"), 
                  bg="white", fg="#34495e").grid(row=2, column=(i-3)*2, padx=(15, 5), pady=10, sticky="e")
-            entry = Entry(form_frame, width=15, font=("Arial", 11), relief="solid", bd=1)
-            entry.grid(row=2, column=(i-3)*2+1, padx=(0, 15), pady=10, sticky="ew")
+            entry = Entry(form_frame, width=15, font=(FUENTE_UNISON, 11),
+                         relief="flat", bd=0, highlightthickness=2,
+                         highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
+            entry.grid(row=2, column=(i-3)*2+1, padx=(0, 15), pady=10, ipady=5, sticky="ew")
             self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry
         
         # Nota informativa para el campo Almacén
@@ -275,26 +290,31 @@ class MainView:
                            font=("Arial", 9, "italic"), bg="white", fg="#7f8c8d")
         nota_almacen.grid(row=3, column=6, columnspan=6, padx=15, pady=(0, 10), sticky="w")
         
-        # Botones de acción con colores UNISON
+        # Botones de acción con colores UNISON y bordes redondeados
         btn_form_frame = Frame(form_frame, bg="white")
         btn_form_frame.grid(row=4, column=0, columnspan=12, pady=15)
         
-        self.btn_agregar_producto = crear_boton_unison(
+        self.btn_agregar_producto = crear_boton_redondeado_canvas(
             btn_form_frame,
-            "✅ Agregar Producto",
-            estilo="primario",
-            width=18
+            texto="✅ Agregar Producto",
+            comando=None,
+            width=220,
+            height=45,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
         )
         self.btn_agregar_producto.pack(side="left", padx=12)
         
-        self.btn_eliminar_producto = crear_boton_unison(
+        self.btn_eliminar_producto = crear_boton_redondeado_canvas(
             btn_form_frame,
-            "❌ Eliminar Producto",
+            texto="❌ Eliminar Producto",
+            comando=None,
+            width=220,
+            height=45,
+            corner_radius=BORDE_REDONDEADO,
             estilo="custom",
-            bg="#c0392b",
-            fg=COLOR_TEXTO_BLANCO,
-            hover_bg="#a93226",
-            width=18
+            bg_custom="#c0392b",
+            hover_custom="#a93226"
         )
         self.btn_eliminar_producto.pack(side="left", padx=12)
         
@@ -366,15 +386,17 @@ class MainView:
                       font=(FUENTE_UNISON, 20, "bold"), bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO)
         titulo.grid(row=0, column=0, sticky="w", padx=25, pady=15)
         
-        # Botón de volver con estilo UNISON dorado
-        self.btn_volver_almacenes = crear_boton_unison(
+        # Botón de volver con estilo UNISON dorado y bordes redondeados
+        self.btn_volver_almacenes = crear_boton_redondeado_canvas(
             header_frame,
-            "⬅ Volver al Inicio",
+            texto="⬅ Volver al Inicio",
             comando=lambda: self.show_frame("inicio"),
-            estilo="dorado",
-            width=16
+            width=200,
+            height=40,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="dorado"
         )
-        self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=12)
+        self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=10)
         
         # Frame para formulario con mejor organización
         form_frame = Frame(frame, bg="white", relief="raised", bd=1)
@@ -395,36 +417,45 @@ class MainView:
         
         Label(campos_frame, text="ID:", font=("Arial", 12, "bold"), 
              bg="white", fg="#34495e").grid(row=0, column=0, padx=(0, 10), pady=15, sticky="e")
-        id_entry = Entry(campos_frame, width=20, font=("Arial", 12), relief="solid", bd=1)
-        id_entry.grid(row=0, column=1, padx=(0, 30), pady=15, sticky="ew")
+        id_entry = Entry(campos_frame, width=20, font=(FUENTE_UNISON, 12),
+                        relief="flat", bd=0, highlightthickness=2,
+                        highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
+        id_entry.grid(row=0, column=1, padx=(0, 30), pady=15, ipady=5, sticky="ew")
         self.almacen_entries["id"] = id_entry
         
         Label(campos_frame, text="Nombre:", font=("Arial", 12, "bold"), 
              bg="white", fg="#34495e").grid(row=0, column=2, padx=(0, 10), pady=15, sticky="e")
-        nombre_entry = Entry(campos_frame, width=30, font=("Arial", 12), relief="solid", bd=1)
-        nombre_entry.grid(row=0, column=3, padx=0, pady=15, sticky="ew")
+        nombre_entry = Entry(campos_frame, width=30, font=(FUENTE_UNISON, 12),
+                            relief="flat", bd=0, highlightthickness=2,
+                            highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
+        nombre_entry.grid(row=0, column=3, padx=0, pady=15, ipady=5, sticky="ew")
         self.almacen_entries["nombre"] = nombre_entry
         
-        # Botones de acción con colores UNISON
+        # Botones de acción con colores UNISON y bordes redondeados
         btn_form_frame = Frame(form_frame, bg="white")
         btn_form_frame.grid(row=2, column=0, columnspan=4, pady=15)
         
-        self.btn_agregar_almacen = crear_boton_unison(
+        self.btn_agregar_almacen = crear_boton_redondeado_canvas(
             btn_form_frame,
-            "✅ Agregar Almacén",
-            estilo="primario",
-            width=18
+            texto="✅ Agregar Almacén",
+            comando=None,
+            width=220,
+            height=45,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
         )
         self.btn_agregar_almacen.pack(side="left", padx=12)
         
-        self.btn_eliminar_almacen = crear_boton_unison(
+        self.btn_eliminar_almacen = crear_boton_redondeado_canvas(
             btn_form_frame,
-            "❌ Eliminar Almacén",
+            texto="❌ Eliminar Almacén",
+            comando=None,
+            width=220,
+            height=45,
+            corner_radius=BORDE_REDONDEADO,
             estilo="custom",
-            bg="#c0392b",
-            fg=COLOR_TEXTO_BLANCO,
-            hover_bg="#a93226",
-            width=18
+            bg_custom="#c0392b",
+            hover_custom="#a93226"
         )
         self.btn_eliminar_almacen.pack(side="left", padx=12)
         

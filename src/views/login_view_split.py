@@ -8,7 +8,8 @@ from utils.theme_unison import (
     COLOR_AZUL_UNISON, COLOR_AZUL_UNISON_OSCURO, COLOR_DORADO_UNISON, COLOR_DORADO_UNISON_OSCURO,
     COLOR_TEXTO_BLANCO, COLOR_TEXTO_NEGRO, COLOR_FONDO_BLANCO, COLOR_GRIS_CLARO,
     FUENTE_UNISON, TAMAÑO_FUENTE_TITULO, TAMAÑO_FUENTE_NORMAL, TAMAÑO_FUENTE_BOTON,
-    crear_boton_unison, crear_entry_unison, crear_label_unison, crear_frame_unison
+    BORDE_REDONDEADO,
+    crear_boton_redondeado_canvas, crear_entry_redondeado, crear_label_unison, crear_frame_unison
 )
 
 class LoginViewUnisonSplit:
@@ -77,21 +78,15 @@ class LoginViewUnisonSplit:
         )
         usuario_label.grid(row=2, column=0, pady=(0, 8), sticky="w")
         
-        # Entry de usuario con bordes redondeados mejorados
-        self.entry_usuario = tk.Entry(
+        # Entry de usuario con bordes redondeados (8px)
+        entry_usuario_container = crear_entry_redondeado(
             form_container,
-            font=(FUENTE_UNISON, TAMAÑO_FUENTE_NORMAL),
-            relief='flat',
-            bd=0,
-            highlightthickness=2,
-            highlightcolor=COLOR_AZUL_UNISON,
-            highlightbackground=COLOR_GRIS_CLARO,
-            insertbackground=COLOR_AZUL_UNISON,
-            bg=COLOR_FONDO_BLANCO,
-            fg=COLOR_TEXTO_NEGRO,
-            width=30
+            width=380,
+            height=45,
+            corner_radius=BORDE_REDONDEADO
         )
-        self.entry_usuario.grid(row=3, column=0, pady=(0, 25), ipady=10, sticky="ew")
+        entry_usuario_container.grid(row=3, column=0, pady=(0, 25), sticky="ew")
+        self.entry_usuario = entry_usuario_container.entry
         
         # Campo Contraseña
         password_label = tk.Label(
@@ -104,69 +99,28 @@ class LoginViewUnisonSplit:
         )
         password_label.grid(row=4, column=0, pady=(0, 8), sticky="w")
         
-        # Entry de contraseña con bordes redondeados mejorados
-        self.entry_password = tk.Entry(
+        # Entry de contraseña con bordes redondeados (8px)
+        entry_password_container = crear_entry_redondeado(
             form_container,
-            font=(FUENTE_UNISON, TAMAÑO_FUENTE_NORMAL),
-            relief='flat',
-            bd=0,
-            highlightthickness=2,
-            highlightcolor=COLOR_AZUL_UNISON,
-            highlightbackground=COLOR_GRIS_CLARO,
-            insertbackground=COLOR_AZUL_UNISON,
-            bg=COLOR_FONDO_BLANCO,
-            fg=COLOR_TEXTO_NEGRO,
-            show='●',
-            width=30
+            width=380,
+            height=45,
+            corner_radius=BORDE_REDONDEADO,
+            show='●'
         )
-        self.entry_password.grid(row=5, column=0, pady=(0, 35), ipady=10, sticky="ew")
+        entry_password_container.grid(row=5, column=0, pady=(0, 35), sticky="ew")
+        self.entry_password = entry_password_container.entry
         
-        # Botón de login con efecto redondeado
-        self.btn_login = tk.Button(
+        # Botón de login con bordes redondeados (8px)
+        self.btn_login = crear_boton_redondeado_canvas(
             form_container,
-            text="INICIAR SESIÓN",
-            font=(FUENTE_UNISON, TAMAÑO_FUENTE_BOTON, "bold"),
-            bg=COLOR_AZUL_UNISON,
-            fg=COLOR_TEXTO_BLANCO,
-            activebackground=COLOR_AZUL_UNISON_OSCURO,
-            activeforeground=COLOR_TEXTO_BLANCO,
-            relief='flat',
-            borderwidth=0,
-            highlightthickness=0,
-            cursor='hand2',
-            command=self.handle_login,
-            pady=14,
-            padx=40
+            texto="INICIAR SESIÓN",
+            comando=self.handle_login,
+            width=380,
+            height=50,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
         )
-        self.btn_login.grid(row=6, column=0, pady=(0, 15), ipady=2, sticky="ew")
-        
-        # Efectos hover para el botón
-        def on_enter(e):
-            self.btn_login.config(bg=COLOR_AZUL_UNISON_OSCURO)
-        
-        def on_leave(e):
-            self.btn_login.config(bg=COLOR_AZUL_UNISON)
-        
-        self.btn_login.bind('<Enter>', on_enter)
-        self.btn_login.bind('<Leave>', on_leave)
-        
-        # Efectos de focus en los entries
-        def on_focus_in_user(e):
-            self.entry_usuario.config(highlightbackground=COLOR_AZUL_UNISON)
-        
-        def on_focus_out_user(e):
-            self.entry_usuario.config(highlightbackground=COLOR_GRIS_CLARO)
-        
-        def on_focus_in_pass(e):
-            self.entry_password.config(highlightbackground=COLOR_AZUL_UNISON)
-        
-        def on_focus_out_pass(e):
-            self.entry_password.config(highlightbackground=COLOR_GRIS_CLARO)
-        
-        self.entry_usuario.bind('<FocusIn>', on_focus_in_user)
-        self.entry_usuario.bind('<FocusOut>', on_focus_out_user)
-        self.entry_password.bind('<FocusIn>', on_focus_in_pass)
-        self.entry_password.bind('<FocusOut>', on_focus_out_pass)
+        self.btn_login.grid(row=6, column=0, pady=(0, 15), sticky="ew")
         
         # ============ LADO DERECHO - Icono/imagen de usuario ============
         right_frame = tk.Frame(self.main_frame, bg=COLOR_AZUL_UNISON)
