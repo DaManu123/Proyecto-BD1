@@ -86,7 +86,7 @@ class LoginViewUnisonSplit:
             corner_radius=BORDE_REDONDEADO
         )
         entry_usuario_container.grid(row=3, column=0, pady=(0, 25), sticky="ew")
-        self.entry_usuario = entry_usuario_container.entry
+        self.entry_usuario = entry_usuario_container.entry # pyright: ignore[reportAttributeAccessIssue]
         
         # Campo Contraseña
         password_label = tk.Label(
@@ -108,7 +108,7 @@ class LoginViewUnisonSplit:
             show='●'
         )
         entry_password_container.grid(row=5, column=0, pady=(0, 35), sticky="ew")
-        self.entry_password = entry_password_container.entry
+        self.entry_password = entry_password_container.entry # pyright: ignore[reportAttributeAccessIssue]
         
         # Botón de login con bordes redondeados (8px)
         self.btn_login = crear_boton_redondeado_canvas(
