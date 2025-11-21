@@ -99,6 +99,65 @@ class IntegratedController:
         # Mostrar el frame de inicio por defecto
         self.main_view.show_frame("inicio")
     
+    def tiene_permiso_productos(self):
+        """Verifica si el usuario tiene permiso para modificar productos"""
+        return self.current_user_role in ['ADMIN', 'PRODUCTOS']
+    
+    def tiene_permiso_almacenes(self):
+        """Verifica si el usuario tiene permiso para modificar almacenes"""
+        return self.current_user_role in ['ADMIN', 'ALMACEN']
+    
+    def aplicar_permisos_interfaz(self):
+        """Aplica los permisos de interfaz según el rol del usuario"""
+        if not self.main_view:
+            return
+        
+        # ===== PERMISOS PARA PRODUCTOS =====
+        tiene_permiso_prod = self.tiene_permiso_productos()
+        
+        # Ocultar/mostrar formulario completo de productos
+        if hasattr(self.main_view, 'producto_form_frame'):
+            if tiene_permiso_prod:
+                self.main_view.producto_form_frame.grid()
+            else:
+                self.main_view.producto_form_frame.grid_remove()
+        
+        # Ocultar/mostrar botones de productos (usan pack, no grid)
+        if hasattr(self.main_view, 'btn_agregar_producto'):
+            if tiene_permiso_prod:
+                self.main_view.btn_agregar_producto.pack(side="left", padx=12)
+            else:
+                self.main_view.btn_agregar_producto.pack_forget()
+        
+        if hasattr(self.main_view, 'btn_eliminar_producto'):
+            if tiene_permiso_prod:
+                self.main_view.btn_eliminar_producto.pack(side="left", padx=12)
+            else:
+                self.main_view.btn_eliminar_producto.pack_forget()
+        
+        # ===== PERMISOS PARA ALMACENES =====
+        tiene_permiso_alm = self.tiene_permiso_almacenes()
+        
+        # Ocultar/mostrar formulario completo de almacenes
+        if hasattr(self.main_view, 'almacen_form_frame'):
+            if tiene_permiso_alm:
+                self.main_view.almacen_form_frame.grid()
+            else:
+                self.main_view.almacen_form_frame.grid_remove()
+        
+        # Ocultar/mostrar botones de almacenes (usan pack, no grid)
+        if hasattr(self.main_view, 'btn_agregar_almacen'):
+            if tiene_permiso_alm:
+                self.main_view.btn_agregar_almacen.pack(side="left", padx=12)
+            else:
+                self.main_view.btn_agregar_almacen.pack_forget()
+        
+        if hasattr(self.main_view, 'btn_eliminar_almacen'):
+            if tiene_permiso_alm:
+                self.main_view.btn_eliminar_almacen.pack(side="left", padx=12)
+            else:
+                self.main_view.btn_eliminar_almacen.pack_forget()
+    
     def setup_main_view_commands(self):
         """Configura los comandos de todos los botones de la vista principal"""
         if not self.main_view:
@@ -127,6 +186,9 @@ class IntegratedController:
             # Configurar el botón de cerrar sesión
             if hasattr(self.main_view, 'btn_cerrar_sesion'):
                 self.main_view.btn_cerrar_sesion.config(command=self.logout)
+            
+            # Aplicar permisos de interfaz según rol
+            self.aplicar_permisos_interfaz()
         except Exception as e:
             print(f"Error configurando comandos: {e}")
     
@@ -143,12 +205,18 @@ class IntegratedController:
         if self.main_view:
             self.main_view.show_frame("productos")
             self.load_productos_data()
+            # Reaplicar permisos al cambiar de frame
+            self.aplicar_permisos_interfaz()
+            # Auto-completar ID con el siguiente disponible
+            self.autocompletar_id_producto()
     
     def show_almacenes_frame(self):
         """Muestra el frame de almacenes y carga los datos"""
         if self.main_view:
             self.main_view.show_frame("almacenes")
             self.load_almacenes_data()
+            # Reaplicar permisos al cambiar de frame
+            self.aplicar_permisos_interfaz()
     
     def load_productos_data(self):
         """Carga los datos de productos desde la base de datos"""
@@ -159,6 +227,29 @@ class IntegratedController:
             print(f"Cargados {len(productos)} productos")
         except Exception as e:
             print(f"Error al cargar productos: {e}")
+    
+    def autocompletar_id_producto(self):
+        """Auto-completa el campo ID con el siguiente ID disponible"""
+        try:
+            if not self.main_view or not hasattr(self.main_view, 'producto_entries'):
+                return
+            
+            # Obtener el siguiente ID disponible
+            productos = self.model.get_all_productos()
+            if productos:
+                # Obtener el ID más alto y sumar 1
+                max_id = max([int(p[0]) for p in productos])
+                siguiente_id = max_id + 1
+            else:
+                siguiente_id = 1
+            
+            # Auto-completar el campo ID
+            id_entry = self.main_view.producto_entries.get('id')
+            if id_entry:
+                id_entry.delete(0, 'end')
+                id_entry.insert(0, str(siguiente_id))
+        except Exception as e:
+            print(f"Error al autocompletar ID: {e}")
     
     def load_almacenes_data(self):
         """Carga los datos de almacenes desde la base de datos"""
@@ -172,6 +263,13 @@ class IntegratedController:
     
     def agregar_producto(self):
         """Función para agregar producto con validaciones"""
+        # Verificar permisos
+        if not self.tiene_permiso_productos():
+            messagebox.showerror("Acceso Denegado", 
+                               f"Su rol ({self.current_user_role}) no tiene permiso para agregar productos.\n\n"
+                               "Solo los roles ADMIN y PRODUCTOS pueden realizar esta acción.")
+            return
+        
         try:
             if not self.main_view:
                 return
@@ -197,6 +295,8 @@ class IntegratedController:
                 messagebox.showinfo("Éxito", f"Producto '{data['nombre']}' agregado exitosamente")
                 self.main_view.limpiar_formulario_producto()
                 self.load_productos_data()
+                # Auto-completar con el siguiente ID disponible
+                self.autocompletar_id_producto()
             else:
                 messagebox.showerror("Error", "No se pudo agregar el producto")
                 
@@ -208,6 +308,13 @@ class IntegratedController:
     
     def eliminar_producto(self):
         """Función para eliminar producto seleccionado"""
+        # Verificar permisos
+        if not self.tiene_permiso_productos():
+            messagebox.showerror("Acceso Denegado", 
+                               f"Su rol ({self.current_user_role}) no tiene permiso para eliminar productos.\n\n"
+                               "Solo los roles ADMIN y PRODUCTOS pueden realizar esta acción.")
+            return
+        
         try:
             if not self.main_view:
                 return
@@ -239,6 +346,13 @@ class IntegratedController:
     
     def agregar_almacen(self):
         """Función para agregar almacén con validaciones"""
+        # Verificar permisos
+        if not self.tiene_permiso_almacenes():
+            messagebox.showerror("Acceso Denegado", 
+                               f"Su rol ({self.current_user_role}) no tiene permiso para agregar almacenes.\n\n"
+                               "Solo los roles ADMIN y ALMACEN pueden realizar esta acción.")
+            return
+        
         try:
             if not self.main_view:
                 return
@@ -260,6 +374,13 @@ class IntegratedController:
     
     def eliminar_almacen(self):
         """Función para eliminar almacén seleccionado"""
+        # Verificar permisos
+        if not self.tiene_permiso_almacenes():
+            messagebox.showerror("Acceso Denegado", 
+                               f"Su rol ({self.current_user_role}) no tiene permiso para eliminar almacenes.\n\n"
+                               "Solo los roles ADMIN y ALMACEN pueden realizar esta acción.")
+            return
+        
         try:
             if not self.main_view:
                 return
@@ -291,6 +412,8 @@ class IntegratedController:
     
     def validar_producto(self, data):
         """Valida los datos de un producto"""
+        # Nota: El ID no es obligatorio ya que se auto-genera
+        
         if not data['nombre']:
             messagebox.showerror("Error de Validación", "El nombre del producto es obligatorio")
             return False
@@ -308,7 +431,10 @@ class IntegratedController:
             return False
         
         if not data['almacen']:
-            messagebox.showerror("Error de Validación", "El ID del almacén es obligatorio")
+            almacenes_info = self.get_almacenes_info()
+            messagebox.showerror("Error de Validación", 
+                f"El ID del almacén es obligatorio.\n\n"
+                f"IDs de almacenes disponibles:\n{almacenes_info}")
             return False
         
         try:
@@ -335,7 +461,10 @@ class IntegratedController:
                 messagebox.showerror("Error de Validación", "El ID del almacén debe ser un número positivo")
                 return False
         except ValueError:
-            messagebox.showerror("Error de Validación", "El ID del almacén debe ser un número entero válido")
+            almacenes_info = self.get_almacenes_info()
+            messagebox.showerror("Error de Validación", 
+                f"El ID del almacén debe ser un número entero válido.\n\n"
+                f"IDs de almacenes disponibles:\n{almacenes_info}")
             return False
         
         if len(data['nombre']) > 100:

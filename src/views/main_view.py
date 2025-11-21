@@ -252,9 +252,10 @@ class MainView:
         self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
-        form_frame = Frame(frame, bg="white", relief="raised", bd=1)
-        form_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
-        form_frame.grid_columnconfigure([1, 3, 5, 7, 9, 11], weight=1)
+        self.producto_form_frame = Frame(frame, bg="white", relief="raised", bd=1)
+        self.producto_form_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
+        self.producto_form_frame.grid_columnconfigure([1, 3, 5, 7, 9, 11], weight=1)
+        form_frame = self.producto_form_frame  # Alias para no cambiar resto del código
         
         # Título del formulario
         form_title = Label(form_frame, text="Datos del Producto", 
@@ -285,14 +286,9 @@ class MainView:
             entry.grid(row=2, column=(i-3)*2+1, padx=(0, 15), pady=10, ipady=5, sticky="ew")
             self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry
         
-        # Nota informativa para el campo Almacén
-        nota_almacen = Label(form_frame, text="Nota: Almacén debe ser el ID numérico (ej: 1, 2, 3...)", 
-                           font=("Arial", 9, "italic"), bg="white", fg="#7f8c8d")
-        nota_almacen.grid(row=3, column=6, columnspan=6, padx=15, pady=(0, 10), sticky="w")
-        
         # Botones de acción con colores UNISON y bordes redondeados
         btn_form_frame = Frame(form_frame, bg="white")
-        btn_form_frame.grid(row=4, column=0, columnspan=12, pady=15)
+        btn_form_frame.grid(row=3, column=0, columnspan=12, pady=15)
         
         self.btn_agregar_producto = crear_boton_redondeado_canvas(
             btn_form_frame,
@@ -399,9 +395,10 @@ class MainView:
         self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
-        form_frame = Frame(frame, bg="white", relief="raised", bd=1)
-        form_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
-        form_frame.grid_columnconfigure([1, 3], weight=1)
+        self.almacen_form_frame = Frame(frame, bg="white", relief="raised", bd=1)
+        self.almacen_form_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
+        self.almacen_form_frame.grid_columnconfigure([1, 3], weight=1)
+        form_frame = self.almacen_form_frame  # Alias para no cambiar resto del código
         
         # Título del formulario
         form_title = Label(form_frame, text="Datos del Almacén", 
