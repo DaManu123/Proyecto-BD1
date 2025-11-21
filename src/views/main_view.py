@@ -340,12 +340,12 @@ class MainView:
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"), background="#ecf0f1")
         style.configure("Treeview", font=("Arial", 10), rowheight=25)
         
-        columns = ("id", "nombre", "precio", "cantidad", "departamento", "almacen")
+        columns = ("id", "nombre", "precio", "cantidad", "departamento", "almacen", "fecha_modificacion", "usuario_modificacion")
         self.productos_tree = ttk.Treeview(tree_container, columns=columns, show="headings")
         
         # Configurar encabezados y anchos responsivos
-        headings = ["ID", "Nombre", "Precio", "Cantidad", "Departamento", "Almacén"]
-        widths = [80, 200, 100, 100, 150, 150]
+        headings = ["ID", "Nombre", "Precio", "Cantidad", "Departamento", "Almacén", "Fecha Modificación", "Usuario"]
+        widths = [50, 150, 80, 80, 120, 80, 150, 100]
         
         for col, heading, width in zip(columns, headings, widths):
             self.productos_tree.heading(col, text=heading)
@@ -477,14 +477,18 @@ class MainView:
         tree_container.grid_columnconfigure(0, weight=1)
         
         # Configurar Treeview
-        columns = ("id", "nombre")
+        columns = ("id", "nombre", "fecha_modificacion", "usuario_modificacion")
         self.almacenes_tree = ttk.Treeview(tree_container, columns=columns, show="headings")
         
         # Configurar encabezados con mejor distribución
         self.almacenes_tree.heading("id", text="ID")
         self.almacenes_tree.heading("nombre", text="Nombre del Almacén")
-        self.almacenes_tree.column("id", width=100, anchor="center")
-        self.almacenes_tree.column("nombre", width=400, anchor="center")
+        self.almacenes_tree.heading("fecha_modificacion", text="Fecha Modificación")
+        self.almacenes_tree.heading("usuario_modificacion", text="Usuario")
+        self.almacenes_tree.column("id", width=80, anchor="center")
+        self.almacenes_tree.column("nombre", width=250, anchor="center")
+        self.almacenes_tree.column("fecha_modificacion", width=150, anchor="center")
+        self.almacenes_tree.column("usuario_modificacion", width=120, anchor="center")
         
         # Scrollbars
         v_scrollbar_almacenes = ttk.Scrollbar(tree_container, orient="vertical", command=self.almacenes_tree.yview)

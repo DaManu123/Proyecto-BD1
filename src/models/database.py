@@ -34,7 +34,8 @@ class DatabaseModel:
         try:
             cursor = self.connection.cursor()
             cursor.execute("""
-                SELECT id, nombre, precio, cantidad, departamento, almacen 
+                SELECT id, nombre, precio, cantidad, departamento, almacen,
+                       fecha_ultima_modificacion, ultimo_usuario_modificacion
                 FROM productos 
                 ORDER BY id
             """)
@@ -54,7 +55,7 @@ class DatabaseModel:
         try:
             cursor = self.connection.cursor()
             cursor.execute("""
-                SELECT id, nombre 
+                SELECT id, nombre, fecha_ultima_modificacion, ultimo_usuario_modificacion
                 FROM almacenes 
                 ORDER BY id
             """)
@@ -78,7 +79,9 @@ class DatabaseModel:
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS almacenes (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nombre TEXT NOT NULL
+                    nombre TEXT NOT NULL,
+                    fecha_ultima_modificacion DATETIME,
+                    ultimo_usuario_modificacion TEXT
                 )
             """)
             
@@ -90,7 +93,9 @@ class DatabaseModel:
                     precio REAL NOT NULL,
                     cantidad INTEGER NOT NULL,
                     departamento TEXT NOT NULL,
-                    almacen TEXT NOT NULL
+                    almacen TEXT NOT NULL,
+                    fecha_ultima_modificacion DATETIME,
+                    ultimo_usuario_modificacion TEXT
                 )
             """)
             
@@ -132,7 +137,7 @@ class DatabaseModel:
         except sqlite3.Error as e:
             print(f"Error al crear tablas: {e}")
     
-    def agregar_producto(self, nombre, precio, cantidad, departamento, almacen_id):
+    def agregar_producto(self, nombre, precio, cantidad, departamento, almacen_id, usuario=None):
         """Agrega un nuevo producto a la base de datos"""
         if not self.connection:
             print("No hay conexión a la base de datos")
@@ -141,11 +146,12 @@ class DatabaseModel:
         try:
             cursor = self.connection.cursor()
             cursor.execute("""
-                INSERT INTO productos (nombre, precio, cantidad, departamento, almacen)
-                VALUES (?, ?, ?, ?, ?)
-            """, (nombre, precio, cantidad, departamento, almacen_id))
+                INSERT INTO productos (nombre, precio, cantidad, departamento, almacen, 
+                                     fecha_ultima_modificacion, ultimo_usuario_modificacion)
+                VALUES (?, ?, ?, ?, ?, datetime('now'), ?)
+            """, (nombre, precio, cantidad, departamento, almacen_id, usuario))
             self.connection.commit()
-            print(f"Producto '{nombre}' agregado exitosamente")
+            print(f"Producto '{nombre}' agregado exitosamente por {usuario}")
             return True
         except sqlite3.Error as e:
             print(f"Error al agregar producto: {e}")
@@ -172,7 +178,7 @@ class DatabaseModel:
             print(f"Error al eliminar producto: {e}")
             return False
     
-    def agregar_almacen(self, nombre):
+    def agregar_almacen(self, nombre, usuario=None):
         """Agrega un nuevo almacén a la base de datos"""
         if not self.connection:
             print("No hay conexión a la base de datos")
@@ -180,9 +186,12 @@ class DatabaseModel:
         
         try:
             cursor = self.connection.cursor()
-            cursor.execute("INSERT INTO almacenes (nombre) VALUES (?)", (nombre,))
+            cursor.execute("""
+                INSERT INTO almacenes (nombre, fecha_ultima_modificacion, ultimo_usuario_modificacion) 
+                VALUES (?, datetime('now'), ?)
+            """, (nombre, usuario))
             self.connection.commit()
-            print(f"Almacén '{nombre}' agregado exitosamente")
+            print(f"Almacén '{nombre}' agregado exitosamente por {usuario}")
             return True
         except sqlite3.Error as e:
             print(f"Error al agregar almacén: {e}")

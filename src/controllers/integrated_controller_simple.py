@@ -193,7 +193,7 @@ class IntegratedController:
                 return
             
             if self.model.agregar_producto(data['nombre'], precio, cantidad, 
-                                         data['departamento'], almacen_id):
+                                         data['departamento'], almacen_id, self.current_user):
                 messagebox.showinfo("Éxito", f"Producto '{data['nombre']}' agregado exitosamente")
                 self.main_view.limpiar_formulario_producto()
                 self.load_productos_data()
@@ -248,7 +248,7 @@ class IntegratedController:
             if not self.validar_almacen(data):
                 return
             
-            if self.model.agregar_almacen(data['nombre']):
+            if self.model.agregar_almacen(data['nombre'], self.current_user):
                 messagebox.showinfo("Éxito", f"Almacén '{data['nombre']}' agregado exitosamente")
                 self.main_view.limpiar_formulario_almacen()
                 self.load_almacenes_data()
