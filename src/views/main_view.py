@@ -286,9 +286,15 @@ class MainView:
             entry.grid(row=2, column=(i-3)*2+1, padx=(0, 15), pady=10, ipady=5, sticky="ew")
             self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry
         
+        # Texto informativo de almacenes
+        self.info_almacenes_label = Label(form_frame, text="", 
+                                         font=("Arial", 8), bg="white", fg="#7f8c8d",
+                                         wraplength=900, justify="left")
+        self.info_almacenes_label.grid(row=3, column=0, columnspan=12, padx=15, pady=(5, 5), sticky="w")
+        
         # Botones de acción con colores UNISON y bordes redondeados
         btn_form_frame = Frame(form_frame, bg="white")
-        btn_form_frame.grid(row=3, column=0, columnspan=12, pady=15)
+        btn_form_frame.grid(row=4, column=0, columnspan=12, pady=15)
         
         self.btn_agregar_producto = crear_boton_redondeado_canvas(
             btn_form_frame,

@@ -224,6 +224,11 @@ class IntegratedController:
             productos = self.model.get_all_productos()
             if self.main_view:
                 self.main_view.update_productos_tree(productos)
+                # Actualizar información de almacenes disponibles
+                almacenes_info = self.get_almacenes_info_breve()
+                if hasattr(self.main_view, 'info_almacenes_label'):
+                    self.main_view.info_almacenes_label.config(
+                        text=f"💡 Almacenes disponibles: {almacenes_info}")
             print(f"Cargados {len(productos)} productos")
         except Exception as e:
             print(f"Error al cargar productos: {e}")
@@ -276,12 +281,23 @@ class IntegratedController:
                 
             data = self.main_view.get_producto_data()
             
+            # Convertir el almacén (nombre o ID) a ID numérico
+            almacen_id = self.convertir_almacen_a_id(data['almacen'])
+            if almacen_id is None:
+                almacenes_info = self.get_almacenes_info()
+                messagebox.showerror("Error de Validación", 
+                    f"El almacén '{data['almacen']}' no es válido.\n\n"
+                    f"Almacenes disponibles:\n{almacenes_info}")
+                return
+            
+            # Actualizar data con el ID numérico para la validación
+            data['almacen'] = str(almacen_id)
+            
             if not self.validar_producto(data):
                 return
             
             precio = float(data['precio'])
             cantidad = int(data['cantidad'])
-            almacen_id = int(data['almacen'])
             
             if not self.model.almacen_existe(almacen_id):
                 almacenes_info = self.get_almacenes_info()
@@ -494,6 +510,23 @@ class IntegratedController:
         
         return True
     
+    def convertir_almacen_a_id(self, almacen_input):
+        """Convierte el nombre o ID de almacén a ID numérico"""
+        try:
+            # Si ya es un número, devolverlo
+            return int(almacen_input)
+        except ValueError:
+            # Si es un nombre, buscar el ID correspondiente
+            try:
+                almacenes = self.model.get_all_almacenes()
+                for almacen in almacenes:
+                    if almacen[1].lower() == almacen_input.lower():
+                        return almacen[0]
+                # Si no se encontró, devolver None
+                return None
+            except Exception as e:
+                return None
+    
     def get_almacenes_info(self):
         """Obtiene información formateada de los almacenes disponibles"""
         try:
@@ -504,6 +537,17 @@ class IntegratedController:
             return "\\n".join(info_lines)
         except Exception as e:
             return "Error al obtener información de almacenes"
+    
+    def get_almacenes_info_breve(self):
+        """Obtiene información breve de los almacenes (para mostrar en UI)"""
+        try:
+            almacenes = self.model.get_all_almacenes()
+            info_parts = []
+            for almacen in almacenes:
+                info_parts.append(f"{almacen[0]}={almacen[1]}")
+            return " | ".join(info_parts)
+        except Exception as e:
+            return "Error al cargar almacenes"
     
     def on_closing(self):
         """Función que se ejecuta al cerrar la aplicación"""
