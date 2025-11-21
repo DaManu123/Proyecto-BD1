@@ -26,7 +26,7 @@ class DatabaseModel:
             print("Conexión cerrada")
     
     def get_all_productos(self):
-        """Obtiene todos los registros de la tabla productos"""
+        """Obtiene todos los registros de la tabla productos con nombre de almacén"""
         if not self.connection:
             print("No hay conexión a la base de datos")
             return []
@@ -34,10 +34,12 @@ class DatabaseModel:
         try:
             cursor = self.connection.cursor()
             cursor.execute("""
-                SELECT id, nombre, precio, cantidad, departamento, almacen,
-                       fecha_ultima_modificacion, ultimo_usuario_modificacion
-                FROM productos 
-                ORDER BY id
+                SELECT p.id, p.nombre, p.precio, p.cantidad, p.departamento, 
+                       COALESCE(a.nombre, p.almacen) as almacen_nombre,
+                       p.fecha_ultima_modificacion, p.ultimo_usuario_modificacion
+                FROM productos p
+                LEFT JOIN almacenes a ON CAST(p.almacen AS INTEGER) = a.id
+                ORDER BY p.id
             """)
             productos = cursor.fetchall()
             # Convertir Row objects a tuplas para mejor manejo
