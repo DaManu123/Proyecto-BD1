@@ -100,6 +100,7 @@ class DatabaseModel:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     nombre TEXT NOT NULL UNIQUE,
                     contraseña TEXT NOT NULL,
+                    rol TEXT DEFAULT 'PRODUCTOS',
                     ultimo_inicio_sesion DATETIME DEFAULT NULL
                 )
             """)
@@ -109,15 +110,15 @@ class DatabaseModel:
             if cursor.fetchone()[0] == 0:
                 import hashlib
                 
-                # Usuarios por defecto con contraseñas hasheadas
+                # Usuarios por defecto con contraseñas hasheadas y roles
                 usuarios_default = [
-                    ("Admin", hashlib.sha256("admin23".encode('utf-8')).hexdigest()),
-                    ("almacen", hashlib.sha256("almacen11".encode('utf-8')).hexdigest()),
-                    ("productos", hashlib.sha256("producto19".encode('utf-8')).hexdigest())
+                    ("Admin", hashlib.sha256("admin23".encode('utf-8')).hexdigest(), "ADMIN"),
+                    ("almacen", hashlib.sha256("almacen11".encode('utf-8')).hexdigest(), "ALMACEN"),
+                    ("productos", hashlib.sha256("producto19".encode('utf-8')).hexdigest(), "PRODUCTOS")
                 ]
                 
                 cursor.executemany("""
-                    INSERT INTO usuarios (nombre, contraseña) VALUES (?, ?)
+                    INSERT INTO usuarios (nombre, contraseña, rol) VALUES (?, ?, ?)
                 """, usuarios_default)
                 
                 print("Usuarios por defecto creados:")
@@ -248,10 +249,11 @@ class DatabaseModel:
             return False
     
     def validar_usuario(self, nombre_usuario, password):
-        """Valida las credenciales de un usuario contra la base de datos"""
+        """Valida las credenciales de un usuario contra la base de datos
+        Retorna: tuple (True, rol) si es válido, (False, None) si no lo es"""
         if not self.connection:
             print("No hay conexión a la base de datos")
-            return False
+            return (False, None)
         
         try:
             import hashlib
@@ -261,7 +263,7 @@ class DatabaseModel:
             
             cursor = self.connection.cursor()
             cursor.execute("""
-                SELECT id, nombre FROM usuarios 
+                SELECT id, nombre, rol FROM usuarios 
                 WHERE nombre = ? AND contraseña = ?
             """, (nombre_usuario, password_hash))
             
@@ -270,15 +272,15 @@ class DatabaseModel:
             if usuario:
                 # Actualizar último inicio de sesión
                 self.actualizar_ultimo_login(usuario[0])
-                print(f"Login exitoso para usuario: {usuario[1]}")
-                return True
+                print(f"Login exitoso para usuario: {usuario[1]} con rol: {usuario[2]}")
+                return (True, usuario[2])  # Retornar True y el rol
             else:
                 print(f"Credenciales incorrectas para usuario: {nombre_usuario}")
-                return False
+                return (False, None)
                 
         except sqlite3.Error as e:
             print(f"Error al validar usuario: {e}")
-            return False
+            return (False, None)
     
     def actualizar_ultimo_login(self, usuario_id):
         """Actualiza la fecha/hora del último inicio de sesión"""

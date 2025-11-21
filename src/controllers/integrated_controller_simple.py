@@ -39,6 +39,7 @@ class IntegratedController:
         
         # Variable para almacenar información del usuario logueado
         self.current_user = None
+        self.current_user_role = None  # Rol del usuario actual
         
         # Vistas
         self.login_view = None
@@ -66,10 +67,13 @@ class IntegratedController:
     
     def handle_login(self, username, password):
         """Maneja el proceso de login con validación de base de datos"""
-        # Validar credenciales contra la base de datos
-        if self.model.validar_usuario(username, password):
+        # Validar credenciales contra la base de datos (ahora retorna tupla)
+        resultado, rol = self.model.validar_usuario(username, password)
+        
+        if resultado:
             self.current_user = username
-            messagebox.showinfo("Bienvenido", f"¡Bienvenido al sistema, {username}!")
+            self.current_user_role = rol
+            messagebox.showinfo("Bienvenido", f"¡Bienvenido al sistema, {username}!\nRol: {rol}")
             self.show_main_application()
         else:
             messagebox.showerror("Error de Autenticación", 
@@ -131,6 +135,7 @@ class IntegratedController:
         if messagebox.askyesno("Cerrar Sesión", 
                               "¿Está seguro de que desea cerrar sesión?"):
             self.current_user = None
+            self.current_user_role = None
             self.show_login()
     
     def show_productos_frame(self):
