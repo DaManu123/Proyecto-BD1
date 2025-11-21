@@ -84,8 +84,52 @@ class MainView:
         frame.grid(row=0, column=0, sticky="nsew")
         
         # Configurar el grid principal
-        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_rowconfigure(1, weight=1)  # Contenido scrollable
         frame.grid_columnconfigure(0, weight=1)
+        
+        # Barra de navegación discreta solo para inicio
+        nav_bar = Frame(frame, bg=COLOR_AZUL_UNISON, height=50)
+        nav_bar.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 0))
+        nav_bar.grid_propagate(False)
+        nav_bar.grid_columnconfigure(0, weight=1)
+        
+        # Container centrado para botones
+        nav_buttons = Frame(nav_bar, bg=COLOR_AZUL_UNISON)
+        nav_buttons.place(relx=0.5, rely=0.5, anchor="center")
+        
+        # Botones discretos de navegación
+        self.btn_productos = crear_boton_redondeado_canvas(
+            nav_buttons,
+            texto="📦 Productos",
+            comando=lambda: self.show_frame("productos"),
+            width=150,
+            height=35,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
+        )
+        self.btn_productos.pack(side="left", padx=8)
+        
+        self.btn_almacenes = crear_boton_redondeado_canvas(
+            nav_buttons,
+            texto="🏪 Almacenes",
+            comando=lambda: self.show_frame("almacenes"),
+            width=150,
+            height=35,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="primario"
+        )
+        self.btn_almacenes.pack(side="left", padx=8)
+        
+        self.btn_cerrar_sesion = crear_boton_redondeado_canvas(
+            nav_buttons,
+            texto="🚪 Cerrar Sesión",
+            comando=None,
+            width=150,
+            height=35,
+            corner_radius=BORDE_REDONDEADO,
+            estilo="dorado"
+        )
+        self.btn_cerrar_sesion.pack(side="left", padx=8)
         
         # Crear Canvas y Scrollbar para scroll vertical
         canvas = tk.Canvas(frame, bg=COLOR_FONDO_CLARO, highlightthickness=0)
@@ -101,9 +145,9 @@ class MainView:
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
         
-        # Grid del canvas y scrollbar
-        canvas.grid(row=0, column=0, sticky="nsew")
-        scrollbar.grid(row=0, column=1, sticky="ns")
+        # Grid del canvas y scrollbar (ahora en row=1 por la barra de navegación)
+        canvas.grid(row=1, column=0, sticky="nsew")
+        scrollbar.grid(row=1, column=1, sticky="ns")
         
         # Configurar el frame scrollable para que sea responsivo
         scrollable_frame.grid_columnconfigure(0, weight=1)
@@ -154,50 +198,6 @@ class MainView:
                     font=(FUENTE_UNISON, 12), bg=COLOR_FONDO_CLARO, fg=COLOR_AZUL_UNISON_OSCURO)
         info.grid(row=5, column=0, pady=(0, 25), sticky="ew")
         
-        # Container para botones con diseño centrado y responsivo
-        buttons_container = crear_frame_unison(main_content, azul=False)
-        buttons_container.grid(row=6, column=0, sticky="ew", pady=20)
-        buttons_container.grid_columnconfigure(0, weight=1)
-        
-        # Frame interno para centrar los botones con distribución elegante
-        buttons_frame = crear_frame_unison(buttons_container, azul=False)
-        buttons_frame.grid(row=0, column=0)
-        
-        # Distribución en una fila con mejor espaciado y colores UNISON oficiales
-        self.btn_productos = crear_boton_redondeado_canvas(
-            buttons_frame, 
-            texto="📦 PRODUCTOS",
-            comando=lambda: self.show_frame("productos"),
-            width=220,
-            height=70,
-            corner_radius=BORDE_REDONDEADO,
-            estilo="primario"
-        )
-        self.btn_productos.grid(row=0, column=0, padx=15, pady=15)
-        
-        self.btn_almacenes = crear_boton_redondeado_canvas(
-            buttons_frame, 
-            texto="🏪 ALMACENES",
-            comando=lambda: self.show_frame("almacenes"),
-            width=220,
-            height=70,
-            corner_radius=BORDE_REDONDEADO,
-            estilo="primario"
-        )
-        self.btn_almacenes.grid(row=0, column=1, padx=15, pady=15)
-        
-        # Botón de cerrar sesión con estilo dorado UNISON
-        self.btn_cerrar_sesion = crear_boton_redondeado_canvas(
-            buttons_frame, 
-            texto="🚪 CERRAR SESIÓN",
-            comando=None,
-            width=220,
-            height=70,
-            corner_radius=BORDE_REDONDEADO,
-            estilo="dorado"
-        )
-        self.btn_cerrar_sesion.grid(row=0, column=2, padx=15, pady=15)
-        
         # Espacio adicional al final para asegurar que todo sea visible
         spacer = Frame(main_content, bg=COLOR_FONDO_CLARO, height=50)
         spacer.grid(row=7, column=0, sticky="ew")
@@ -239,17 +239,17 @@ class MainView:
                       font=(FUENTE_UNISON, 20, "bold"), bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO)
         titulo.grid(row=0, column=0, sticky="w", padx=25, pady=15)
         
-        # Botón de volver con estilo UNISON dorado y bordes redondeados
+        # Botón de volver discreto
         self.btn_volver_productos = crear_boton_redondeado_canvas(
             header_frame,
-            texto="⬅ Volver al Inicio",
+            texto="⬅ Volver",
             comando=lambda: self.show_frame("inicio"),
-            width=200,
-            height=40,
+            width=120,
+            height=35,
             corner_radius=BORDE_REDONDEADO,
             estilo="dorado"
         )
-        self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=10)
+        self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
         form_frame = Frame(frame, bg="white", relief="raised", bd=1)
@@ -386,17 +386,17 @@ class MainView:
                       font=(FUENTE_UNISON, 20, "bold"), bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO)
         titulo.grid(row=0, column=0, sticky="w", padx=25, pady=15)
         
-        # Botón de volver con estilo UNISON dorado y bordes redondeados
+        # Botón de volver discreto
         self.btn_volver_almacenes = crear_boton_redondeado_canvas(
             header_frame,
-            texto="⬅ Volver al Inicio",
+            texto="⬅ Volver",
             comando=lambda: self.show_frame("inicio"),
-            width=200,
-            height=40,
+            width=120,
+            height=35,
             corner_radius=BORDE_REDONDEADO,
             estilo="dorado"
         )
-        self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=10)
+        self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
         form_frame = Frame(frame, bg="white", relief="raised", bd=1)

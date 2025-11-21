@@ -114,7 +114,7 @@ class IntegratedController:
             if hasattr(self.main_view, 'btn_eliminar_almacen'):
                 self.main_view.btn_eliminar_almacen.config(command=self.eliminar_almacen)
             
-            # Buscar botones de navegación
+            # Buscar botones de navegación (en el frame de inicio)
             if hasattr(self.main_view, 'btn_productos'):
                 self.main_view.btn_productos.config(command=self.show_productos_frame)
             if hasattr(self.main_view, 'btn_almacenes'):
