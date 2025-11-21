@@ -139,6 +139,19 @@ class DatabaseModel:
         except sqlite3.Error as e:
             print(f"Error al crear tablas: {e}")
     
+    def producto_existe(self, producto_id):
+        """Verifica si existe un producto con el ID dado"""
+        if not self.connection:
+            return False
+        
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT id FROM productos WHERE id = ?", (producto_id,))
+            return cursor.fetchone() is not None
+        except sqlite3.Error as e:
+            print(f"Error al verificar producto: {e}")
+            return False
+    
     def agregar_producto(self, nombre, precio, cantidad, departamento, almacen_id, usuario=None):
         """Agrega un nuevo producto a la base de datos"""
         if not self.connection:
@@ -157,6 +170,32 @@ class DatabaseModel:
             return True
         except sqlite3.Error as e:
             print(f"Error al agregar producto: {e}")
+            return False
+    
+    def actualizar_producto(self, producto_id, nombre, precio, cantidad, departamento, almacen_id, usuario=None):
+        """Actualiza un producto existente en la base de datos"""
+        if not self.connection:
+            print("No hay conexión a la base de datos")
+            return False
+        
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("""
+                UPDATE productos 
+                SET nombre = ?, precio = ?, cantidad = ?, departamento = ?, almacen = ?,
+                    fecha_ultima_modificacion = datetime('now'), ultimo_usuario_modificacion = ?
+                WHERE id = ?
+            """, (nombre, precio, cantidad, departamento, almacen_id, usuario, producto_id))
+            
+            if cursor.rowcount > 0:
+                self.connection.commit()
+                print(f"Producto ID {producto_id} actualizado exitosamente por {usuario}")
+                return True
+            else:
+                print(f"No se encontró producto con ID {producto_id}")
+                return False
+        except sqlite3.Error as e:
+            print(f"Error al actualizar producto: {e}")
             return False
     
     def eliminar_producto(self, producto_id):
@@ -180,6 +219,19 @@ class DatabaseModel:
             print(f"Error al eliminar producto: {e}")
             return False
     
+    def almacen_existe_por_id(self, almacen_id):
+        """Verifica si existe un almacén con el ID dado"""
+        if not self.connection:
+            return False
+        
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT id FROM almacenes WHERE id = ?", (almacen_id,))
+            return cursor.fetchone() is not None
+        except sqlite3.Error as e:
+            print(f"Error al verificar almacén: {e}")
+            return False
+    
     def agregar_almacen(self, nombre, usuario=None):
         """Agrega un nuevo almacén a la base de datos"""
         if not self.connection:
@@ -197,6 +249,31 @@ class DatabaseModel:
             return True
         except sqlite3.Error as e:
             print(f"Error al agregar almacén: {e}")
+            return False
+    
+    def actualizar_almacen(self, almacen_id, nombre, usuario=None):
+        """Actualiza un almacén existente en la base de datos"""
+        if not self.connection:
+            print("No hay conexión a la base de datos")
+            return False
+        
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("""
+                UPDATE almacenes 
+                SET nombre = ?, fecha_ultima_modificacion = datetime('now'), ultimo_usuario_modificacion = ?
+                WHERE id = ?
+            """, (nombre, usuario, almacen_id))
+            
+            if cursor.rowcount > 0:
+                self.connection.commit()
+                print(f"Almacén ID {almacen_id} actualizado exitosamente por {usuario}")
+                return True
+            else:
+                print(f"No se encontró almacén con ID {almacen_id}")
+                return False
+        except sqlite3.Error as e:
+            print(f"Error al actualizar almacén: {e}")
             return False
     
     def eliminar_almacen(self, almacen_id):

@@ -306,15 +306,28 @@ class IntegratedController:
                     f"IDs de almacenes disponibles:\\n{almacenes_info}")
                 return
             
-            if self.model.agregar_producto(data['nombre'], precio, cantidad, 
-                                         data['departamento'], almacen_id, self.current_user):
-                messagebox.showinfo("Éxito", f"Producto '{data['nombre']}' agregado exitosamente")
-                self.main_view.limpiar_formulario_producto()
-                self.load_productos_data()
-                # Auto-completar con el siguiente ID disponible
-                self.autocompletar_id_producto()
+            # Verificar si es actualización o creación
+            producto_id = data['id'].strip()
+            if producto_id and self.model.producto_existe(int(producto_id)):
+                # Actualizar producto existente
+                if self.model.actualizar_producto(int(producto_id), data['nombre'], precio, cantidad, 
+                                                 data['departamento'], almacen_id, self.current_user):
+                    messagebox.showinfo("Éxito", f"Producto '{data['nombre']}' actualizado exitosamente")
+                    self.main_view.limpiar_formulario_producto()
+                    self.load_productos_data()
+                    self.autocompletar_id_producto()
+                else:
+                    messagebox.showerror("Error", "No se pudo actualizar el producto")
             else:
-                messagebox.showerror("Error", "No se pudo agregar el producto")
+                # Crear nuevo producto
+                if self.model.agregar_producto(data['nombre'], precio, cantidad, 
+                                             data['departamento'], almacen_id, self.current_user):
+                    messagebox.showinfo("Éxito", f"Producto '{data['nombre']}' agregado exitosamente")
+                    self.main_view.limpiar_formulario_producto()
+                    self.load_productos_data()
+                    self.autocompletar_id_producto()
+                else:
+                    messagebox.showerror("Error", "No se pudo agregar el producto")
                 
         except ValueError:
             messagebox.showerror("Error de Validación", 
@@ -378,12 +391,24 @@ class IntegratedController:
             if not self.validar_almacen(data):
                 return
             
-            if self.model.agregar_almacen(data['nombre'], self.current_user):
-                messagebox.showinfo("Éxito", f"Almacén '{data['nombre']}' agregado exitosamente")
-                self.main_view.limpiar_formulario_almacen()
-                self.load_almacenes_data()
+            # Verificar si es actualización o creación
+            almacen_id = data['id'].strip()
+            if almacen_id and self.model.almacen_existe_por_id(int(almacen_id)):
+                # Actualizar almacén existente
+                if self.model.actualizar_almacen(int(almacen_id), data['nombre'], self.current_user):
+                    messagebox.showinfo("Éxito", f"Almacén '{data['nombre']}' actualizado exitosamente")
+                    self.main_view.limpiar_formulario_almacen()
+                    self.load_almacenes_data()
+                else:
+                    messagebox.showerror("Error", "No se pudo actualizar el almacén")
             else:
-                messagebox.showerror("Error", "No se pudo agregar el almacén")
+                # Crear nuevo almacén
+                if self.model.agregar_almacen(data['nombre'], self.current_user):
+                    messagebox.showinfo("Éxito", f"Almacén '{data['nombre']}' agregado exitosamente")
+                    self.main_view.limpiar_formulario_almacen()
+                    self.load_almacenes_data()
+                else:
+                    messagebox.showerror("Error", "No se pudo agregar el almacén")
                 
         except Exception as e:
             messagebox.showerror("Error", f"Error inesperado: {str(e)}")
