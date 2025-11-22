@@ -528,7 +528,7 @@ class IntegratedController:
             messagebox.showerror("Error de Validación", "El nombre no puede exceder 50 caracteres")
             return False
         
-        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s\\-_]+$', data['nombre']):
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-_]+$', data['nombre']):
             messagebox.showerror("Error de Validación", 
                                 "El nombre solo puede contener letras, números, espacios, guiones y guiones bajos")
             return False
