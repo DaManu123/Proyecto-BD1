@@ -387,23 +387,44 @@ def crear_boton_redondeado_canvas(parent, texto, comando=None, width=200, height
     )
     canvas.pack()
     
-    # Función para crear rectángulo redondeado
+    # Función para crear rectángulo redondeado con arcos reales
     def create_round_rectangle(x1, y1, x2, y2, radius, **kwargs):
-        points = [
-            x1+radius, y1,
-            x2-radius, y1,
-            x2, y1,
-            x2, y1+radius,
-            x2, y2-radius,
-            x2, y2,
-            x2-radius, y2,
-            x1+radius, y2,
-            x1, y2,
-            x1, y2-radius,
-            x1, y1+radius,
-            x1, y1
-        ]
-        return canvas.create_polygon(points, smooth=True, **kwargs)
+        """Dibuja un rectángulo con esquinas redondeadas usando arcos reales"""
+        # Extraer fill y outline de kwargs
+        fill = kwargs.get('fill', '')
+        outline = kwargs.get('outline', '')
+        width_param = kwargs.get('width', 1)
+        
+        # Crear las 4 esquinas con arcos
+        canvas.create_arc(x1, y1, x1 + radius*2, y1 + radius*2, 
+                         start=90, extent=90, fill=fill, outline=outline, width=width_param)
+        canvas.create_arc(x2 - radius*2, y1, x2, y1 + radius*2, 
+                         start=0, extent=90, fill=fill, outline=outline, width=width_param)
+        canvas.create_arc(x2 - radius*2, y2 - radius*2, x2, y2, 
+                         start=270, extent=90, fill=fill, outline=outline, width=width_param)
+        canvas.create_arc(x1, y2 - radius*2, x1 + radius*2, y2, 
+                         start=180, extent=90, fill=fill, outline=outline, width=width_param)
+        
+        # Crear los 4 rectángulos que conectan los arcos
+        # Top
+        canvas.create_rectangle(x1 + radius, y1, x2 - radius, y1 + radius, 
+                               fill=fill, outline=fill, width=0)
+        # Bottom
+        canvas.create_rectangle(x1 + radius, y2 - radius, x2 - radius, y2, 
+                               fill=fill, outline=fill, width=0)
+        # Left
+        canvas.create_rectangle(x1, y1 + radius, x1 + radius, y2 - radius, 
+                               fill=fill, outline=fill, width=0)
+        # Right
+        canvas.create_rectangle(x2 - radius, y1 + radius, x2, y2 - radius, 
+                               fill=fill, outline=fill, width=0)
+        
+        # Centro
+        canvas.create_rectangle(x1 + radius, y1 + radius, x2 - radius, y2 - radius, 
+                               fill=fill, outline=fill, width=0)
+        
+        # Retornar un identificador (usaremos un tag para agrupar)
+        return "rounded_rect"
     
     # Dibujar el botón
     btn_rect = create_round_rectangle(

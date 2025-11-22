@@ -270,21 +270,27 @@ class MainView:
         for i, campo in enumerate(campos[:3]):
             Label(form_frame, text=campo + ":", font=("Arial", 11, "bold"), 
                  bg="white", fg="#34495e").grid(row=1, column=i*2, padx=(15, 5), pady=10, sticky="e")
-            entry = Entry(form_frame, width=15, font=(FUENTE_UNISON, 11), 
-                         relief="flat", bd=0, highlightthickness=2,
-                         highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
-            entry.grid(row=1, column=i*2+1, padx=(0, 15), pady=10, ipady=5, sticky="ew")
-            self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry
+            entry_container = crear_entry_redondeado(
+                form_frame,
+                width=180,
+                height=38,
+                corner_radius=BORDE_REDONDEADO
+            )
+            entry_container.grid(row=1, column=i*2+1, padx=(0, 15), pady=10, sticky="ew")
+            self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry_container.entry
         
         # Segunda fila: Cantidad, Departamento, Almacén
         for i, campo in enumerate(campos[3:], 3):
             Label(form_frame, text=campo + ":", font=("Arial", 11, "bold"), 
                  bg="white", fg="#34495e").grid(row=2, column=(i-3)*2, padx=(15, 5), pady=10, sticky="e")
-            entry = Entry(form_frame, width=15, font=(FUENTE_UNISON, 11),
-                         relief="flat", bd=0, highlightthickness=2,
-                         highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
-            entry.grid(row=2, column=(i-3)*2+1, padx=(0, 15), pady=10, ipady=5, sticky="ew")
-            self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry
+            entry_container = crear_entry_redondeado(
+                form_frame,
+                width=180,
+                height=38,
+                corner_radius=BORDE_REDONDEADO
+            )
+            entry_container.grid(row=2, column=(i-3)*2+1, padx=(0, 15), pady=10, sticky="ew")
+            self.producto_entries[campo.lower().replace("ó", "o").replace("é", "e")] = entry_container.entry
         
         # Texto informativo de almacenes
         self.info_almacenes_label = Label(form_frame, text="", 
@@ -420,19 +426,27 @@ class MainView:
         
         Label(campos_frame, text="ID:", font=("Arial", 12, "bold"), 
              bg="white", fg="#34495e").grid(row=0, column=0, padx=(0, 10), pady=15, sticky="e")
-        id_entry = Entry(campos_frame, width=20, font=(FUENTE_UNISON, 12),
-                        relief="flat", bd=0, highlightthickness=2,
-                        highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
-        id_entry.grid(row=0, column=1, padx=(0, 30), pady=15, ipady=5, sticky="ew")
-        self.almacen_entries["id"] = id_entry
+        id_entry_container = crear_entry_redondeado(
+            campos_frame,
+            width=220,
+            height=42,
+            corner_radius=BORDE_REDONDEADO
+        )
+        id_entry_container.grid(row=0, column=1, padx=(0, 30), pady=15, sticky="ew")
+        self.almacen_entries["id"] = id_entry_container.entry
+        
         
         Label(campos_frame, text="Nombre:", font=("Arial", 12, "bold"), 
              bg="white", fg="#34495e").grid(row=0, column=2, padx=(0, 10), pady=15, sticky="e")
-        nombre_entry = Entry(campos_frame, width=30, font=(FUENTE_UNISON, 12),
-                            relief="flat", bd=0, highlightthickness=2,
-                            highlightcolor=COLOR_AZUL_UNISON, highlightbackground=COLOR_GRIS_CLARO)
-        nombre_entry.grid(row=0, column=3, padx=0, pady=15, ipady=5, sticky="ew")
-        self.almacen_entries["nombre"] = nombre_entry
+        nombre_entry_container = crear_entry_redondeado(
+            campos_frame,
+            width=320,
+            height=42,
+            corner_radius=BORDE_REDONDEADO
+        )
+        nombre_entry_container.grid(row=0, column=3, padx=0, pady=15, sticky="ew")
+        self.almacen_entries["nombre"] = nombre_entry_container.entry
+        
         
         # Botones de acción con colores UNISON y bordes redondeados
         btn_form_frame = Frame(form_frame, bg="white")
