@@ -167,25 +167,25 @@ class IntegratedController:
         try:
             # Buscar botones de productos
             if hasattr(self.main_view, 'btn_agregar_producto'):
-                self.main_view.btn_agregar_producto.config(command=self.agregar_producto)
+                self.main_view.btn_agregar_producto.config(command=self.agregar_producto)  # type: ignore
             if hasattr(self.main_view, 'btn_eliminar_producto'):
-                self.main_view.btn_eliminar_producto.config(command=self.eliminar_producto)
+                self.main_view.btn_eliminar_producto.config(command=self.eliminar_producto)  # type: ignore
             
             # Buscar botones de almacenes
             if hasattr(self.main_view, 'btn_agregar_almacen'):
-                self.main_view.btn_agregar_almacen.config(command=self.agregar_almacen)
+                self.main_view.btn_agregar_almacen.config(command=self.agregar_almacen)  # type: ignore
             if hasattr(self.main_view, 'btn_eliminar_almacen'):
-                self.main_view.btn_eliminar_almacen.config(command=self.eliminar_almacen)
+                self.main_view.btn_eliminar_almacen.config(command=self.eliminar_almacen)  # type: ignore
             
             # Buscar botones de navegación (en el frame de inicio)
             if hasattr(self.main_view, 'btn_productos'):
-                self.main_view.btn_productos.config(command=self.show_productos_frame)
+                self.main_view.btn_productos.config(command=self.show_productos_frame)  # type: ignore
             if hasattr(self.main_view, 'btn_almacenes'):
-                self.main_view.btn_almacenes.config(command=self.show_almacenes_frame)
+                self.main_view.btn_almacenes.config(command=self.show_almacenes_frame)  # type: ignore
             
             # Configurar el botón de cerrar sesión
             if hasattr(self.main_view, 'btn_cerrar_sesion'):
-                self.main_view.btn_cerrar_sesion.config(command=self.logout)
+                self.main_view.btn_cerrar_sesion.config(command=self.logout)  # type: ignore
             
             # Aplicar permisos de interfaz según rol
             self.aplicar_permisos_interfaz()

@@ -356,7 +356,8 @@ class MainView:
         widths = [50, 150, 80, 80, 120, 80, 150, 100]
         
         for col, heading, width in zip(columns, headings, widths):
-            self.productos_tree.heading(col, text=heading)
+            self.productos_tree.heading(col, text=heading, 
+                command=lambda c=col: self.ordenar_productos(c))
             self.productos_tree.column(col, width=width, anchor="center")
         
         # Scrollbars
@@ -497,11 +498,15 @@ class MainView:
         columns = ("id", "nombre", "fecha_modificacion", "usuario_modificacion")
         self.almacenes_tree = ttk.Treeview(tree_container, columns=columns, show="headings")
         
-        # Configurar encabezados con mejor distribución
-        self.almacenes_tree.heading("id", text="ID")
-        self.almacenes_tree.heading("nombre", text="Nombre del Almacén")
-        self.almacenes_tree.heading("fecha_modificacion", text="Fecha Modificación")
-        self.almacenes_tree.heading("usuario_modificacion", text="Usuario")
+        # Configurar encabezados con mejor distribución y ordenamiento
+        self.almacenes_tree.heading("id", text="ID", 
+            command=lambda: self.ordenar_almacenes("id"))
+        self.almacenes_tree.heading("nombre", text="Nombre del Almacén", 
+            command=lambda: self.ordenar_almacenes("nombre"))
+        self.almacenes_tree.heading("fecha_modificacion", text="Fecha Modificación", 
+            command=lambda: self.ordenar_almacenes("fecha_modificacion"))
+        self.almacenes_tree.heading("usuario_modificacion", text="Usuario", 
+            command=lambda: self.ordenar_almacenes("usuario_modificacion"))
         self.almacenes_tree.column("id", width=80, anchor="center")
         self.almacenes_tree.column("nombre", width=250, anchor="center")
         self.almacenes_tree.column("fecha_modificacion", width=150, anchor="center")
@@ -529,6 +534,9 @@ class MainView:
     
     def update_productos_tree(self, productos):
         """Actualiza el Treeview de productos con los datos proporcionados"""
+        # Cachear datos originales
+        self.productos_data_cache = list(productos)
+        
         # Limpiar datos existentes
         for item in self.productos_tree.get_children():
             self.productos_tree.delete(item)
@@ -539,6 +547,9 @@ class MainView:
     
     def update_almacenes_tree(self, almacenes):
         """Actualiza el Treeview de almacenes con los datos proporcionados"""
+        # Cachear datos originales
+        self.almacenes_data_cache = list(almacenes)
+        
         # Limpiar datos existentes
         for item in self.almacenes_tree.get_children():
             self.almacenes_tree.delete(item)
@@ -593,9 +604,144 @@ class MainView:
             entry.delete(0, 'end')
     
     def limpiar_formulario_almacen(self):
-        """Limpia todos los campos del formulario de almacenes"""
+        """Limpia los campos del formulario de almacenes"""
         for entry in self.almacen_entries.values():
             entry.delete(0, 'end')
+    
+    def ordenar_productos(self, columna):
+        """Ordena los productos por la columna especificada"""
+        if not self.productos_data_cache:
+            return
+        
+        # Mapeo de columnas a índices
+        columnas_map = {
+            "id": 0,
+            "nombre": 1,
+            "precio": 2,
+            "cantidad": 3,
+            "departamento": 4,
+            "almacen": 5,
+            "fecha_modificacion": 6,
+            "usuario_modificacion": 7
+        }
+        
+        col_index = columnas_map.get(columna, 0)
+        
+        # Determinar orden (alternar entre ascendente y descendente)
+        if columna in self.productos_orden and self.productos_orden[columna] == 'asc':
+            orden = 'desc'
+            reverse = True
+        else:
+            orden = 'asc'
+            reverse = False
+        
+        self.productos_orden = {columna: orden}  # Solo mantener orden de columna actual
+        
+        # Ordenar datos según el tipo de columna
+        try:
+            if columna in ['id', 'cantidad']:
+                # Ordenar como números
+                datos_ordenados = sorted(self.productos_data_cache, 
+                    key=lambda x: int(x[col_index]) if x[col_index] else 0, 
+                    reverse=reverse)
+            elif columna == 'precio':
+                # Ordenar como números decimales
+                datos_ordenados = sorted(self.productos_data_cache, 
+                    key=lambda x: float(x[col_index]) if x[col_index] else 0.0, 
+                    reverse=reverse)
+            else:
+                # Ordenar como texto (nombre, departamento, almacén, fecha, usuario)
+                datos_ordenados = sorted(self.productos_data_cache, 
+                    key=lambda x: str(x[col_index]).lower() if x[col_index] else '', 
+                    reverse=reverse)
+        except (ValueError, TypeError):
+            # Si hay error en conversión, ordenar como texto
+            datos_ordenados = sorted(self.productos_data_cache, 
+                key=lambda x: str(x[col_index]).lower() if x[col_index] else '', 
+                reverse=reverse)
+        
+        # Actualizar encabezado con indicador visual
+        headings = ["ID", "Nombre", "Precio", "Cantidad", "Departamento", "Almacén", "Fecha Modificación", "Usuario"]
+        columnas = ["id", "nombre", "precio", "cantidad", "departamento", "almacen", "fecha_modificacion", "usuario_modificacion"]
+        
+        for i, col in enumerate(columnas):
+            if col == columna:
+                indicador = " ▲" if orden == 'asc' else " ▼"
+                self.productos_tree.heading(col, text=headings[i] + indicador)
+            else:
+                self.productos_tree.heading(col, text=headings[i])
+        
+        # Limpiar y reinsertar datos ordenados
+        for item in self.productos_tree.get_children():
+            self.productos_tree.delete(item)
+        
+        for producto in datos_ordenados:
+            self.productos_tree.insert("", "end", values=producto)
+    
+    def ordenar_almacenes(self, columna):
+        """Ordena los almacenes por la columna especificada"""
+        if not self.almacenes_data_cache:
+            return
+        
+        # Mapeo de columnas a índices
+        columnas_map = {
+            "id": 0,
+            "nombre": 1,
+            "fecha_modificacion": 2,
+            "usuario_modificacion": 3
+        }
+        
+        col_index = columnas_map.get(columna, 0)
+        
+        # Determinar orden (alternar entre ascendente y descendente)
+        if columna in self.almacenes_orden and self.almacenes_orden[columna] == 'asc':
+            orden = 'desc'
+            reverse = True
+        else:
+            orden = 'asc'
+            reverse = False
+        
+        self.almacenes_orden = {columna: orden}  # Solo mantener orden de columna actual
+        
+        # Ordenar datos según el tipo de columna
+        try:
+            if columna == 'id':
+                # Ordenar como números
+                datos_ordenados = sorted(self.almacenes_data_cache, 
+                    key=lambda x: int(x[col_index]) if x[col_index] else 0, 
+                    reverse=reverse)
+            else:
+                # Ordenar como texto (nombre, fecha, usuario)
+                datos_ordenados = sorted(self.almacenes_data_cache, 
+                    key=lambda x: str(x[col_index]).lower() if x[col_index] else '', 
+                    reverse=reverse)
+        except (ValueError, TypeError):
+            # Si hay error en conversión, ordenar como texto
+            datos_ordenados = sorted(self.almacenes_data_cache, 
+                key=lambda x: str(x[col_index]).lower() if x[col_index] else '', 
+                reverse=reverse)
+        
+        # Actualizar encabezado con indicador visual
+        headings_map = {
+            "id": "ID",
+            "nombre": "Nombre del Almacén",
+            "fecha_modificacion": "Fecha Modificación",
+            "usuario_modificacion": "Usuario"
+        }
+        
+        for col in columnas_map.keys():
+            if col == columna:
+                indicador = " ▲" if orden == 'asc' else " ▼"
+                self.almacenes_tree.heading(col, text=headings_map[col] + indicador)
+            else:
+                self.almacenes_tree.heading(col, text=headings_map[col])
+        
+        # Limpiar y reinsertar datos ordenados
+        for item in self.almacenes_tree.get_children():
+            self.almacenes_tree.delete(item)
+        
+        for almacen in datos_ordenados:
+            self.almacenes_tree.insert("", "end", values=almacen)
     
     def get_producto_data(self):
         """Obtiene los datos del formulario de productos"""
