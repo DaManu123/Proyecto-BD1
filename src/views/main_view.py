@@ -25,6 +25,12 @@ class MainView:
         # Configurar estilos globales de Treeview
         configurar_estilo_treeview()
         
+        # Variables para control de ordenamiento
+        self.productos_orden = {}  # {'columna': 'asc'/'desc'}
+        self.almacenes_orden = {}  # {'columna': 'asc'/'desc'}
+        self.productos_data_cache = []  # Cache de datos para ordenamiento
+        self.almacenes_data_cache = []  # Cache de datos para ordenamiento
+        
         # Solo configurar propiedades de ventana si master es una ventana Tk, no un Frame
         if hasattr(master, 'title'):
             self.master.title("Sistema de Inventario - Universidad de Sonora - Manuel Munguia Rubio")
