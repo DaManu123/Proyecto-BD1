@@ -1,5 +1,7 @@
 import tkinter as tk
-from tkinter import ttk, Frame, Label, Button, Entry, Canvas
+from tkinter import ttk, Frame, Label, Button, Entry, Canvas, BooleanVar, Checkbutton
+from tkcalendar import DateEntry
+from datetime import datetime
 import os
 import sys
 
@@ -30,6 +32,12 @@ class MainView:
         self.almacenes_orden = {}  # {'columna': 'asc'/'desc'}
         self.productos_data_cache = []  # Cache de datos para ordenamiento
         self.almacenes_data_cache = []  # Cache de datos para ordenamiento
+        
+        # Variables para filtros
+        self.productos_data_original = []  # Datos originales sin filtrar
+        self.almacenes_data_original = []  # Datos originales sin filtrar
+        self.filtros_productos_visible = True
+        self.filtros_almacenes_visible = True
         
         # Solo configurar propiedades de ventana si master es una ventana Tk, no un Frame
         if hasattr(master, 'title'):
@@ -87,7 +95,7 @@ class MainView:
     def create_inicio_frame(self):
         """Crea el frame de inicio con scroll y diseño responsivo"""
         frame = Frame(self.container, bg=COLOR_FONDO_CLARO)
-        frame.grid(row=0, column=0, sticky="nsew")
+        # No hacer grid aquí - se hará en show_frame()
         
         # Configurar el grid principal
         frame.grid_rowconfigure(1, weight=1)  # Contenido scrollable
@@ -228,15 +236,174 @@ class MainView:
     def create_productos_frame(self):
         """Crea el frame de gestión de productos"""
         frame = Frame(self.container, bg=COLOR_FONDO_CLARO)
-        frame.grid(row=0, column=0, sticky="nsew")
+        # No hacer grid aquí - se hará en show_frame()
         
         # Configurar grid responsivo
-        frame.grid_rowconfigure(2, weight=1)  # El treeview se expande
-        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=0)  # Panel de filtros
+        frame.grid_columnconfigure(1, weight=1)  # Contenido principal
+        
+        # ===== PANEL LATERAL DE FILTROS =====
+        self.panel_filtros_productos = Frame(frame, bg="white", relief="raised", bd=1, width=240)
+        self.panel_filtros_productos.grid(row=0, column=0, sticky="nsew", padx=(10, 0), pady=10)
+        self.panel_filtros_productos.grid_propagate(False)
+        
+        # Header del panel de filtros
+        filtros_header = Frame(self.panel_filtros_productos, bg=COLOR_AZUL_UNISON, height=40)
+        filtros_header.pack(fill="x")
+        
+        Label(filtros_header, text="🔍 Filtros", font=(FUENTE_UNISON, 11, "bold"),
+              bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO).pack(side="left", padx=10, pady=8)
+        
+        self.btn_toggle_filtros_prod = crear_boton_redondeado_canvas(
+            filtros_header, texto="◀", comando=self.toggle_filtros_productos,
+            width=35, height=25, corner_radius=5, estilo="dorado"
+        )
+        self.btn_toggle_filtros_prod.pack(side="right", padx=8, pady=8)
+        
+        # Contenedor directo para filtros sin scrollbar
+        filtros_scroll_frame = Frame(self.panel_filtros_productos, bg="white")
+        filtros_scroll_frame.pack(fill="both", expand=True, padx=8, pady=5)
+        
+        # ===== FILTROS INDIVIDUALES =====
+        # Búsqueda general
+        Label(filtros_scroll_frame, text="Buscar:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(8, 1))
+        buscar_container = crear_entry_redondeado(filtros_scroll_frame, width=210, height=28, corner_radius=5)
+        buscar_container.pack(padx=5, pady=(0, 6))
+        self.filtro_buscar_producto = buscar_container.entry
+        self.filtro_buscar_producto.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        ttk.Separator(filtros_scroll_frame, orient='horizontal').pack(fill='x', padx=8, pady=3)
+        
+        # Departamento
+        Label(filtros_scroll_frame, text="Departamento:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        depto_container = crear_entry_redondeado(filtros_scroll_frame, width=210, height=28, corner_radius=5)
+        depto_container.pack(padx=5, pady=(0, 6))
+        self.filtro_departamento = depto_container.entry
+        self.filtro_departamento.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        # Almacén
+        Label(filtros_scroll_frame, text="Almacén:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        almacen_container = crear_entry_redondeado(filtros_scroll_frame, width=210, height=28, corner_radius=5)
+        almacen_container.pack(padx=5, pady=(0, 6))
+        self.filtro_almacen_producto = almacen_container.entry
+        self.filtro_almacen_producto.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        ttk.Separator(filtros_scroll_frame, orient='horizontal').pack(fill='x', padx=8, pady=3)
+        
+        # Rango de precio
+        Label(filtros_scroll_frame, text="Precio:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        
+        precio_frame = Frame(filtros_scroll_frame, bg="white")
+        precio_frame.pack(fill="x", padx=5, pady=(0, 6))
+        
+        Label(precio_frame, text="Min:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=0, column=0, sticky="w")
+        precio_min_container = crear_entry_redondeado(precio_frame, width=85, height=26, corner_radius=5)
+        precio_min_container.grid(row=0, column=1, padx=(3, 5))
+        self.filtro_precio_min = precio_min_container.entry
+        self.filtro_precio_min.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        Label(precio_frame, text="Max:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=1, column=0, sticky="w", pady=(3, 0))
+        precio_max_container = crear_entry_redondeado(precio_frame, width=85, height=26, corner_radius=5)
+        precio_max_container.grid(row=1, column=1, padx=(3, 5), pady=(3, 0))
+        self.filtro_precio_max = precio_max_container.entry
+        self.filtro_precio_max.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        # Rango de cantidad
+        Label(filtros_scroll_frame, text="Cantidad:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        
+        cantidad_frame = Frame(filtros_scroll_frame, bg="white")
+        cantidad_frame.pack(fill="x", padx=5, pady=(0, 6))
+        
+        Label(cantidad_frame, text="Min:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=0, column=0, sticky="w")
+        cantidad_min_container = crear_entry_redondeado(cantidad_frame, width=85, height=26, corner_radius=5)
+        cantidad_min_container.grid(row=0, column=1, padx=(3, 5))
+        self.filtro_cantidad_min = cantidad_min_container.entry
+        self.filtro_cantidad_min.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        Label(cantidad_frame, text="Max:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=1, column=0, sticky="w", pady=(3, 0))
+        cantidad_max_container = crear_entry_redondeado(cantidad_frame, width=85, height=26, corner_radius=5)
+        cantidad_max_container.grid(row=1, column=1, padx=(3, 5), pady=(3, 0))
+        self.filtro_cantidad_max = cantidad_max_container.entry
+        self.filtro_cantidad_max.bind('<KeyRelease>', lambda e: self.aplicar_filtros_productos())
+        
+        # Usuario que modificó
+        Label(filtros_scroll_frame, text="Usuario:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        
+        usuario_frame = Frame(filtros_scroll_frame, bg="white")
+        usuario_frame.pack(fill="x", padx=5, pady=(0, 6))
+        
+        self.filtro_usuario_prod = ttk.Combobox(usuario_frame, state="readonly", width=27, font=("Arial", 8))
+        self.filtro_usuario_prod.pack(fill="x")
+        self.filtro_usuario_prod.set("Todos")
+        self.filtro_usuario_prod.bind('<<ComboboxSelected>>', lambda e: self.aplicar_filtros_productos())
+        
+        # Rango de fechas
+        Label(filtros_scroll_frame, text="Fecha modificación:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        
+        fecha_frame = Frame(filtros_scroll_frame, bg="white")
+        fecha_frame.pack(fill="x", padx=5, pady=(0, 6))
+        
+        Label(fecha_frame, text="Desde:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=0, column=0, sticky="w")
+        self.filtro_fecha_desde_prod = DateEntry(fecha_frame, width=16, background=COLOR_AZUL_UNISON,
+                                                  foreground='white', borderwidth=2, font=("Arial", 7),
+                                                  date_pattern='yyyy-mm-dd')
+        self.filtro_fecha_desde_prod.grid(row=0, column=1, padx=(3, 0), pady=(0, 3))
+        self.filtro_fecha_desde_prod.bind('<<DateEntrySelected>>', lambda e: self.aplicar_filtros_productos())
+        
+        Label(fecha_frame, text="Hasta:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=1, column=0, sticky="w")
+        self.filtro_fecha_hasta_prod = DateEntry(fecha_frame, width=16, background=COLOR_AZUL_UNISON,
+                                                  foreground='white', borderwidth=2, font=("Arial", 7),
+                                                  date_pattern='yyyy-mm-dd')
+        self.filtro_fecha_hasta_prod.grid(row=1, column=1, padx=(3, 0))
+        self.filtro_fecha_hasta_prod.bind('<<DateEntrySelected>>', lambda e: self.aplicar_filtros_productos())
+        
+        # Checkbox para habilitar/deshabilitar filtro de fecha
+        self.fecha_habilitada_prod = BooleanVar(value=False)
+        self.chk_fecha_prod = Checkbutton(fecha_frame, text="Aplicar", variable=self.fecha_habilitada_prod,
+                                          bg="white", font=("Arial", 7), command=self.aplicar_filtros_productos)
+        self.chk_fecha_prod.grid(row=0, column=2, rowspan=2, padx=(5, 0))
+        
+        ttk.Separator(filtros_scroll_frame, orient='horizontal').pack(fill='x', padx=8, pady=5)
+        
+        # Botones de acción
+        self.btn_limpiar_filtros_prod = crear_boton_redondeado_canvas(
+            filtros_scroll_frame, texto="Limpiar", comando=self.limpiar_filtros_productos,
+            width=210, height=30, corner_radius=5, estilo="custom",
+            bg_custom="#95a5a6", hover_custom="#7f8c8d"
+        )
+        self.btn_limpiar_filtros_prod.pack(padx=5, pady=(3, 5))
+        
+        # Contador de resultados
+        self.lbl_resultados_productos = Label(
+            filtros_scroll_frame, text="0 productos", font=("Arial", 7, "italic"),
+            bg="white", fg="#7f8c8d", wraplength=200
+        )
+        self.lbl_resultados_productos.pack(padx=5, pady=(3, 8))
+        
+        # Botón flotante para mostrar filtros cuando están ocultos
+        self.btn_mostrar_filtros_prod = crear_boton_redondeado_canvas(
+            frame, texto="▶", comando=self.toggle_filtros_productos,
+            width=30, height=40, corner_radius=5, estilo="primario"
+        )
+        # Inicialmente oculto
+        
+        # ===== CONTENEDOR PRINCIPAL (DERECHA) =====
+        contenedor_principal = Frame(frame, bg=COLOR_FONDO_CLARO)
+        contenedor_principal.grid(row=0, column=1, sticky="nsew", padx=(8, 10), pady=10)
+        contenedor_principal.grid_rowconfigure(2, weight=1)
+        contenedor_principal.grid_columnconfigure(0, weight=1)
         
         # Header con colores UNISON
-        header_frame = Frame(frame, bg=COLOR_AZUL_UNISON, height=60)
-        header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 0))
+        header_frame = Frame(contenedor_principal, bg=COLOR_AZUL_UNISON, height=60)
+        header_frame.grid(row=0, column=0, sticky="ew")
         header_frame.grid_propagate(False)
         header_frame.grid_columnconfigure(1, weight=1)
         
@@ -258,8 +425,8 @@ class MainView:
         self.btn_volver_productos.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
-        self.producto_form_frame = Frame(frame, bg="white", relief="raised", bd=1)
-        self.producto_form_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
+        self.producto_form_frame = Frame(contenedor_principal, bg="white", relief="raised", bd=1)
+        self.producto_form_frame.grid(row=1, column=0, sticky="ew", pady=(10, 10))
         self.producto_form_frame.grid_columnconfigure([1, 3, 5, 7, 9, 11], weight=1)
         form_frame = self.producto_form_frame  # Alias para no cambiar resto del código
         
@@ -333,8 +500,8 @@ class MainView:
         self.btn_eliminar_producto.pack(side="left", padx=12)
         
         # Frame para la tabla con título
-        table_frame = Frame(frame, bg="white", relief="raised", bd=1)
-        table_frame.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
+        table_frame = Frame(contenedor_principal, bg="white", relief="raised", bd=1)
+        table_frame.grid(row=2, column=0, sticky="nsew")
         table_frame.grid_rowconfigure(1, weight=1)
         table_frame.grid_columnconfigure(0, weight=1)
         
@@ -384,15 +551,118 @@ class MainView:
     def create_almacenes_frame(self):
         """Crea el frame de gestión de almacenes"""
         frame = Frame(self.container, bg=COLOR_FONDO_CLARO)
-        frame.grid(row=0, column=0, sticky="nsew")
+        # No hacer grid aquí - se hará en show_frame()
         
         # Configurar grid responsivo
-        frame.grid_rowconfigure(2, weight=1)  # El treeview se expande
-        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=0)  # Panel de filtros
+        frame.grid_columnconfigure(1, weight=1)  # Contenido principal
+        
+        # ===== PANEL LATERAL DE FILTROS ALMACENES =====
+        self.panel_filtros_almacenes = Frame(frame, bg="white", relief="raised", bd=1, width=240)
+        self.panel_filtros_almacenes.grid(row=0, column=0, sticky="nsew", padx=(10, 0), pady=10)
+        self.panel_filtros_almacenes.grid_propagate(False)
+        
+        # Header del panel de filtros
+        filtros_alm_header = Frame(self.panel_filtros_almacenes, bg=COLOR_AZUL_UNISON, height=40)
+        filtros_alm_header.pack(fill="x")
+        
+        Label(filtros_alm_header, text="🔍 Filtros", font=(FUENTE_UNISON, 11, "bold"),
+              bg=COLOR_AZUL_UNISON, fg=COLOR_TEXTO_BLANCO).pack(side="left", padx=10, pady=8)
+        
+        self.btn_toggle_filtros_alm = crear_boton_redondeado_canvas(
+            filtros_alm_header, texto="◀", comando=self.toggle_filtros_almacenes,
+            width=35, height=25, corner_radius=5, estilo="dorado"
+        )
+        self.btn_toggle_filtros_alm.pack(side="right", padx=8, pady=8)
+        
+        # Contenedor directo para filtros sin scrollbar
+        filtros_alm_scroll_frame = Frame(self.panel_filtros_almacenes, bg="white")
+        filtros_alm_scroll_frame.pack(fill="both", expand=True, padx=8, pady=5)
+        
+        # ===== FILTROS INDIVIDUALES ALMACENES =====
+        # Búsqueda por nombre
+        Label(filtros_alm_scroll_frame, text="Buscar:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(8, 1))
+        buscar_alm_container = crear_entry_redondeado(filtros_alm_scroll_frame, width=210, height=28, corner_radius=5)
+        buscar_alm_container.pack(padx=5, pady=(0, 6))
+        self.filtro_buscar_almacen = buscar_alm_container.entry
+        self.filtro_buscar_almacen.bind('<KeyRelease>', lambda e: self.aplicar_filtros_almacenes())
+        
+        ttk.Separator(filtros_alm_scroll_frame, orient='horizontal').pack(fill='x', padx=8, pady=3)
+        
+        # Usuario que modificó (Combobox)
+        Label(filtros_alm_scroll_frame, text="Usuario:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        
+        usuario_alm_combo_frame = Frame(filtros_alm_scroll_frame, bg="white")
+        usuario_alm_combo_frame.pack(fill="x", padx=5, pady=(0, 6))
+        
+        self.filtro_usuario_alm_combo = ttk.Combobox(usuario_alm_combo_frame, state="readonly", width=27, font=("Arial", 8))
+        self.filtro_usuario_alm_combo.pack(fill="x")
+        self.filtro_usuario_alm_combo.set("Todos")
+        self.filtro_usuario_alm_combo.bind('<<ComboboxSelected>>', lambda e: self.aplicar_filtros_almacenes())
+        
+        # Rango de fechas
+        Label(filtros_alm_scroll_frame, text="Fecha modificación:", font=("Arial", 8, "bold"),
+              bg="white", fg="#2c3e50", anchor="w").pack(fill="x", padx=5, pady=(3, 1))
+        
+        fecha_alm_frame = Frame(filtros_alm_scroll_frame, bg="white")
+        fecha_alm_frame.pack(fill="x", padx=5, pady=(0, 6))
+        
+        Label(fecha_alm_frame, text="Desde:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=0, column=0, sticky="w")
+        self.filtro_fecha_desde_alm = DateEntry(fecha_alm_frame, width=16, background=COLOR_AZUL_UNISON,
+                                                 foreground='white', borderwidth=2, font=("Arial", 7),
+                                                 date_pattern='yyyy-mm-dd')
+        self.filtro_fecha_desde_alm.grid(row=0, column=1, padx=(3, 0), pady=(0, 3))
+        self.filtro_fecha_desde_alm.bind('<<DateEntrySelected>>', lambda e: self.aplicar_filtros_almacenes())
+        
+        Label(fecha_alm_frame, text="Hasta:", font=("Arial", 7), bg="white", fg="#7f8c8d").grid(row=1, column=0, sticky="w")
+        self.filtro_fecha_hasta_alm = DateEntry(fecha_alm_frame, width=16, background=COLOR_AZUL_UNISON,
+                                                 foreground='white', borderwidth=2, font=("Arial", 7),
+                                                 date_pattern='yyyy-mm-dd')
+        self.filtro_fecha_hasta_alm.grid(row=1, column=1, padx=(3, 0))
+        self.filtro_fecha_hasta_alm.bind('<<DateEntrySelected>>', lambda e: self.aplicar_filtros_almacenes())
+        
+        # Checkbox para habilitar/deshabilitar filtro de fecha
+        self.fecha_habilitada_alm = BooleanVar(value=False)
+        self.chk_fecha_alm = Checkbutton(fecha_alm_frame, text="Aplicar", variable=self.fecha_habilitada_alm,
+                                         bg="white", font=("Arial", 7), command=self.aplicar_filtros_almacenes)
+        self.chk_fecha_alm.grid(row=0, column=2, rowspan=2, padx=(5, 0))
+        
+        ttk.Separator(filtros_alm_scroll_frame, orient='horizontal').pack(fill='x', padx=8, pady=5)
+        
+        # Botones de acción
+        self.btn_limpiar_filtros_alm = crear_boton_redondeado_canvas(
+            filtros_alm_scroll_frame, texto="Limpiar", comando=self.limpiar_filtros_almacenes,
+            width=210, height=30, corner_radius=5, estilo="custom",
+            bg_custom="#95a5a6", hover_custom="#7f8c8d"
+        )
+        self.btn_limpiar_filtros_alm.pack(padx=5, pady=(3, 5))
+        
+        # Contador de resultados
+        self.lbl_resultados_almacenes = Label(
+            filtros_alm_scroll_frame, text="0 almacenes", font=("Arial", 7, "italic"),
+            bg="white", fg="#7f8c8d", wraplength=200
+        )
+        self.lbl_resultados_almacenes.pack(padx=5, pady=(3, 8))
+        
+        # Botón flotante para mostrar filtros cuando están ocultos
+        self.btn_mostrar_filtros_alm = crear_boton_redondeado_canvas(
+            frame, texto="▶", comando=self.toggle_filtros_almacenes,
+            width=30, height=40, corner_radius=5, estilo="primario"
+        )
+        # Inicialmente oculto
+        
+        # ===== CONTENEDOR PRINCIPAL ALMACENES (DERECHA) =====
+        contenedor_alm_principal = Frame(frame, bg=COLOR_FONDO_CLARO)
+        contenedor_alm_principal.grid(row=0, column=1, sticky="nsew", padx=(8, 10), pady=10)
+        contenedor_alm_principal.grid_rowconfigure(2, weight=1)
+        contenedor_alm_principal.grid_columnconfigure(0, weight=1)
         
         # Header con colores UNISON
-        header_frame = Frame(frame, bg=COLOR_AZUL_UNISON, height=60)
-        header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 0))
+        header_frame = Frame(contenedor_alm_principal, bg=COLOR_AZUL_UNISON, height=60)
+        header_frame.grid(row=0, column=0, sticky="ew")
         header_frame.grid_propagate(False)
         header_frame.grid_columnconfigure(1, weight=1)
         
@@ -414,8 +684,8 @@ class MainView:
         self.btn_volver_almacenes.grid(row=0, column=1, sticky="e", padx=25, pady=12)
         
         # Frame para formulario con mejor organización
-        self.almacen_form_frame = Frame(frame, bg="white", relief="raised", bd=1)
-        self.almacen_form_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
+        self.almacen_form_frame = Frame(contenedor_alm_principal, bg="white", relief="raised", bd=1)
+        self.almacen_form_frame.grid(row=1, column=0, sticky="ew", pady=(10, 10))
         self.almacen_form_frame.grid_columnconfigure([1, 3], weight=1)
         form_frame = self.almacen_form_frame  # Alias para no cambiar resto del código
         
@@ -484,8 +754,8 @@ class MainView:
         self.btn_eliminar_almacen.pack(side="left", padx=12)
         
         # Frame para la tabla con título
-        table_frame = Frame(frame, bg="white", relief="raised", bd=1)
-        table_frame.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
+        table_frame = Frame(contenedor_alm_principal, bg="white", relief="raised", bd=1)
+        table_frame.grid(row=2, column=0, sticky="nsew")
         table_frame.grid_rowconfigure(1, weight=1)
         table_frame.grid_columnconfigure(0, weight=1)
         
@@ -535,34 +805,47 @@ class MainView:
     
     def show_frame(self, frame_name):
         """Muestra el frame especificado y oculta los demás"""
+        # Ocultar todos los frames primero
+        for name, frame in self.frames.items():
+            frame.grid_remove()
+        
+        # Mostrar solo el frame solicitado
         frame = self.frames[frame_name]
-        frame.tkraise()
+        frame.grid(row=0, column=0, sticky="nsew")
     
     def update_productos_tree(self, productos):
         """Actualiza el Treeview de productos con los datos proporcionados"""
-        # Cachear datos originales
+        # Cachear datos originales sin filtrar
+        self.productos_data_original = list(productos)
         self.productos_data_cache = list(productos)
         
-        # Limpiar datos existentes
-        for item in self.productos_tree.get_children():
-            self.productos_tree.delete(item)
+        # Actualizar combobox de usuarios con valores únicos
+        if hasattr(self, 'filtro_usuario_prod'):
+            usuarios_unicos = set(["Todos"])
+            for producto in productos:
+                if producto[7]:  # columna 7 es ultimo_usuario_modificacion
+                    usuarios_unicos.add(str(producto[7]))
+            self.filtro_usuario_prod['values'] = sorted(list(usuarios_unicos))
         
-        # Insertar nuevos datos
-        for producto in productos:
-            self.productos_tree.insert("", "end", values=producto)
+        # Aplicar filtros si existen
+        self.aplicar_filtros_productos()
     
     def update_almacenes_tree(self, almacenes):
         """Actualiza el Treeview de almacenes con los datos proporcionados"""
-        # Cachear datos originales
+        # Cachear datos originales sin filtrar
+        self.almacenes_data_original = list(almacenes)
         self.almacenes_data_cache = list(almacenes)
         
-        # Limpiar datos existentes
-        for item in self.almacenes_tree.get_children():
-            self.almacenes_tree.delete(item)
+        # Actualizar combobox de usuarios con valores únicos
+        if hasattr(self, 'filtro_usuario_alm_combo'):
+            usuarios_unicos_alm = set(["Todos"])
+            for almacen in almacenes:
+                if almacen[3]:  # columna 3 es ultimo_usuario_modificacion
+                    usuarios_unicos_alm.add(str(almacen[3]))
+            self.filtro_usuario_alm_combo['values'] = sorted(list(usuarios_unicos_alm))
         
-        # Insertar nuevos datos
-        for almacen in almacenes:
-            self.almacenes_tree.insert("", "end", values=almacen)
+        # Aplicar filtros si existen
+        self.aplicar_filtros_almacenes()
     
     def on_producto_select(self, event):
         """Maneja la selección de un producto en el Treeview"""
@@ -766,3 +1049,270 @@ class MainView:
             'id': self.almacen_entries['id'].get().strip(),
             'nombre': self.almacen_entries['nombre'].get().strip()
         }
+    
+    # ===== FUNCIONES DE FILTRADO =====
+    def aplicar_filtros_productos(self):
+        """Aplica todos los filtros activos a los productos"""
+        if not self.productos_data_original:
+            return
+        
+        datos_filtrados = list(self.productos_data_original)
+        
+        # Filtro de búsqueda general (busca en nombre)
+        if hasattr(self, 'filtro_buscar_producto'):
+            texto_buscar = self.filtro_buscar_producto.get().strip().lower()
+            if texto_buscar:
+                datos_filtrados = [p for p in datos_filtrados 
+                                 if texto_buscar in str(p[1]).lower()]  # p[1] = nombre
+        
+        # Filtro por departamento
+        if hasattr(self, 'filtro_departamento'):
+            departamento = self.filtro_departamento.get().strip().lower()
+            if departamento:
+                datos_filtrados = [p for p in datos_filtrados 
+                                 if departamento in str(p[4]).lower()]  # p[4] = departamento
+        
+        # Filtro por almacén
+        if hasattr(self, 'filtro_almacen_producto'):
+            almacen = self.filtro_almacen_producto.get().strip().lower()
+            if almacen:
+                datos_filtrados = [p for p in datos_filtrados 
+                                 if almacen in str(p[5]).lower()]  # p[5] = almacén
+        
+        # Filtro por precio mínimo
+        if hasattr(self, 'filtro_precio_min'):
+            precio_min_str = self.filtro_precio_min.get().strip()
+            if precio_min_str:
+                try:
+                    precio_min = float(precio_min_str)
+                    datos_filtrados = [p for p in datos_filtrados 
+                                     if float(p[2]) >= precio_min]  # p[2] = precio
+                except ValueError:
+                    pass
+        
+        # Filtro por precio máximo
+        if hasattr(self, 'filtro_precio_max'):
+            precio_max_str = self.filtro_precio_max.get().strip()
+            if precio_max_str:
+                try:
+                    precio_max = float(precio_max_str)
+                    datos_filtrados = [p for p in datos_filtrados 
+                                     if float(p[2]) <= precio_max]  # p[2] = precio
+                except ValueError:
+                    pass
+        
+        # Filtro por cantidad mínima
+        if hasattr(self, 'filtro_cantidad_min'):
+            cantidad_min_str = self.filtro_cantidad_min.get().strip()
+            if cantidad_min_str:
+                try:
+                    cantidad_min = int(cantidad_min_str)
+                    datos_filtrados = [p for p in datos_filtrados 
+                                     if int(p[3]) >= cantidad_min]  # p[3] = cantidad
+                except ValueError:
+                    pass
+        
+        # Filtro por cantidad máxima
+        if hasattr(self, 'filtro_cantidad_max'):
+            cantidad_max_str = self.filtro_cantidad_max.get().strip()
+            if cantidad_max_str:
+                try:
+                    cantidad_max = int(cantidad_max_str)
+                    datos_filtrados = [p for p in datos_filtrados 
+                                     if int(p[3]) <= cantidad_max]  # p[3] = cantidad
+                except ValueError:
+                    pass
+        
+        # Filtro por usuario
+        if hasattr(self, 'filtro_usuario_prod'):
+            usuario_seleccionado = self.filtro_usuario_prod.get()
+            if usuario_seleccionado and usuario_seleccionado != "Todos":
+                datos_filtrados = [p for p in datos_filtrados 
+                                 if str(p[7]) == usuario_seleccionado]  # p[7] = ultimo_usuario_modificacion
+        
+        # Filtro por rango de fechas
+        if hasattr(self, 'fecha_habilitada_prod') and self.fecha_habilitada_prod.get():
+            try:
+                fecha_desde = self.filtro_fecha_desde_prod.get_date()
+                fecha_hasta = self.filtro_fecha_hasta_prod.get_date()
+                
+                datos_temp = []
+                for p in datos_filtrados:
+                    try:
+                        # p[6] = fecha_ultima_modificacion
+                        if p[6]:
+                            fecha_str = str(p[6])[:10]  # Tomar solo YYYY-MM-DD
+                            fecha_registro = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+                            
+                            if fecha_desde <= fecha_registro <= fecha_hasta:
+                                datos_temp.append(p)
+                    except (ValueError, IndexError):
+                        # Si hay error al parsear la fecha, incluir el producto
+                        datos_temp.append(p)
+                
+                datos_filtrados = datos_temp
+            except Exception as e:
+                print(f"Error al aplicar filtro de fecha: {e}")
+        
+        # Actualizar cache y vista
+        self.productos_data_cache = datos_filtrados
+        self._actualizar_tree_productos(datos_filtrados)
+    
+    def _actualizar_tree_productos(self, productos):
+        """Método interno para actualizar solo el tree sin tocar cache original"""
+        # Limpiar datos existentes
+        for item in self.productos_tree.get_children():
+            self.productos_tree.delete(item)
+        
+        # Insertar nuevos datos
+        for producto in productos:
+            self.productos_tree.insert("", "end", values=producto)
+        
+        # Actualizar contador
+        if hasattr(self, 'lbl_resultados_productos'):
+            total = len(self.productos_data_original)
+            mostrados = len(productos)
+            if total == mostrados:
+                self.lbl_resultados_productos.config(text=f"{mostrados} productos")
+            else:
+                self.lbl_resultados_productos.config(text=f"{mostrados} de {total} productos")
+    
+    def limpiar_filtros_productos(self):
+        """Limpia todos los filtros de productos"""
+        if hasattr(self, 'filtro_buscar_producto'):
+            self.filtro_buscar_producto.delete(0, 'end')
+        if hasattr(self, 'filtro_departamento'):
+            self.filtro_departamento.delete(0, 'end')
+        if hasattr(self, 'filtro_almacen_producto'):
+            self.filtro_almacen_producto.delete(0, 'end')
+        if hasattr(self, 'filtro_precio_min'):
+            self.filtro_precio_min.delete(0, 'end')
+        if hasattr(self, 'filtro_precio_max'):
+            self.filtro_precio_max.delete(0, 'end')
+        if hasattr(self, 'filtro_cantidad_min'):
+            self.filtro_cantidad_min.delete(0, 'end')
+        if hasattr(self, 'filtro_cantidad_max'):
+            self.filtro_cantidad_max.delete(0, 'end')
+        if hasattr(self, 'filtro_usuario_prod'):
+            self.filtro_usuario_prod.set("Todos")
+        if hasattr(self, 'fecha_habilitada_prod'):
+            self.fecha_habilitada_prod.set(False)
+        
+        # Restaurar todos los datos
+        self.productos_data_cache = list(self.productos_data_original)
+        self._actualizar_tree_productos(self.productos_data_cache)
+    
+    def aplicar_filtros_almacenes(self):
+        """Aplica todos los filtros activos a los almacenes"""
+        if not self.almacenes_data_original:
+            return
+        
+        datos_filtrados = list(self.almacenes_data_original)
+        
+        # Filtro de búsqueda por nombre
+        if hasattr(self, 'filtro_buscar_almacen'):
+            texto_buscar = self.filtro_buscar_almacen.get().strip().lower()
+            if texto_buscar:
+                datos_filtrados = [a for a in datos_filtrados 
+                                 if texto_buscar in str(a[1]).lower()]  # a[1] = nombre
+        
+        # Filtro por usuario (combobox)
+        if hasattr(self, 'filtro_usuario_alm_combo'):
+            usuario_seleccionado = self.filtro_usuario_alm_combo.get()
+            if usuario_seleccionado and usuario_seleccionado != "Todos":
+                datos_filtrados = [a for a in datos_filtrados 
+                                 if str(a[3]) == usuario_seleccionado]  # a[3] = ultimo_usuario_modificacion
+        
+        # Filtro por rango de fechas
+        if hasattr(self, 'fecha_habilitada_alm') and self.fecha_habilitada_alm.get():
+            try:
+                fecha_desde = self.filtro_fecha_desde_alm.get_date()
+                fecha_hasta = self.filtro_fecha_hasta_alm.get_date()
+                
+                datos_temp = []
+                for a in datos_filtrados:
+                    try:
+                        # a[2] = fecha_ultima_modificacion
+                        if a[2]:
+                            fecha_str = str(a[2])[:10]  # Tomar solo YYYY-MM-DD
+                            fecha_registro = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+                            
+                            if fecha_desde <= fecha_registro <= fecha_hasta:
+                                datos_temp.append(a)
+                    except (ValueError, IndexError):
+                        # Si hay error al parsear la fecha, incluir el almacén
+                        datos_temp.append(a)
+                
+                datos_filtrados = datos_temp
+            except Exception as e:
+                print(f"Error al aplicar filtro de fecha en almacenes: {e}")
+        
+        # Actualizar cache y vista
+        self.almacenes_data_cache = datos_filtrados
+        self._actualizar_tree_almacenes(datos_filtrados)
+    
+    def _actualizar_tree_almacenes(self, almacenes):
+        """Método interno para actualizar solo el tree sin tocar cache original"""
+        # Limpiar datos existentes
+        for item in self.almacenes_tree.get_children():
+            self.almacenes_tree.delete(item)
+        
+        # Insertar nuevos datos
+        for almacen in almacenes:
+            self.almacenes_tree.insert("", "end", values=almacen)
+        
+        # Actualizar contador
+        if hasattr(self, 'lbl_resultados_almacenes'):
+            total = len(self.almacenes_data_original)
+            mostrados = len(almacenes)
+            if total == mostrados:
+                self.lbl_resultados_almacenes.config(text=f"{mostrados} almacenes")
+            else:
+                self.lbl_resultados_almacenes.config(text=f"{mostrados} de {total} almacenes")
+    
+    def limpiar_filtros_almacenes(self):
+        """Limpia todos los filtros de almacenes"""
+        if hasattr(self, 'filtro_buscar_almacen'):
+            self.filtro_buscar_almacen.delete(0, 'end')
+        if hasattr(self, 'filtro_usuario_alm_combo'):
+            self.filtro_usuario_alm_combo.set("Todos")
+        if hasattr(self, 'fecha_habilitada_alm'):
+            self.fecha_habilitada_alm.set(False)
+        
+        # Restaurar todos los datos
+        self.almacenes_data_cache = list(self.almacenes_data_original)
+        self._actualizar_tree_almacenes(self.almacenes_data_cache)
+    
+    def toggle_filtros_productos(self):
+        """Muestra/oculta el panel de filtros de productos"""
+        if self.filtros_productos_visible:
+            # Ocultar panel de filtros
+            self.panel_filtros_productos.grid_remove()
+            self.filtros_productos_visible = False
+            # Mostrar botón flotante para volver a abrir
+            if hasattr(self, 'btn_mostrar_filtros_prod'):
+                self.btn_mostrar_filtros_prod.grid(row=0, column=0, sticky="nw", padx=10, pady=50)
+        else:
+            # Mostrar panel de filtros
+            self.panel_filtros_productos.grid()
+            self.filtros_productos_visible = True
+            # Ocultar botón flotante
+            if hasattr(self, 'btn_mostrar_filtros_prod'):
+                self.btn_mostrar_filtros_prod.grid_remove()
+    
+    def toggle_filtros_almacenes(self):
+        """Muestra/oculta el panel de filtros de almacenes"""
+        if self.filtros_almacenes_visible:
+            # Ocultar panel de filtros
+            self.panel_filtros_almacenes.grid_remove()
+            self.filtros_almacenes_visible = False
+            # Mostrar botón flotante para volver a abrir
+            if hasattr(self, 'btn_mostrar_filtros_alm'):
+                self.btn_mostrar_filtros_alm.grid(row=0, column=0, sticky="nw", padx=10, pady=50)
+        else:
+            # Mostrar panel de filtros
+            self.panel_filtros_almacenes.grid()
+            self.filtros_almacenes_visible = True
+            # Ocultar botón flotante
+            if hasattr(self, 'btn_mostrar_filtros_alm'):
+                self.btn_mostrar_filtros_alm.grid_remove()

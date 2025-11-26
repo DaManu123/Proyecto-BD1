@@ -5,6 +5,7 @@
 
 # Librerías requeridas:
 Pillow>=9.0.0               # Para manejo de imágenes (logo universitario)
+tkcalendar>=1.6.0           # Para selectores de fecha en filtros
 
 # Librerías estándar utilizadas (ya incluidas en Python):
 # - tkinter     (Interfaz gráfica de usuario)
