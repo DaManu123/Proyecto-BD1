@@ -150,63 +150,129 @@ Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un men
 
 ## Compilar a Ejecutable (.EXE)
 
-El proyecto incluye scripts para **recompilar** el ejecutable standalone. El ejecutable precompilado ya está disponible en `Release/SistemaInventario_UNISON/`.
+El proyecto incluye **DOS métodos** para compilar el ejecutable standalone.
 
-### ¿Cuándo recompilar?
+### ¿Cuándo compilar?
 
-Solo necesitas recompilar si:
+Solo necesitas compilar si:
 - Modificaste el código fuente
 - Actualizaste la base de datos
 - Quieres generar una nueva versión
 
-### Windows:
+---
+
+### 🔹 MÉTODO 1: Automático (Recomendado)
+
+Compilación completamente automatizada sin configuración manual.
+
+#### Windows:
 
 ```cmd
 # 1. Asegúrate de haber ejecutado setup.bat opción 1 primero
 setup.bat
 
-# 2. Ejecuta el script de compilación
-build_exe.bat
+# 2. Ejecuta el script de compilación automática
+compilar_auto.bat
 ```
 
-### Linux/macOS:
+**Proceso:**
+1. Instala/actualiza PyInstaller automáticamente
+2. Limpia compilaciones anteriores
+3. Compila con configuración optimizada (5-10 minutos)
+4. Organiza archivos en carpeta `Release/`
+5. Crea archivo `LEEME.txt` con instrucciones
 
-```bash
-# 1. Asegúrate de haber ejecutado setup.sh primero
-./setup.sh
+**Ventajas:**
+- ✅ Cero configuración manual
+- ✅ Configuración probada y funcional
+- ✅ Incluye TODAS las dependencias automáticamente
+- ✅ Genera carpeta lista para distribuir
 
-# 2. Dar permisos y ejecutar compilación
-chmod +x build_exe.sh
-./build_exe.sh
+---
+
+### 🔹 MÉTODO 2: Con Interfaz Gráfica (Para personalizar)
+
+Usa `auto-py-to-exe` con interfaz gráfica para configurar opciones avanzadas.
+
+#### Windows:
+
+```cmd
+# Ejecutar interfaz gráfica
+compilar_exe.bat
 ```
+
+**Proceso:**
+1. Se abre una ventana con configuración visual
+2. Puedes cargar el archivo `auto-py-to-exe-config.json` (configuración guardada)
+3. O configurar manualmente siguiendo las instrucciones en pantalla
+4. Click en "CONVERT .PY TO .EXE"
+
+**Ventajas:**
+- ✅ Control total sobre opciones de compilación
+- ✅ Previsualización de configuración
+- ✅ Útil para experimentar con diferentes configuraciones
+
+---
 
 ### Resultado de la Compilación:
 
-El script genera una carpeta `Release/` que contiene:
-- **SistemaInventario_UNISON/** - Carpeta con la aplicación completa
-  - **SistemaInventario_UNISON.exe** - Ejecutable principal
-  - **database/** - Base de datos SQLite
-  - **unilogo.gif** - Logo de la universidad
-  - **[archivos DLL y dependencias]** - Librerías necesarias
-- **LEEME.txt** - Instrucciones de uso
+Ambos métodos generan una carpeta `Release/` que contiene:
+
+```
+Release/
+├── SistemaInventario_UNISON/     (Carpeta completa del ejecutable)
+│   ├── SistemaInventario_UNISON.exe  (Ejecutable principal)
+│   ├── database/                     (Base de datos SQLite)
+│   │   └── InventarioBD_2.db
+│   ├── unilogo.gif                   (Logo UNISON)
+│   ├── _internal/                    (DLLs y dependencias)
+│   │   ├── python313.dll
+│   │   ├── sqlite3.dll
+│   │   ├── tk86t.dll
+│   │   ├── tcl86t.dll
+│   │   └── [más archivos...]
+│   └── [otros archivos necesarios]
+└── LEEME.txt                      (Instrucciones para usuarios)
+```
 
 **Tamaño aproximado:** ~100-150 MB
 
-### Distribución:
+---
 
-Para distribuir el programa:
-1. Comprime la carpeta `Release/` en un archivo ZIP
-2. Envía el ZIP a otros usuarios
-3. Los usuarios solo necesitan descomprimir y ejecutar el .exe
+### Distribución del Ejecutable:
 
-**⚠️ IMPORTANTE:** El ejecutable NO debe moverse fuera de su carpeta. Todos los archivos son necesarios.
+**Para distribuir el programa:**
 
-**Ventajas del ejecutable:**
-- ✅ No requiere Python instalado
-- ✅ No requiere instalar dependencias
-- ✅ Incluye todos los recursos necesarios
-- ✅ Base de datos accesible y modificable
-- ✅ Compatible con Windows 7, 8, 10, 11
+1. **Comprimir:**
+   ```cmd
+   # Comprime TODA la carpeta Release en un ZIP
+   Compress-Archive -Path Release -DestinationPath SistemaInventario_UNISON.zip
+   ```
+
+2. **Enviar:** El archivo ZIP completo a los usuarios
+
+3. **Instrucciones para usuarios finales:**
+   - Descomprimir el ZIP
+   - Abrir carpeta `SistemaInventario_UNISON`
+   - Ejecutar `SistemaInventario_UNISON.exe`
+
+---
+
+### ⚠️ IMPORTANTE - Requisitos del Ejecutable:
+
+- **NO mover** el .exe fuera de su carpeta
+- **Todos** los archivos en `_internal/` son necesarios
+- La base de datos debe estar en `database/InventarioBD_2.db`
+- Compatible con Windows 7, 8, 10, 11 (64-bit)
+
+### ✅ Ventajas del Ejecutable:
+
+- No requiere Python instalado
+- No requiere instalar dependencias
+- Incluye todos los recursos necesarios
+- Base de datos accesible y modificable
+- Funciona inmediatamente después de descomprimir
+- Portable entre diferentes PCs Windows
 
 ---
 

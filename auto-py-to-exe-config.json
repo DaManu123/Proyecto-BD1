@@ -1,0 +1,91 @@
+{
+  "version": "auto-py-to-exe-configuration_v1",
+  "pyinstallerOptions": [
+    {
+      "optionDest": "noconfirm",
+      "value": true
+    },
+    {
+      "optionDest": "filenames",
+      "value": "src/main.py"
+    },
+    {
+      "optionDest": "onefile",
+      "value": false
+    },
+    {
+      "optionDest": "console",
+      "value": false
+    },
+    {
+      "optionDest": "icon_file",
+      "value": "unilogo.gif"
+    },
+    {
+      "optionDest": "name",
+      "value": "SistemaInventario_UNISON"
+    },
+    {
+      "optionDest": "ascii",
+      "value": false
+    },
+    {
+      "optionDest": "clean_build",
+      "value": true
+    },
+    {
+      "optionDest": "strip",
+      "value": false
+    },
+    {
+      "optionDest": "noupx",
+      "value": true
+    },
+    {
+      "optionDest": "uac_admin",
+      "value": false
+    },
+    {
+      "optionDest": "uac_uiaccess",
+      "value": false
+    },
+    {
+      "optionDest": "win_private_assemblies",
+      "value": false
+    },
+    {
+      "optionDest": "win_no_prefer_redirects",
+      "value": false
+    },
+    {
+      "optionDest": "bootloader_ignore_signals",
+      "value": false
+    },
+    {
+      "optionDest": "datas",
+      "value": "database;database"
+    },
+    {
+      "optionDest": "datas",
+      "value": "unilogo.gif;."
+    },
+    {
+      "optionDest": "hiddenimports",
+      "value": [
+        "tkinter",
+        "tkinter.ttk",
+        "tkinter.messagebox",
+        "sqlite3",
+        "PIL",
+        "PIL._tkinter_finder",
+        "tkcalendar",
+        "hashlib",
+        "_tkinter"
+      ]
+    }
+  ],
+  "nonPyinstallerOptions": {
+    "increaseRecursionLimit": true,
+    "manualArguments": ""
+  }
+}
