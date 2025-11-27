@@ -1,0 +1,18 @@
+{
+    "python.defaultInterpreterPath": "C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "code-runner.executorMap": {
+        "python": "$env:PYTHONPATH=\"${workspaceFolder}/src\" ; & 'C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe'"
+    },
+    "code-runner.runInTerminal": true,
+    "code-runner.clearPreviousOutput": true,
+    "code-runner.saveFileBeforeRun": true,
+    "code-runner.executorMapByFileExtension": {
+        ".py": "$env:PYTHONPATH=\"${workspaceFolder}/src\" ; & 'C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe'"
+    },
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src"
+    ],
+    "code-runner.fileDirectoryAsCwd": true
+}
