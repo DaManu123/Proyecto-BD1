@@ -17,21 +17,18 @@ Sistema de gestion de inventario desarrollado con **Python/Tkinter** y **SQLite*
 
 ## Inicio Rapido (Para Nuevos Usuarios)
 
-### Metodo Automatico (Recomendado)
+### Instalacion y Configuracion Automatica
 
-El proyecto incluye scripts de instalacion automatica para Windows, Linux y macOS.
+El proyecto incluye un **script maestro unificado** que maneja instalacion, ejecucion, verificacion y configuracion automatica de VS Code.
 
 #### **Windows:**
 ```cmd
 # 1. Clonar el repositorio
 git clone https://github.com/DaManu123/Proyecto-BD1.git
-cd Proyecto-BD1/databases-inventory-app
+cd Proyecto-BD1\databases-inventory-app
 
-# 2. Ejecutar instalacion automatica
+# 2. Ejecutar script maestro
 setup.bat
-
-# 3. Ejecutar la aplicacion
-run.bat
 ```
 
 #### **Linux/macOS:**
@@ -40,17 +37,44 @@ run.bat
 git clone https://github.com/DaManu123/Proyecto-BD1.git
 cd Proyecto-BD1/databases-inventory-app
 
-# 2. Dar permisos de ejecucion a los scripts
-chmod +x setup.sh run.sh verificar_entorno.sh
+# 2. Dar permisos de ejecucion
+chmod +x setup.sh
 
-# 3. Ejecutar instalacion automatica
+# 3. Ejecutar script maestro
 ./setup.sh
-
-# 4. Ejecutar la aplicacion
-./run.sh
 ```
 
-### Metodo Manual
+### Menu del Script Maestro
+
+Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un menu interactivo:
+
+```
+====================================================
+  SISTEMA DE INVENTARIO - UNISON
+  Configuracion y Administracion
+====================================================
+
+  MENU PRINCIPAL:
+
+  1) Instalacion Completa (Primera Vez)
+  2) Ejecutar Aplicacion
+  3) Verificar Entorno
+  4) Reconfigurar VS Code
+  5) Reinstalar Dependencias
+  6) Salir
+
+====================================================
+```
+
+**Opcion 1** configura automaticamente:
+- Crea el entorno virtual `.venv`
+- Instala todas las dependencias
+- Configura VS Code con rutas portables
+- Verifica la instalacion
+
+**Importante:** La configuracion funciona en **cualquier equipo y carpeta** sin modificaciones manuales.
+
+### Metodo Manual (Opcional)
 
 Si prefieres configurar manualmente:
 
@@ -99,65 +123,84 @@ python src/main.py
 
 ---
 
-## Scripts Incluidos
+## Compatibilidad con IDEs
 
-El proyecto incluye varios scripts para facilitar la instalacion y ejecucion:
+Este proyecto esta **preconfigurado automaticamente** para funcionar en cualquier IDE. El script `setup.bat`/`setup.sh` configura VS Code automaticamente con rutas portables.
 
-### Windows (.bat)
-- **setup.bat** - Instalacion automatica del entorno
-- **run.bat** - Ejecutar la aplicacion directamente
-- **verificar_entorno.bat** - Diagnostico del entorno
+### Visual Studio Code (Configurado Automaticamente)
+Despues de ejecutar `setup.bat` opcion 1:
+1. Abre la carpeta `databases-inventory-app` en VS Code
+2. El interprete de Python ya esta configurado
+3. Usa **Code Runner**: Abre `src/main.py` y presiona el boton Run (▶️)
+4. O presiona **F5** para ejecutar con debugging
 
-### Linux/macOS (.sh)
-- **setup.sh** - Instalacion automatica del entorno
-- **run.sh** - Ejecutar la aplicacion directamente
-- **verificar_entorno.sh** - Diagnostico del entorno
+### PyCharm
+1. Abre el proyecto `databases-inventory-app`
+2. PyCharm detectara automaticamente el entorno virtual `.venv`
+3. Click derecho en `src/main.py` > Run
 
-**Nota:** En Linux/macOS, primero da permisos de ejecucion:
+### Otros IDEs
+El entorno virtual `.venv` funciona con cualquier IDE:
+- **Ruta Windows:** `.venv\Scripts\python.exe`
+- **Ruta Linux/Mac:** `.venv/bin/python`
+
+---
+
+## Formas de Ejecutar el Programa
+
+### Metodo 1: Script Maestro (Recomendado)
+
+**Windows:**
+```cmd
+setup.bat
+# Selecciona opcion 2: Ejecutar Aplicacion
+```
+
+**Linux/macOS:**
 ```bash
-chmod +x setup.sh run.sh verificar_entorno.sh
+./setup.sh
+# Selecciona opcion 2: Ejecutar Aplicacion
+```
+
+### Metodo 2: Desde VS Code
+1. Abre `src/main.py`
+2. Presiona el boton **Run** (▶️) de Code Runner
+3. O presiona **F5** para debugging
+
+### Metodo 3: Terminal Manual
+```bash
+# Activar entorno virtual primero
+# Windows:
+.venv\Scripts\Activate.ps1
+
+# Linux/Mac:
+source .venv/bin/activate
+
+# Ejecutar
+python src/main.py
 ```
 
 ---
 
-## Compatibilidad con IDEs
+## Verificar Instalacion
 
-Este proyecto es compatible con cualquier IDE de Python:
+Ejecuta el script maestro y selecciona **Opcion 3: Verificar Entorno**:
 
-### Visual Studio Code
-1. Abre la carpeta del proyecto
-2. Selecciona interprete: `.venv/Scripts/python.exe` (Windows) o `.venv/bin/python` (Linux/Mac)
-3. Presiona F5 para ejecutar
-
-### PyCharm
-1. Abre el proyecto
-2. Ve a: File > Settings > Project > Python Interpreter
-3. Selecciona: `.venv/Scripts/python.exe` (Windows) o `.venv/bin/python` (Linux/Mac)
-4. Click derecho en `src/main.py` > Run
-
-### IDLE
-1. Activa el entorno virtual en terminal
-2. Ejecuta: `python -m idlelib src/main.py`
-
-### Spyder
-1. Abre Spyder
-2. Ve a: Tools > Preferences > Python Interpreter
-3. Selecciona: Use the following Python interpreter
-4. Ruta: `.venv/Scripts/python.exe` (Windows) o `.venv/bin/python` (Linux/Mac)
-
-### Jupyter Notebook
-```bash
-# Activar entorno virtual
-source .venv/bin/activate  # Linux/Mac
-.venv\Scripts\activate     # Windows
-
-# Instalar kernel de Jupyter
-pip install ipykernel
-python -m ipykernel install --user --name=inventario-unison
-
-# Lanzar Jupyter
-jupyter notebook
+**Windows:**
+```cmd
+setup.bat
 ```
+
+**Linux/macOS:**
+```bash
+./setup.sh
+```
+
+El menu de verificacion muestra:
+- Directorio del proyecto y ruta del Python virtual
+- Version de Python instalada
+- Lista completa de paquetes
+- Estado de modulos requeridos (tkcalendar, Pillow, tkinter, sqlite3)
 
 ---
 
@@ -182,85 +225,16 @@ databases-inventory-app/
 ├── database/                  # Base de datos SQLite
 │   └── InventarioBD_2.db     # Se crea automaticamente
 │
-├── .vscode/                   # Configuracion de VS Code
-│   └── settings.json         # Interprete y Code Runner configurados
+├── .vscode/                   # Configuracion de VS Code (generada por setup)
+│   ├── settings.json         # Configuracion portable automatica
+│   └── launch.json           # Configuracion de debugging
 │
-├── setup.bat / setup.sh       # Scripts de instalacion
-├── run.bat / run.sh          # Scripts de ejecucion
-├── verificar_entorno.bat/sh  # Scripts de diagnostico
+├── setup.bat                 # Script maestro Windows
+├── setup.sh                  # Script maestro Linux/macOS
 ├── requirements.txt          # Dependencias del proyecto
 ├── README.md                 # Este archivo
 └── unilogo.gif              # Logo de la Universidad de Sonora
 ```
-
----
-
-## Formas de Ejecutar el Programa
-
-### Metodo 1: Scripts Automaticos (Mas Facil)
-
-**Windows:**
-```cmd
-run.bat
-```
-
-**Linux/macOS:**
-```bash
-./run.sh
-```
-
-### Metodo 2: Terminal (Todas las plataformas)
-
-**Con entorno virtual activado:**
-```bash
-# 1. Activar entorno virtual
-# Windows PowerShell:
-.venv\Scripts\Activate.ps1
-
-# Windows CMD:
-.venv\Scripts\activate.bat
-
-# Linux/Mac:
-source .venv/bin/activate
-
-# 2. Ejecutar
-python src/main.py
-```
-
-### Metodo 3: VS Code o cualquier IDE
-
-**Ejecutar con el boton Run:**
-- Abre `src/main.py`
-- Presiona `Ctrl+Alt+N` o clic en **Run Code**
-- El programa usa automaticamente el entorno virtual configurado
-
-**Ejecutar con Debugger (F5):**
-- Abre `src/main.py`
-- Presiona `F5`
-- Se ejecuta en modo depuracion con puntos de interrupcion
-
-**Para otras IDEs, consulta la seccion "Compatibilidad con IDEs" arriba.**
-
----
-
-## Verificar Instalacion
-
-Para diagnosticar problemas o verificar que todo este instalado correctamente:
-**Windows:**
-```cmd
-verificar_entorno.bat
-```
-
-**Linux/macOS:**
-```bash
-./verificar_entorno.sh
-```
-
-Este script comprueba:
-- Existencia del entorno virtual
-- Version de Python
-- Paquetes instalados
-- Importacion de modulos requeridos
 
 ---
 
