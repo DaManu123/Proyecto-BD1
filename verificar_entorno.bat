@@ -10,12 +10,12 @@ echo  VERIFICACION DEL ENTORNO PYTHON
 echo ========================================
 echo.
 
-REM Obtener la ruta del workspace
-set "WORKSPACE_ROOT=%~dp0.."
-set "VENV_PATH=%WORKSPACE_ROOT%\.venv\Scripts\python.exe"
+REM Obtener la ruta del directorio actual (donde esta el script)
+set "PROJECT_ROOT=%~dp0"
+set "VENV_PATH=%PROJECT_ROOT%.venv\Scripts\python.exe"
 
-echo [1/5] Verificando ubicacion del workspace...
-echo Workspace: %WORKSPACE_ROOT%
+echo [1/5] Verificando ubicacion del proyecto...
+echo Directorio del proyecto: %PROJECT_ROOT%
 echo.
 
 echo [2/5] Verificando entorno virtual...
@@ -86,8 +86,19 @@ echo ========================================
 echo  VERIFICACION COMPLETADA
 echo ========================================
 echo.
-echo Si todos los modulos muestran [OK], el entorno esta configurado correctamente.
-echo Puedes ejecutar la aplicacion con: run_with_venv.bat
+if errorlevel 1 (
+    echo [!] Algunos modulos tienen errores. Revisa los mensajes anteriores.
+    echo.
+    echo Para instalar dependencias faltantes:
+    echo   1. Activa el entorno virtual: .venv\Scripts\activate
+    echo   2. Instala dependencias: pip install -r requirements.txt
+) else (
+    echo [OK] Todos los modulos estan correctamente instalados.
+    echo.
+    echo Para ejecutar la aplicacion:
+    echo   - Desde terminal: python src\main.py
+    echo   - Desde VS Code: Presiona F5 o el boton Run
+)
 echo.
 
 pause
