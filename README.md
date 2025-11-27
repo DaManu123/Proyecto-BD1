@@ -100,41 +100,51 @@ python src/main.py
 
 ## 🔧 Solución de Problemas
 
-### Error: `ModuleNotFoundError: No module named 'tkcalendar'`
+### ❌ Error: `ModuleNotFoundError: No module named 'tkcalendar'`
 
-Este error ocurre cuando:
-1. El entorno virtual no está activado
-2. Las dependencias no están instaladas
-3. VS Code está usando el intérprete de Python incorrecto
+Este error ocurre cuando VS Code ejecuta el código con un intérprete de Python incorrecto (del sistema en lugar del entorno virtual).
 
-**Solución:**
+**Causa:** La extensión Code Runner ejecuta el comando `python` del PATH del sistema, que no tiene las dependencias instaladas.
 
-1. **Verificar que el entorno virtual esté activado:**
-   ```powershell
-   # Debería aparecer (.venv) al inicio del prompt
-   (.venv) PS C:\...\databases-inventory-app>
-   ```
+**✅ Solución (YA IMPLEMENTADA):**
 
-2. **Instalar dependencias:**
-   ```powershell
-   pip install tkcalendar pillow
-   ```
+El proyecto está configurado para usar automáticamente el entorno virtual. El archivo `.vscode/settings.json` contiene:
 
-3. **Verificar el intérprete en VS Code:**
+```json
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "code-runner.executorMap": {
+        "python": "${workspaceFolder}/.venv/Scripts/python.exe -u"
+    },
+    "code-runner.runInTerminal": true
+}
+```
+
+**Si aún tienes el error:**
+
+1. **Recargar VS Code:**
+   - Presiona `Ctrl+Shift+P`
+   - Escribe "Developer: Reload Window"
+   - Presiona Enter
+
+2. **Verificar el intérprete:**
    - Presiona `Ctrl+Shift+P`
    - Escribe "Python: Select Interpreter"
-   - Selecciona: `C:\...\Proyecto bd1\.venv\Scripts\python.exe`
+   - Selecciona: `.venv\Scripts\python.exe` (debe tener una marca ✓)
 
-4. **Verificar configuración de VS Code:**
-   El archivo `.vscode/settings.json` debe contener:
-   ```json
-   {
-       "python.defaultInterpreterPath": "C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe",
-       "code-runner.executorMap": {
-           "python": "$env:PYTHONPATH=\"${workspaceFolder}/src\" ; & 'C:/Users/ManuelPC/.../Proyecto bd1/.venv/Scripts/python.exe'"
-       }
-   }
+3. **Reinstalar dependencias (si es necesario):**
+   ```powershell
+   .venv\Scripts\Activate.ps1
+   pip install -r requirements.txt
    ```
+
+4. **Verificar instalación:**
+   ```powershell
+   & ".venv\Scripts\python.exe" -c "import tkcalendar; print('OK:', tkcalendar.__version__)"
+   # Debería mostrar: OK: 1.5.0 (o superior)
+   ```
+
+📖 Para más detalles, consulta el archivo `TROUBLESHOOTING.md`
 
 ### Error: Problemas con imports relativos
 
