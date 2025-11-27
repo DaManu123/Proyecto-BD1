@@ -109,7 +109,6 @@ databases-inventory-app/
 │
 ├── requirements.txt          # Dependencias del proyecto
 ├── README.md                 # Este archivo
-├── TROUBLESHOOTING.md        # Guia de solucion de problemas
 ├── verificar_entorno.bat     # Script de diagnostico (Windows)
 └── unilogo.gif              # Logo de la Universidad de Sonora
 ```
@@ -287,7 +286,7 @@ chmod 755 database
 [OK] sqlite3 version: 3.x.x
 ```
 
-**Mas ayuda:** Consulta `TROUBLESHOOTING.md` para soluciones detalladas.
+
 
 ---
 
@@ -409,8 +408,7 @@ Base de Datos I - 2025
 
 ### Recursos Disponibles
 1. **README.md** - Guia de instalacion y uso
-2. **TROUBLESHOOTING.md** - Solucion de problemas
-3. **verificar_entorno.bat** - Diagnostico automatico (Windows)
+2. **verificar_entorno.bat** - Diagnostico automatico (Windows)
 
 ---
 
