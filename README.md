@@ -1,23 +1,23 @@
-﻿# ðŸŽ“ Sistema de Inventario - Universidad de Sonora
+﻿# Sistema de Inventario - Universidad de Sonora
 
-Sistema de gestiÃ³n de inventario desarrollado con **Python/Tkinter** y **SQLite** para la Universidad de Sonora. Incluye autenticaciÃ³n por roles, interfaz grÃ¡fica moderna con tema UNISON, y gestiÃ³n completa de productos y almacenes.
+Sistema de gestion de inventario desarrollado con **Python/Tkinter** y **SQLite** para la Universidad de Sonora. Incluye autenticacion por roles, interfaz grafica moderna con tema UNISON, y gestion completa de productos y almacenes.
 
 ---
 
-## ðŸ“‹ Requisitos del Sistema
+## Requisitos del Sistema
 
 - **Python 3.7 o superior** (desarrollado y probado con Python 3.13.7)
 - **Sistema Operativo:** Windows, Linux o macOS
 - **Espacio en disco:** ~50 MB (incluye dependencias)
 - **Dependencias externas:**
-  - `Pillow>=9.0.0` - Manejo de imÃ¡genes
+  - `Pillow>=9.0.0` - Manejo de imagenes
   - `tkcalendar>=1.6.0` - Selectores de fecha
 
 ---
 
-## âš¡ Inicio RÃ¡pido (Para Nuevos Usuarios)
+## Inicio Rapido (Para Nuevos Usuarios)
 
-### OpciÃ³n A: InstalaciÃ³n AutomÃ¡tica (Recomendado)
+### Opcion A: Instalacion Automatica (Recomendado)
 
 Si eres nuevo en el proyecto, sigue estos pasos:
 
@@ -59,66 +59,66 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### **5. Ejecutar la AplicaciÃ³n**
+#### **5. Ejecutar la Aplicacion**
 ```bash
 python src/main.py
 ```
 
-### OpciÃ³n B: EjecuciÃ³n con VS Code
+### Opcion B: Ejecucion con VS Code
 
 Si usas **Visual Studio Code**:
 
 1. **Abrir el proyecto:**
    - Abre VS Code
-   - `Archivo > Abrir Carpeta` â†’ Selecciona `databases-inventory-app`
+   - `Archivo > Abrir Carpeta` -> Selecciona `databases-inventory-app`
 
-2. **Seleccionar intÃ©rprete Python:**
+2. **Seleccionar interprete Python:**
    - Presiona `Ctrl+Shift+P`
    - Escribe: `Python: Select Interpreter`
    - Selecciona: `.venv/Scripts/python.exe` (Windows) o `.venv/bin/python` (Linux/Mac)
 
 3. **Ejecutar:**
    - Abre `src/main.py`
-   - Presiona `F5` o haz clic en el botÃ³n **â–¶ï¸ Run**
+   - Presiona `F5` o haz clic en el boton **Run**
 
 ---
 
-## ðŸ“ Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 databases-inventory-app/
-â”‚
-â”œâ”€â”€ src/                        # CÃ³digo fuente
-â”‚   â”œâ”€â”€ main.py                # ðŸš€ Punto de entrada de la aplicaciÃ³n
-â”‚   â”œâ”€â”€ controllers/           # LÃ³gica de negocio
-â”‚   â”‚   â””â”€â”€ integrated_controller_simple.py
-â”‚   â”œâ”€â”€ models/                # Modelos de datos y BD
-â”‚   â”‚   â””â”€â”€ database.py
-â”‚   â”œâ”€â”€ views/                 # Interfaces de usuario
-â”‚   â”‚   â”œâ”€â”€ login_view_split.py
-â”‚   â”‚   â””â”€â”€ main_view.py
-â”‚   â””â”€â”€ utils/                 # Utilidades y configuraciÃ³n
-â”‚       â”œâ”€â”€ config.py
-â”‚       â””â”€â”€ theme_unison.py    # Tema personalizado UNISON
-â”‚
-â”œâ”€â”€ database/                  # Base de datos SQLite
-â”‚   â””â”€â”€ InventarioBD_2.db     # Se crea automÃ¡ticamente
-â”‚
-â”œâ”€â”€ .vscode/                   # ConfiguraciÃ³n de VS Code
-â”‚   â””â”€â”€ settings.json         # IntÃ©rprete y Code Runner configurados
-â”‚
-â”œâ”€â”€ requirements.txt          # ðŸ“¦ Dependencias del proyecto
-â”œâ”€â”€ README.md                 # ðŸ“– Este archivo
-â”œâ”€â”€ TROUBLESHOOTING.md        # ðŸ”§ GuÃ­a de soluciÃ³n de problemas
-â”œâ”€â”€ verificar_entorno.bat     # ðŸ› ï¸ Script de diagnÃ³stico (Windows)
-â””â”€â”€ unilogo.gif              # Logo de la Universidad de Sonora
+|
+├── src/                        # Codigo fuente
+│   ├── main.py                # Punto de entrada de la aplicacion
+│   ├── controllers/           # Logica de negocio
+│   │   └── integrated_controller_simple.py
+│   ├── models/                # Modelos de datos y BD
+│   │   └── database.py
+│   ├── views/                 # Interfaces de usuario
+│   │   ├── login_view_split.py
+│   │   └── main_view.py
+│   └── utils/                 # Utilidades y configuracion
+│       ├── config.py
+│       └── theme_unison.py    # Tema personalizado UNISON
+│
+├── database/                  # Base de datos SQLite
+│   └── InventarioBD_2.db     # Se crea automaticamente
+│
+├── .vscode/                   # Configuracion de VS Code
+│   └── settings.json         # Interprete y Code Runner configurados
+│
+├── requirements.txt          # Dependencias del proyecto
+├── README.md                 # Este archivo
+├── TROUBLESHOOTING.md        # Guia de solucion de problemas
+├── verificar_entorno.bat     # Script de diagnostico (Windows)
+└── unilogo.gif              # Logo de la Universidad de Sonora
 ```
 
 ---
 
-## ðŸŽ® Formas de Ejecutar el Programa
+## Formas de Ejecutar el Programa
 
-### MÃ©todo 1: Terminal (Todas las plataformas)
+### Metodo 1: Terminal (Todas las plataformas)
 
 **Con entorno virtual activado:**
 ```bash
@@ -136,96 +136,96 @@ source .venv/bin/activate
 python src/main.py
 ```
 
-### MÃ©todo 2: VS Code (Recomendado)
+### Metodo 2: VS Code (Recomendado)
 
-**Ejecutar con el botÃ³n Run (â–¶ï¸):**
+**Ejecutar con el boton Run:**
 - Abre `src/main.py`
-- Presiona `Ctrl+Alt+N` o clic en **â–¶ï¸ Run Code**
-- El programa usa automÃ¡ticamente el entorno virtual configurado
+- Presiona `Ctrl+Alt+N` o clic en **Run Code**
+- El programa usa automaticamente el entorno virtual configurado
 
 **Ejecutar con Debugger (F5):**
 - Abre `src/main.py`
 - Presiona `F5`
-- Se ejecuta en modo depuraciÃ³n con puntos de interrupciÃ³n
+- Se ejecuta en modo depuracion con puntos de interrupcion
 
-### MÃ©todo 3: Script de DiagnÃ³stico (Solo Windows)
+### Metodo 3: Script de Diagnostico (Solo Windows)
 
-Para verificar que todo estÃ© configurado correctamente:
+Para verificar que todo este configurado correctamente:
 ```cmd
 verificar_entorno.bat
 ```
 
 Este script comprueba:
-- âœ… Existencia del entorno virtual
-- âœ… VersiÃ³n de Python
-- âœ… Paquetes instalados
-- âœ… ImportaciÃ³n de mÃ³dulos requeridos
+- Existencia del entorno virtual
+- Version de Python
+- Paquetes instalados
+- Importacion de modulos requeridos
 
 ---
 
-## ðŸ”‘ Credenciales de Acceso
+## Credenciales de Acceso
 
-La aplicaciÃ³n incluye **3 usuarios predeterminados** con diferentes niveles de acceso:
+La aplicacion incluye **3 usuarios predeterminados** con diferentes niveles de acceso:
 
-| Usuario | ContraseÃ±a | Rol | Permisos |
+| Usuario | Contrasena | Rol | Permisos |
 |---------|------------|-----|----------|
 | **Admin** | admin23 | ADMIN | Acceso completo (productos + almacenes + usuarios) |
-| **productos** | producto19 | PRODUCTOS | GestiÃ³n de productos Ãºnicamente |
-| **almacen** | almacen11 | ALMACEN | GestiÃ³n de almacenes Ãºnicamente |
+| **productos** | producto19 | PRODUCTOS | Gestion de productos unicamente |
+| **almacen** | almacen11 | ALMACEN | Gestion de almacenes unicamente |
 
-**Nota:** Las contraseÃ±as se almacenan con hash SHA256 en la base de datos.
+**Nota:** Las contrasenas se almacenan con hash SHA256 en la base de datos.
 
 ---
 
-## ðŸŽ¨ CaracterÃ­sticas Principales
+## Caracteristicas Principales
 
-### Sistema de AutenticaciÃ³n
-- âœ… Login con pantalla dividida personalizada
-- âœ… ValidaciÃ³n de credenciales con hash SHA256
-- âœ… Control de acceso basado en roles (RBAC)
-- âœ… Registro de Ãºltimo inicio de sesiÃ³n
+### Sistema de Autenticacion
+- Login con pantalla dividida personalizada
+- Validacion de credenciales con hash SHA256
+- Control de acceso basado en roles (RBAC)
+- Registro de ultimo inicio de sesion
 
-### GestiÃ³n de Productos
-- âœ… CRUD completo (Crear, Leer, Actualizar, Eliminar)
-- âœ… Filtros avanzados por:
+### Gestion de Productos
+- CRUD completo (Crear, Leer, Actualizar, Eliminar)
+- Filtros avanzados por:
   - Nombre del producto
   - Rango de precios
   - Rango de cantidades
-  - Fechas de modificaciÃ³n
-  - Usuario que realizÃ³ cambios
-- âœ… Ordenamiento por columnas (clic en encabezados)
-- âœ… Auto-generaciÃ³n de IDs
-- âœ… ValidaciÃ³n de datos en tiempo real
+  - Fechas de modificacion
+  - Usuario que realizo cambios
+- Ordenamiento por columnas (clic en encabezados)
+- Auto-generacion de IDs
+- Validacion de datos en tiempo real
 
-### GestiÃ³n de Almacenes
-- âœ… AdministraciÃ³n de bodegas/almacenes
-- âœ… RelaciÃ³n con productos
-- âœ… Filtros por nombre y fechas
-- âœ… AuditorÃ­a de cambios
+### Gestion de Almacenes
+- Administracion de bodegas/almacenes
+- Relacion con productos
+- Filtros por nombre y fechas
+- Auditoria de cambios
 
 ### Interfaz de Usuario
-- âœ… Tema personalizado con **colores oficiales UNISON**:
+- Tema personalizado con **colores oficiales UNISON**:
   - Azul UNISON: `#00529e`
   - Dorado UNISON: `#f8bb00`
-- âœ… Botones redondeados con efectos hover
-- âœ… Campos de entrada con bordes suavizados
-- âœ… Selector de fechas con calendario visual
-- âœ… Panel de filtros colapsable/expandible
-- âœ… DiseÃ±o responsivo
+- Botones redondeados con efectos hover
+- Campos de entrada con bordes suavizados
+- Selector de fechas con calendario visual
+- Panel de filtros colapsable/expandible
+- Diseño responsivo
 
 ---
 
-## ðŸ”§ SoluciÃ³n de Problemas Comunes
+## Solucion de Problemas Comunes
 
-### âŒ Error: `ModuleNotFoundError: No module named 'tkcalendar'`
+### Error: `ModuleNotFoundError: No module named 'tkcalendar'`
 
-**Causa:** El intÃ©rprete de Python no encuentra el mÃ³dulo porque no estÃ¡ usando el entorno virtual.
+**Causa:** El interprete de Python no encuentra el modulo porque no esta usando el entorno virtual.
 
-**SoluciÃ³n:**
+**Solucion:**
 
-1. **Verificar que el entorno virtual estÃ© activado:**
+1. **Verificar que el entorno virtual este activado:**
    ```bash
-   # DeberÃ­as ver (.venv) al inicio del prompt
+   # Deberias ver (.venv) al inicio del prompt
    (.venv) PS C:\...\databases-inventory-app>
    ```
 
@@ -234,22 +234,22 @@ La aplicaciÃ³n incluye **3 usuarios predeterminados** con diferentes niveles d
    pip install -r requirements.txt
    ```
 
-3. **En VS Code - Seleccionar intÃ©rprete correcto:**
+3. **En VS Code - Seleccionar interprete correcto:**
    - Presiona `Ctrl+Shift+P`
    - Escribe: `Python: Select Interpreter`
-   - Selecciona: `.venv\Scripts\python.exe` âœ“
+   - Selecciona: `.venv\Scripts\python.exe`
 
-4. **Verificar instalaciÃ³n:**
+4. **Verificar instalacion:**
    ```bash
    python -c "import tkcalendar; print('OK:', tkcalendar.__version__)"
    # Debe mostrar: OK: 1.5.0 (o superior)
    ```
 
-### âŒ Error: `tkinter.TclError` o interfaz no se muestra
+### Error: `tkinter.TclError` o interfaz no se muestra
 
-**Causa:** `tkinter` no estÃ¡ instalado correctamente.
+**Causa:** `tkinter` no esta instalado correctamente.
 
-**SoluciÃ³n:**
+**Solucion:**
 
 - **Windows/Mac:** `tkinter` viene incluido con Python
 - **Linux (Ubuntu/Debian):**
@@ -261,11 +261,11 @@ La aplicaciÃ³n incluye **3 usuarios predeterminados** con diferentes niveles d
   sudo dnf install python3-tkinter
   ```
 
-### âŒ La base de datos no se crea
+### La base de datos no se crea
 
 **Causa:** Permisos insuficientes en la carpeta `database/`.
 
-**SoluciÃ³n:**
+**Solucion:**
 ```bash
 # Crear carpeta manualmente
 mkdir database
@@ -274,9 +274,9 @@ mkdir database
 chmod 755 database
 ```
 
-### ðŸ› ï¸ Script de DiagnÃ³stico AutomÃ¡tico
+### Script de Diagnostico Automatico
 
-**Windows:** Ejecuta `verificar_entorno.bat` para un diagnÃ³stico completo del entorno.
+**Windows:** Ejecuta `verificar_entorno.bat` para un diagnostico completo del entorno.
 
 **Resultado esperado:**
 ```
@@ -287,48 +287,48 @@ chmod 755 database
 [OK] sqlite3 version: 3.x.x
 ```
 
-ðŸ“– **MÃ¡s ayuda:** Consulta `TROUBLESHOOTING.md` para soluciones detalladas.
+**Mas ayuda:** Consulta `TROUBLESHOOTING.md` para soluciones detalladas.
 
 ---
 
-## ðŸ“Š Base de Datos
+## Base de Datos
 
-### InformaciÃ³n General
+### Informacion General
 - **Motor:** SQLite 3
-- **UbicaciÃ³n:** `database/InventarioBD_2.db`
-- **CreaciÃ³n:** AutomÃ¡tica al iniciar la aplicaciÃ³n por primera vez
-- **TamaÃ±o inicial:** ~20 KB
+- **Ubicacion:** `database/InventarioBD_2.db`
+- **Creacion:** Automatica al iniciar la aplicacion por primera vez
+- **Tamano inicial:** ~20 KB
 
 ### Esquema de Tablas
 
 **Tabla `productos`:**
-- `id` (TEXT) - Identificador Ãºnico
+- `id` (TEXT) - Identificador unico
 - `nombre` (TEXT) - Nombre del producto
 - `precio` (REAL) - Precio unitario
 - `cantidad` (INTEGER) - Cantidad en stock
-- `departamento` (TEXT) - Departamento/categorÃ­a
-- `almacen` (TEXT) - ID del almacÃ©n asociado
+- `departamento` (TEXT) - Departamento/categoria
+- `almacen` (TEXT) - ID del almacen asociado
 - `fecha_ultima_modificacion` (TEXT) - Timestamp
-- `ultimo_usuario_modificacion` (TEXT) - Usuario que modificÃ³
+- `ultimo_usuario_modificacion` (TEXT) - Usuario que modifico
 
 **Tabla `almacenes`:**
-- `id` (TEXT) - Identificador Ãºnico
-- `nombre` (TEXT) - Nombre del almacÃ©n
+- `id` (TEXT) - Identificador unico
+- `nombre` (TEXT) - Nombre del almacen
 - `fecha_ultima_modificacion` (TEXT)
 - `ultimo_usuario_modificacion` (TEXT)
 
 **Tabla `usuarios`:**
 - `id` (INTEGER) - ID autoincremental
 - `nombre` (TEXT) - Nombre de usuario
-- `contraseÃ±a` (TEXT) - Hash SHA256
+- `contrasena` (TEXT) - Hash SHA256
 - `rol` (TEXT) - ADMIN, PRODUCTOS o ALMACEN
 - `ultimo_inicio_sesion` (TEXT)
 
-### Respaldo y RestauraciÃ³n
+### Respaldo y Restauracion
 
 **Crear respaldo:**
 ```bash
-# La base de datos es un archivo Ãºnico
+# La base de datos es un archivo unico
 cp database/InventarioBD_2.db database/backup_$(date +%Y%m%d).db
 ```
 
@@ -339,53 +339,81 @@ cp database/backup_YYYYMMDD.db database/InventarioBD_2.db
 
 ---
 
-## ðŸ—ï¸ Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
-### PatrÃ³n MVC (Modelo-Vista-Controlador)
+### Patron MVC (Modelo-Vista-Controlador)
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚   VIEWS     â”‚ â† Interfaz grÃ¡fica (Tkinter)
-â”‚  (Vista)    â”‚
-â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
-       â”‚
-â”Œâ”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
-â”‚ CONTROLLERS â”‚ â† LÃ³gica de negocio y validaciÃ³n
-â”‚ (Controladorâ”‚
-â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
-       â”‚
-â”Œâ”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
-â”‚   MODELS    â”‚ â† Acceso a datos (SQLite)
-â”‚  (Modelo)   â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌─────────────┐
+│   VIEWS     │ <- Interfaz grafica (Tkinter)
+│  (Vista)    │
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│ CONTROLLERS │ <- Logica de negocio y validacion
+│ (Controlador│
+└──────┬──────┘
+       │
+┌──────▼──────┐
+│   MODELS    │ <- Acceso a datos (SQLite)
+│  (Modelo)   │
+└─────────────┘
 ```
 
 **Ventajas:**
-- âœ… SeparaciÃ³n de responsabilidades
-- âœ… CÃ³digo mantenible y escalable
-- âœ… FÃ¡cil testeo de componentes
-- âœ… ReutilizaciÃ³n de cÃ³digo
+- Separacion de responsabilidades
+- Codigo mantenible y escalable
+- Facil testeo de componentes
+- Reutilizacion de codigo
 
 ---
 
-## ðŸ‘¤ Autor
+## Informacion del Proyecto
 
+### Autor
 **Manuel Munguia Rubio**  
-IngenierÃ­a en Sistemas de InformaciÃ³n  
+Ingenieria en Sistemas de Informacion  
 Universidad de Sonora
 
-## ðŸ“ Notas Adicionales
+### Curso
+Base de Datos I - 2025
 
-- El proyecto utiliza la arquitectura MVC (Modelo-Vista-Controlador)
-- Los colores del tema siguen la identidad corporativa de la Universidad de Sonora
-- La base de datos incluye triggers y auditorÃ­a automÃ¡tica de cambios
-- Todos los campos de formulario tienen validaciÃ³n en tiempo real
+### Tecnologias Utilizadas
+- **Lenguaje:** Python 3.13.7
+- **GUI Framework:** Tkinter
+- **Base de Datos:** SQLite 3
+- **Control de Versiones:** Git & GitHub
+- **IDE:** Visual Studio Code
 
-## ðŸ†˜ Soporte
+### Repositorio
+[github.com/DaManu123/Proyecto-BD1](https://github.com/DaManu123/Proyecto-BD1)
 
-Si encuentras problemas:
-1. Verifica que el entorno virtual estÃ© activado
-2. Confirma que todas las dependencias estÃ©n instaladas: `pip list`
-3. Revisa la configuraciÃ³n de VS Code en `.vscode/settings.json`
-4. Verifica la versiÃ³n de Python: `python --version` (debe ser 3.7+)
+---
+
+## Notas Tecnicas
+
+### Estandares de Codigo
+- **Arquitectura:** MVC (Modelo-Vista-Controlador)
+- **Estilo:** PEP 8
+- **Encoding:** UTF-8
+- **Seguridad:** Hash SHA256 para contrasenas
+
+### Caracteristicas Tecnicas
+- Triggers SQLite para auditoria automatica
+- Validacion de datos en tiempo real
+- Manejo de errores con try-except
+
+---
+
+## Soporte
+
+### Recursos Disponibles
+1. **README.md** - Guia de instalacion y uso
+2. **TROUBLESHOOTING.md** - Solucion de problemas
+3. **verificar_entorno.bat** - Diagnostico automatico (Windows)
+
+---
+
+**Ultima actualizacion:** Noviembre 2025  
+**Version:** 1.0.0
 
