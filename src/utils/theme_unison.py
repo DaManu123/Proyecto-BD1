@@ -39,9 +39,23 @@ ANCHO_BOTON_ESTANDAR = 140
 ALTO_BOTON_ESTANDAR = 35
 ANCHO_ENTRY_ESTANDAR = 200
 
+import tkinter as tk
 
+class EntryRedondeadoContainer(tk.Frame):
+    """Contenedor personalizado para Entry redondeado con atributo entry definido"""
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
+        self.entry: tk.Entry = None  # Tipo explícito para Pylance
 
-
+class BotonRedondeadoContainer(tk.Frame):
+    """Contenedor personalizado para Botón redondeado con atributos definidos"""
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
+        self.canvas: tk.Canvas = None  # Canvas del botón
+    
+    def config(self, command=None, **kwargs):
+        """Método config para cambiar el comando del botón"""
+        pass  # Se sobrescribirá después
 
 def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwargs):
     """
@@ -52,8 +66,8 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
     # Extraer parámetros específicos
     show = kwargs.pop('show', None)
     
-    # Frame contenedor
-    container = tk.Frame(parent, bg=parent['bg'] if isinstance(parent, tk.Frame) else COLOR_FONDO_BLANCO)
+    # Frame contenedor con tipo explícito
+    container = EntryRedondeadoContainer(parent, bg=parent['bg'] if isinstance(parent, tk.Frame) else COLOR_FONDO_BLANCO)
     
     # Canvas para el borde redondeado
     canvas = tk.Canvas(
@@ -120,7 +134,7 @@ def crear_entry_redondeado(parent, width=300, height=40, corner_radius=8, **kwar
     entry.bind('<FocusOut>', on_focus_out)
     
     # Guardar referencia al entry en el container
-    setattr(container, 'entry', entry)
+    container.entry = entry
     
     return container
 
@@ -270,8 +284,8 @@ def crear_boton_redondeado_canvas(parent, texto, comando=None, width=200, height
         hover_color = COLOR_AZUL_UNISON_OSCURO
         text_color = COLOR_TEXTO_BLANCO
     
-    # Frame contenedor
-    container = tk.Frame(parent, bg=parent['bg'] if isinstance(parent, tk.Frame) else COLOR_FONDO_BLANCO)
+    # Frame contenedor con tipo explícito
+    container = BotonRedondeadoContainer(parent, bg=parent['bg'] if isinstance(parent, tk.Frame) else COLOR_FONDO_BLANCO)
     
     # Canvas para el botón
     canvas = tk.Canvas(
@@ -354,14 +368,14 @@ def crear_boton_redondeado_canvas(parent, texto, comando=None, width=200, height
     canvas.bind('<Button-1>', on_click)
     
     # Agregar método config para compatibilidad con el controlador
-    def config(command=None, **kwargs):
+    def config_method(command=None, **kwargs):
         if command:
             # Desvincular el evento anterior y vincular el nuevo
             canvas.unbind('<Button-1>')
             canvas.bind('<Button-1>', lambda e: command())
     
-    # Agregar el método config al container
-    setattr(container, 'config', config)
-    setattr(container, 'canvas', canvas)
+    # Agregar atributos al container
+    container.canvas = canvas
+    container.config = config_method
     
     return container
