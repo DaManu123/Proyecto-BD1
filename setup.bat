@@ -308,7 +308,7 @@ echo     "python.terminal.activateEnvInCurrentTerminal": true,
 echo.    
 echo     // Configuracion de Code Runner - Compatible con Run Python File
 echo     "code-runner.executorMap": {
-echo         "python": "^& \"$workspaceRoot/.venv/Scripts/python.exe\" $fullFileName"
+echo         "python": "^& \"${workspaceFolder}/.venv/Scripts/python.exe\" \"$fullFileName\""
 echo     },
 echo     "code-runner.runInTerminal": true,
 echo     "code-runner.clearPreviousOutput": true,
@@ -319,7 +319,8 @@ echo     // Configuracion adicional para ejecucion de Python
 echo     "python.envFile": "${workspaceFolder}/.env",
 echo     "terminal.integrated.env.windows": {
 echo         "PYTHONPATH": "${workspaceFolder}/src"
-echo     }
+echo     },
+echo     "terminal.integrated.defaultProfile.windows": "PowerShell"
 echo }
 ) > "%SETTINGS_FILE%"
 

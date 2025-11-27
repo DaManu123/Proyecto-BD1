@@ -427,7 +427,9 @@ Ejecuta `setup.bat` (Windows) o `./setup.sh` (Linux/macOS) y selecciona **Opcion
 
 ### Problemas con Code Runner en VS Code
 
-**Sintoma:** Code Runner no ejecuta o da errores de sintaxis PowerShell.
+**Sintoma:** Code Runner no ejecuta o da errores de sintaxis PowerShell (`^&`).
+
+**Causa:** Configuracion incorrecta de Code Runner mezclando sintaxis de CMD y PowerShell.
 
 **Solucion:**
 ```bash
@@ -437,7 +439,13 @@ setup.bat
 # Luego reinicia VS Code
 ```
 
-Esto regenerara `settings.json` y `launch.json` con la configuracion correcta para que Code Runner funcione igual que "Run Python File".
+Esto regenerara `settings.json` y `launch.json` con la configuracion correcta para PowerShell.
+
+**Para mas detalles:** Consulta **GUIA_CONFIGURACION_VSCODE.md** que incluye:
+- Explicacion detallada del problema `^&`
+- Diferencias entre shells (PowerShell, CMD, Bash)
+- Plantillas de configuracion para diferentes entornos
+- Checklist completo de verificacion
 
 
 
@@ -561,7 +569,12 @@ Base de Datos I - 2025
 
 ### Recursos Disponibles
 1. **README.md** - Guia de instalacion y uso
-2. **verificar_entorno.bat** - Diagnostico automatico (Windows)
+2. **GUIA_CONFIGURACION_VSCODE.md** - Guia detallada de configuracion de VS Code y solucion de errores comunes
+3. **setup.bat / setup.sh** - Script de instalacion y configuracion automatica
+
+### Problemas Conocidos
+
+Si encuentras el error `^&` en PowerShell, consulta la **GUIA_CONFIGURACION_VSCODE.md** para una solucion detallada. El script `setup.bat` ahora genera la configuracion correcta automaticamente.
 
 ---
 
