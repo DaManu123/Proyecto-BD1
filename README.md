@@ -102,53 +102,6 @@ Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un men
 
 **Importante:** La configuracion es completamente portable y funciona en **cualquier PC** sin modificaciones manuales.
 
-### Metodo Manual (Opcional)
-
-Si prefieres configurar manualmente:
-
-#### **1. Clonar el Repositorio**
-```bash
-git clone https://github.com/DaManu123/Proyecto-BD1.git
-cd Proyecto-BD1/databases-inventory-app
-```
-
-#### **2. Crear Entorno Virtual**
-**Windows:**
-```powershell
-python -m venv .venv
-```
-
-**Linux/Mac:**
-```bash
-python3 -m venv .venv
-```
-
-#### **3. Activar Entorno Virtual**
-**Windows (PowerShell):**
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-**Windows (CMD):**
-```cmd
-.venv\Scripts\activate.bat
-```
-
-**Linux/Mac:**
-```bash
-source .venv/bin/activate
-```
-
-#### **4. Instalar Dependencias**
-```bash
-pip install -r requirements.txt
-```
-
-#### **5. Ejecutar la Aplicacion**
-```bash
-python src/main.py
-```
-
 ---
 
 ## Compatibilidad con IDEs
@@ -208,72 +161,9 @@ El script genera dos archivos en `.vscode/`:
 **Nota:** Code Runner y Run Python File ahora usan la **misma configuracion**, ambos funcionan correctamente.
 
 ### PyCharm
-1. Abre el proyecto `databases-inventory-app`
+1. Abre el proyecto
 2. PyCharm detectara automaticamente el entorno virtual `.venv`
 3. Click derecho en `src/main.py` > Run
-
-### Otros IDEs
-El entorno virtual `.venv` funciona con cualquier IDE:
-- **Ruta Windows:** `.venv\Scripts\python.exe`
-- **Ruta Linux/Mac:** `.venv/bin/python`
-
----
-
-## Formas de Ejecutar el Programa
-
-### Metodo 1: Script Maestro (Recomendado)
-
-**Windows:**
-```cmd
-setup.bat
-# Selecciona opcion 2: Ejecutar Aplicacion
-```
-
-**Linux/macOS:**
-```bash
-./setup.sh
-# Selecciona opcion 2: Ejecutar Aplicacion
-```
-
-### Metodo 2: Desde VS Code
-1. Abre `src/main.py`
-2. Presiona el boton **Run** (▶️) de Code Runner
-3. O presiona **F5** para debugging
-
-### Metodo 3: Terminal Manual
-```bash
-# Activar entorno virtual primero
-# Windows:
-.venv\Scripts\Activate.ps1
-
-# Linux/Mac:
-source .venv/bin/activate
-
-# Ejecutar
-python src/main.py
-```
-
----
-
-## Verificar Instalacion
-
-Ejecuta el script maestro y selecciona **Opcion 3: Verificar Entorno**:
-
-**Windows:**
-```cmd
-setup.bat
-```
-
-**Linux/macOS:**
-```bash
-./setup.sh
-```
-
-El menu de verificacion muestra:
-- Directorio del proyecto y ruta del Python virtual
-- Version de Python instalada
-- Lista completa de paquetes
-- Estado de modulos requeridos (tkcalendar, Pillow, tkinter, sqlite3)
 
 ---
 
