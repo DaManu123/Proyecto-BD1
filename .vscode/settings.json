@@ -1,18 +1,19 @@
 {
-    "python.defaultInterpreterPath": "C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe",
-    "python.terminal.activateEnvironment": true,
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src/utils",
+        "${workspaceFolder}/src"
+    ],
+    "python.defaultInterpreterPath": "${workspaceFolder}/../.venv/Scripts/python.exe",
+    
+    // Configuracion para Code Runner - Calcular ruta relativa del workspace
     "code-runner.executorMap": {
-        "python": "$env:PYTHONPATH=\"${workspaceFolder}/src\" ; & 'C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe'"
+        "python": "cd $dir ; $wsRoot = (Get-Item $dir).FullName -replace '\\\\databases-inventory-app.*$', '' ; & \"$wsRoot\\.venv\\Scripts\\python.exe\" -u $fullFileName"
     },
     "code-runner.runInTerminal": true,
     "code-runner.clearPreviousOutput": true,
     "code-runner.saveFileBeforeRun": true,
-    "code-runner.executorMapByFileExtension": {
-        ".py": "$env:PYTHONPATH=\"${workspaceFolder}/src\" ; & 'C:/Users/ManuelPC/Documents/Visual Studio Code/Python/Proyecto bd1/.venv/Scripts/python.exe'"
-    },
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}/src"
-    ],
-    "code-runner.fileDirectoryAsCwd": true
+    
+    // Configuracion adicional de Python
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true
 }
