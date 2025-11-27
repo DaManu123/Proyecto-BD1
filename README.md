@@ -25,23 +25,30 @@ El proyecto incluye un **script maestro unificado** que maneja instalacion, ejec
 ```cmd
 # 1. Clonar el repositorio
 git clone https://github.com/DaManu123/Proyecto-BD1.git
-cd Proyecto-BD1\databases-inventory-app
+cd Proyecto-BD1
 
-# 2. Ejecutar script maestro
+# 2. Ejecutar setup.bat DESDE LA TERMINAL
 setup.bat
+
+# 3. Seleccionar Opcion 1: Instalacion Completa
+# 4. Seleccionar Opcion 4: Configurar VS Code
 ```
+
+**IMPORTANTE:** Ejecuta `setup.bat` desde la terminal de Windows (PowerShell o CMD), NO hagas doble clic.
 
 #### **Linux/macOS:**
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/DaManu123/Proyecto-BD1.git
-cd Proyecto-BD1/databases-inventory-app
+cd Proyecto-BD1
 
 # 2. Dar permisos de ejecucion
 chmod +x setup.sh
 
 # 3. Ejecutar script maestro
 ./setup.sh
+
+# 4. Seleccionar opciones 1 y 4
 ```
 
 ### Menu del Script Maestro
@@ -65,28 +72,35 @@ Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un men
 ====================================================
 ```
 
-**Opcion 1 - Instalacion Completa:**
-- Crea el entorno virtual `.venv`
-- Instala todas las dependencias
-- Configura VS Code automaticamente
-- Verifica la instalacion
+**PASOS REQUERIDOS PARA PRIMER USO:**
+
+1. **Opcion 1 - Instalacion Completa:**
+   - Crea el entorno virtual `.venv`
+   - Instala todas las dependencias Python
+   - Verifica la instalacion correcta
+
+2. **Opcion 4 - Configurar VS Code:**
+   - Genera `.vscode/settings.json` con configuracion optimizada
+   - Genera `.vscode/launch.json` para debugging
+   - Configura Code Runner para ejecutar correctamente
+   - Configura PYTHONPATH automaticamente
+
+3. **Reiniciar VS Code:**
+   - Presiona `Ctrl+Shift+P`
+   - Escribe: `Developer: Reload Window`
+   - Presiona Enter
+
+**Otras opciones:**
 
 **Opcion 2 - Ejecutar Aplicacion:**
-- Inicia el programa directamente
-- Usa el entorno virtual configurado
+- Inicia el programa directamente desde el script
 
 **Opcion 3 - Verificar Entorno:**
 - Muestra version de Python
 - Lista paquetes instalados
 - Verifica modulos requeridos
 
-**Opcion 4 - Configurar VS Code:**
-- Genera `settings.json` con configuracion portable
-- Genera `launch.json` para debugging
-- Configura Code Runner para funcionar como "Run Python File"
-- Configura PYTHONPATH automaticamente
-
-**Importante:** La configuracion funciona en **cualquier equipo y carpeta** sin modificaciones manuales.
+**Importante:** La configuracion es completamente portable y funciona en **cualquier PC** sin modificaciones manuales.
 
 ### Metodo Manual (Opcional)
 
@@ -143,26 +157,30 @@ Este proyecto esta **preconfigurado automaticamente** para funcionar en cualquie
 
 ### Visual Studio Code (Recomendado - Configurado Automaticamente)
 
-#### Configuracion Inicial
-1. Ejecuta `setup.bat` (Windows) o `./setup.sh` (Linux/macOS)
-2. Selecciona **Opcion 1: Instalacion Completa**
-3. (Opcional) Selecciona **Opcion 4: Configurar VS Code** para regenerar configuracion
-4. Abre la carpeta del proyecto en VS Code
-5. Reinicia VS Code si es necesario (Ctrl+Shift+P > Developer: Reload Window)
+#### Pasos de Configuracion
 
-#### Configuraciones Automaticas Aplicadas
+**IMPORTANTE:** Debes ejecutar estas opciones del `setup.bat` desde la terminal:
+
+1. Ejecuta `setup.bat` desde PowerShell o CMD
+2. Selecciona **Opcion 1: Instalacion Completa**
+3. Selecciona **Opcion 4: Configurar VS Code**
+4. Abre la carpeta del proyecto en VS Code
+5. Reinicia VS Code: `Ctrl+Shift+P` → `Developer: Reload Window`
+
+#### Configuraciones Generadas Automaticamente
+
+El script genera dos archivos en `.vscode/`:
 
 **settings.json:**
-- Interprete Python configurado: `.venv/Scripts/python.exe`
-- PYTHONPATH automatico apuntando a `src/`
-- Code Runner configurado para funcionar igual que "Run Python File"
-- Activacion automatica del entorno virtual en terminales
+- Interprete Python: `.venv/Scripts/python.exe`
+- PYTHONPATH automatico: `src/`
+- Code Runner configurado correctamente
+- Activacion automatica del entorno virtual
 
 **launch.json:**
-- **"Python: Main Application"** - Ejecuta `src/main.py` siempre (F5)
-- **"Python: Current File"** - Ejecuta el archivo actual
-- Debugging completo con breakpoints
-- Variables de entorno configuradas
+- **"Python: Main Application"** - Ejecuta `src/main.py` (F5)
+- **"Python: Current File"** - Ejecuta archivo actual
+- Debugging con breakpoints habilitado
 
 #### Formas de Ejecutar en VS Code
 
@@ -349,38 +367,30 @@ La aplicacion incluye **3 usuarios predeterminados** con diferentes niveles de a
 
 ### Error: `ModuleNotFoundError: No module named 'tkcalendar'`
 
-**Causa:** El interprete de Python no encuentra el modulo porque no esta usando el entorno virtual.
+**Causa:** El entorno virtual no esta configurado correctamente.
 
 **Solucion:**
 
-1. **Ejecutar desde VS Code correctamente:**
-   - Usa el boton **Run Python File** (▶️ en la esquina superior derecha)
-   - O usa **Code Runner** (debe estar configurado con `setup.bat` opcion 4)
-   - O presiona **F5** para debugging
-
-2. **Si el error persiste, verificar entorno virtual:**
-   ```bash
-   # Ejecutar setup.bat y seleccionar opcion 3: Verificar Entorno
+1. **Ejecutar setup.bat desde la terminal:**
+   ```cmd
    setup.bat
+   # Opcion 1: Instalacion Completa
+   # Opcion 4: Configurar VS Code
    ```
 
-3. **Reconfigurar VS Code:**
-   ```bash
-   # Ejecutar setup.bat y seleccionar opcion 4: Configurar VS Code
+2. **Reiniciar VS Code:**
+   - `Ctrl+Shift+P` → `Developer: Reload Window`
+
+3. **Verificar instalacion:**
+   ```cmd
    setup.bat
-   # Luego reiniciar VS Code (Ctrl+Shift+P > Developer: Reload Window)
+   # Opcion 3: Verificar Entorno
    ```
 
-4. **Reinstalar dependencias manualmente:**
-   ```bash
-   .venv\Scripts\Activate.ps1
+4. **Si persiste, reinstalar manualmente:**
+   ```powershell
+   .\.venv\Scripts\Activate.ps1
    pip install -r requirements.txt
-   ```
-
-5. **Verificar instalacion:**
-   ```bash
-   python -c "import tkcalendar; print('OK:', tkcalendar.__version__)"
-   # Debe mostrar: OK: 1.5.0 (o superior)
    ```
 
 ### Error: `tkinter.TclError` o interfaz no se muestra
@@ -427,25 +437,17 @@ Ejecuta `setup.bat` (Windows) o `./setup.sh` (Linux/macOS) y selecciona **Opcion
 
 ### Problemas con Code Runner en VS Code
 
-**Sintoma:** Code Runner no ejecuta o da errores de sintaxis PowerShell (`^&`).
-
-**Causa:** Configuracion incorrecta de Code Runner mezclando sintaxis de CMD y PowerShell.
+**Sintoma:** Code Runner no ejecuta o da errores.
 
 **Solucion:**
-```bash
-# Ejecutar setup.bat y seleccionar opcion 4
+```cmd
+# Ejecutar setup.bat desde la terminal
 setup.bat
-# Selecciona: 4) Configurar VS Code
-# Luego reinicia VS Code
+# Opcion 4: Configurar VS Code
+# Luego reiniciar VS Code: Ctrl+Shift+P > Developer: Reload Window
 ```
 
-Esto regenerara `settings.json` y `launch.json` con la configuracion correcta para PowerShell.
-
-**Para mas detalles:** Consulta **GUIA_CONFIGURACION_VSCODE.md** que incluye:
-- Explicacion detallada del problema `^&`
-- Diferencias entre shells (PowerShell, CMD, Bash)
-- Plantillas de configuracion para diferentes entornos
-- Checklist completo de verificacion
+La opcion 4 regenera la configuracion correcta de Code Runner automaticamente.
 
 
 
@@ -569,12 +571,15 @@ Base de Datos I - 2025
 
 ### Recursos Disponibles
 1. **README.md** - Guia de instalacion y uso
-2. **GUIA_CONFIGURACION_VSCODE.md** - Guia detallada de configuracion de VS Code y solucion de errores comunes
-3. **setup.bat / setup.sh** - Script de instalacion y configuracion automatica
+2. **setup.bat / setup.sh** - Script de instalacion y configuracion automatica
 
-### Problemas Conocidos
+### Instrucciones Importantes
 
-Si encuentras el error `^&` en PowerShell, consulta la **GUIA_CONFIGURACION_VSCODE.md** para una solucion detallada. El script `setup.bat` ahora genera la configuracion correcta automaticamente.
+**Para evitar problemas:**
+1. Siempre ejecuta `setup.bat` desde la **terminal** (PowerShell o CMD)
+2. Ejecuta **Opcion 1** primero (Instalacion Completa)
+3. Ejecuta **Opcion 4** despues (Configurar VS Code)
+4. Reinicia VS Code despues de configurar
 
 ---
 
