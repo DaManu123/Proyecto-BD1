@@ -49,7 +49,7 @@ El script `setup.bat` crea este archivo con la configuración correcta:
     "python.terminal.activateEnvInCurrentTerminal": true,
     
     "code-runner.executorMap": {
-        "python": "& \"${workspaceFolder}/.venv/Scripts/python.exe\" \"$fullFileName\""
+        "python": "& \"$workspaceRoot/.venv/Scripts/python.exe\" \"$fullFileName\""
     },
     "code-runner.runInTerminal": true,
     "code-runner.clearPreviousOutput": true,
@@ -67,8 +67,10 @@ El script `setup.bat` crea este archivo con la configuración correcta:
 **Puntos clave:**
 - ✅ `&` sin `^` → Sintaxis correcta de PowerShell
 - ✅ Comillas dobles alrededor de rutas con espacios
-- ✅ `${workspaceFolder}` → Variable de VS Code para portabilidad
+- ✅ `${workspaceFolder}` → Variable de VS Code (python.defaultInterpreterPath, env, etc.)
+- ✅ `$workspaceRoot` → Variable de Code Runner (SOLO en executorMap)
 - ✅ Shell por defecto configurado a PowerShell
+- ⚠️ **CRÍTICO:** Code Runner NO expande `${workspaceFolder}`, usa `$workspaceRoot`
 
 ### launch.json
 
@@ -225,12 +227,17 @@ Crea `.vscode/settings.json` con:
 {
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
     "code-runner.executorMap": {
-        "python": "& \"${workspaceFolder}/.venv/Scripts/python.exe\" \"$fullFileName\""
+        "python": "& \"$workspaceRoot/.venv/Scripts/python.exe\" \"$fullFileName\""
     },
     "code-runner.runInTerminal": true,
     "terminal.integrated.defaultProfile.windows": "PowerShell"
 }
 ```
+
+**⚠️ IMPORTANTE - Diferencia entre variables:**
+- `${workspaceFolder}` = Variable de VS Code (para python.defaultInterpreterPath, launch.json)
+- `$workspaceRoot` = Variable de Code Runner (para code-runner.executorMap)
+- **NO mezclar:** Code Runner NO expande `${workspaceFolder}`
 
 **Regla de Oro:** Si usas Windows con VS Code, usa PowerShell y el operador `&` (sin `^`)
 
