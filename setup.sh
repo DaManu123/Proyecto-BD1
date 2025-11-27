@@ -8,7 +8,7 @@
 
 # Obtener ruta absoluta del directorio del proyecto
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VENV_PATH="$PROJECT_ROOT/../.venv"
+VENV_PATH="$PROJECT_ROOT/.venv"
 PYTHON_EXE="$VENV_PATH/bin/python"
 VSCODE_DIR="$PROJECT_ROOT/.vscode"
 SETTINGS_FILE="$VSCODE_DIR/settings.json"
@@ -105,7 +105,7 @@ configurar_vscode() {
     
     cat > "$SETTINGS_FILE" << 'EOF'
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/../.venv/bin/python",
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "python.analysis.extraPaths": [
         "${workspaceFolder}/src",
         "${workspaceFolder}/src/utils"
@@ -113,13 +113,14 @@ configurar_vscode() {
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
     
-    // Configuracion de Code Runner - Portable para cualquier equipo
+    // Configuracion de Code Runner - Portable usando variables de VS Code
     "code-runner.executorMap": {
-        "python": "cd $dir && root=$(dirname \"$PWD\") && if [ -f \"$root/.venv/bin/python\" ]; then \"$root/.venv/bin/python\" -u $fullFileName; else python3 -u $fullFileName; fi"
+        "python": "export PYTHONPATH='${workspaceFolder}/src' && '${workspaceFolder}/.venv/bin/python' -u $fullFileName"
     },
     "code-runner.runInTerminal": true,
     "code-runner.clearPreviousOutput": true,
-    "code-runner.saveFileBeforeRun": true
+    "code-runner.saveFileBeforeRun": true,
+    "code-runner.fileDirectoryAsCwd": false
 }
 EOF
     

@@ -314,7 +314,7 @@ echo [INFO] Generando settings.json portable...
 REM Crear settings.json con rutas relativas
 (
 echo {
-echo     "python.defaultInterpreterPath": "${workspaceFolder}/../.venv/Scripts/python.exe",
+echo     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
 echo     "python.analysis.extraPaths": [
 echo         "${workspaceFolder}/src",
 echo         "${workspaceFolder}/src/utils"
@@ -322,13 +322,14 @@ echo     ],
 echo     "python.terminal.activateEnvironment": true,
 echo     "python.terminal.activateEnvInCurrentTerminal": true,
 echo.    
-echo     // Configuracion de Code Runner - Portable para cualquier equipo
+echo     // Configuracion de Code Runner - Portable usando variables de VS Code
 echo     "code-runner.executorMap": {
-echo         "python": "cd $dir ; $root = Split-Path -Parent $PSScriptRoot ; if ^(Test-Path \"$root\\.venv\\Scripts\\python.exe\"^) { ^& \"$root\\.venv\\Scripts\\python.exe\" -u $fullFileName } else { python -u $fullFileName }"
+echo         "python": "$env:PYTHONPATH='${workspaceFolder}/src' ; ^& '${workspaceFolder}/.venv/Scripts/python.exe' -u $fullFileName"
 echo     },
 echo     "code-runner.runInTerminal": true,
 echo     "code-runner.clearPreviousOutput": true,
-echo     "code-runner.saveFileBeforeRun": true
+echo     "code-runner.saveFileBeforeRun": true,
+echo     "code-runner.fileDirectoryAsCwd": false
 echo }
 ) > "%SETTINGS_FILE%"
 
