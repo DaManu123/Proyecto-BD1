@@ -104,6 +104,55 @@ Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un men
 
 ---
 
+## Compilar a Ejecutable (.EXE)
+
+El proyecto incluye scripts para generar un **ejecutable standalone** que no requiere Python instalado.
+
+### Windows:
+
+```cmd
+# 1. Asegúrate de haber ejecutado setup.bat opción 1 primero
+setup.bat
+
+# 2. Ejecuta el script de compilación
+build_exe.bat
+```
+
+### Linux/macOS:
+
+```bash
+# 1. Asegúrate de haber ejecutado setup.sh primero
+./setup.sh
+
+# 2. Dar permisos y ejecutar compilación
+chmod +x build_exe.sh
+./build_exe.sh
+```
+
+### Resultado de la Compilación:
+
+El script genera una carpeta `Release/` que contiene:
+- **SistemaInventario_UNISON.exe** (Windows) - Ejecutable principal (~50-80 MB)
+- **database/** - Base de datos SQLite
+- **unilogo.gif** - Logo de la universidad
+- **LEEME.txt** - Instrucciones de uso
+
+### Distribución:
+
+Para distribuir el programa:
+1. Comprime la carpeta `Release/` en un archivo ZIP
+2. Envía el ZIP a otros usuarios
+3. Los usuarios solo necesitan descomprimir y ejecutar el .exe
+
+**Ventajas del ejecutable:**
+- ✅ No requiere Python instalado
+- ✅ No requiere instalar dependencias
+- ✅ Ejecutable de un solo archivo (onefile)
+- ✅ Incluye todos los recursos necesarios
+- ✅ Compatible con Windows 7, 8, 10, 11
+
+---
+
 ## Compatibilidad con IDEs
 
 Este proyecto esta **preconfigurado automaticamente** para funcionar en cualquier IDE. El script `setup.bat`/`setup.sh` configura VS Code automaticamente con rutas portables.
