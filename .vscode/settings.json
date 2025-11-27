@@ -9,7 +9,7 @@
     
     // Configuracion de Code Runner - Portable para cualquier equipo
     "code-runner.executorMap": {
-        "python": "cd $dir ; $root = Split-Path -Parent $PSScriptRoot ; if (Test-Path \"$root\\.venv\\Scripts\\python.exe\") { & \"$root\\.venv\\Scripts\\python.exe\" -u $fullFileName } else { python -u $fullFileName }"
+        "python": "$pythonPath = Join-Path (Split-Path -Parent $PSScriptRoot) '.venv\\Scripts\\python.exe' ; if (Test-Path $pythonPath) { & $pythonPath -u $fullFileName } else { python -u $fullFileName }"
     },
     "code-runner.runInTerminal": true,
     "code-runner.clearPreviousOutput": true,
