@@ -27,21 +27,19 @@ echo.
 echo   1) Instalacion Completa (Primera Vez)
 echo   2) Ejecutar Aplicacion
 echo   3) Verificar Entorno
-echo   4) Reconfigurar VS Code
-echo   5) Reinstalar Dependencias
-echo   6) Salir
+echo   4) Configurar VS Code
+echo   5) Salir
 echo.
 echo ====================================================
 echo.
 
-set /p "OPCION=Selecciona una opcion (1-6): "
+set /p "OPCION=Selecciona una opcion (1-5): "
 
 if "%OPCION%"=="1" goto INSTALACION_COMPLETA
 if "%OPCION%"=="2" goto EJECUTAR_APP
 if "%OPCION%"=="3" goto VERIFICAR_ENTORNO
 if "%OPCION%"=="4" goto CONFIGURAR_VSCODE
-if "%OPCION%"=="5" goto REINSTALAR_DEPS
-if "%OPCION%"=="6" goto SALIR
+if "%OPCION%"=="5" goto SALIR
 
 echo.
 echo [ERROR] Opcion invalida. Intenta de nuevo.
@@ -179,31 +177,7 @@ REM ====================================================
 cls
 echo.
 echo ====================================================
-echo   RECONFIGURAR VS CODE
-echo ====================================================
-echo.
-
-call :CONFIGURAR_VSCODE_FUNC
-
-echo.
-echo [OK] Configuracion de VS Code actualizada
-echo.
-echo Reinicia VS Code para aplicar los cambios:
-echo   - Presiona Ctrl+Shift+P
-echo   - Escribe: Developer: Reload Window
-echo   - Presiona Enter
-echo.
-pause
-goto MENU
-
-REM ====================================================
-REM REINSTALAR DEPENDENCIAS
-REM ====================================================
-:REINSTALAR_DEPS
-cls
-echo.
-echo ====================================================
-echo   REINSTALAR DEPENDENCIAS
+echo   CONFIGURAR VS CODE
 echo ====================================================
 echo.
 
@@ -216,10 +190,21 @@ if not exist "%PYTHON_EXE%" (
     goto MENU
 )
 
-call :INSTALAR_DEPENDENCIAS
+call :CONFIGURAR_VSCODE_FUNC
 
 echo.
-echo [OK] Dependencias reinstaladas
+echo [OK] Configuracion de VS Code actualizada
+echo.
+echo CONFIGURACIONES APLICADAS:
+echo   - Entorno virtual: .venv
+echo   - Code Runner configurado
+echo   - Debugger configurado
+echo   - PYTHONPATH automatico
+echo.
+echo Reinicia VS Code para aplicar los cambios:
+echo   - Presiona Ctrl+Shift+P
+echo   - Escribe: Developer: Reload Window
+echo   - Presiona Enter
 echo.
 pause
 goto MENU
@@ -309,9 +294,8 @@ if not exist "%VSCODE_DIR%" (
     mkdir "%VSCODE_DIR%"
 )
 
-echo [INFO] Generando settings.json portable...
-
-REM Crear settings.json con rutas relativas
+echo [INFO] Generando settings.json...
+REM Crear settings.json con configuracion funcional
 (
 echo {
 echo     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
@@ -322,18 +306,58 @@ echo     ],
 echo     "python.terminal.activateEnvironment": true,
 echo     "python.terminal.activateEnvInCurrentTerminal": true,
 echo.    
-echo     // Configuracion de Code Runner - Portable usando variables de VS Code
+echo     // Configuracion de Code Runner - Compatible con Run Python File
 echo     "code-runner.executorMap": {
-echo         "python": "$env:PYTHONPATH='${workspaceFolder}/src' ; ^& '${workspaceFolder}/.venv/Scripts/python.exe' -u $fullFileName"
+echo         "python": "^& \"$workspaceRoot/.venv/Scripts/python.exe\" $fullFileName"
 echo     },
 echo     "code-runner.runInTerminal": true,
 echo     "code-runner.clearPreviousOutput": true,
 echo     "code-runner.saveFileBeforeRun": true,
-echo     "code-runner.fileDirectoryAsCwd": false
+echo     "code-runner.fileDirectoryAsCwd": false,
+echo.    
+echo     // Configuracion adicional para ejecucion de Python
+echo     "python.envFile": "${workspaceFolder}/.env",
+echo     "terminal.integrated.env.windows": {
+echo         "PYTHONPATH": "${workspaceFolder}/src"
+echo     }
 echo }
 ) > "%SETTINGS_FILE%"
 
-echo [OK] VS Code configurado con rutas portables
+echo [INFO] Generando launch.json...
+REM Crear launch.json para debugging
+(
+echo {
+echo     "version": "0.2.0",
+echo     "configurations": [
+echo         {
+echo             "name": "Python: Main Application",
+echo             "type": "debugpy",
+echo             "request": "launch",
+echo             "program": "${workspaceFolder}/src/main.py",
+echo             "console": "integratedTerminal",
+echo             "cwd": "${workspaceFolder}",
+echo             "env": {
+echo                 "PYTHONPATH": "${workspaceFolder}/src"
+echo             },
+echo             "justMyCode": true
+echo         },
+echo         {
+echo             "name": "Python: Current File",
+echo             "type": "debugpy",
+echo             "request": "launch",
+echo             "program": "${file}",
+echo             "console": "integratedTerminal",
+echo             "cwd": "${workspaceFolder}",
+echo             "env": {
+echo                 "PYTHONPATH": "${workspaceFolder}/src"
+echo             },
+echo             "justMyCode": true
+echo         }
+echo     ]
+echo }
+) > "%VSCODE_DIR%\launch.json"
+
+echo [OK] VS Code configurado correctamente
 echo.
 exit /b 0
 

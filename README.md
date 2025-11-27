@@ -59,18 +59,32 @@ Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un men
   1) Instalacion Completa (Primera Vez)
   2) Ejecutar Aplicacion
   3) Verificar Entorno
-  4) Reconfigurar VS Code
-  5) Reinstalar Dependencias
-  6) Salir
+  4) Configurar VS Code
+  5) Salir
 
 ====================================================
 ```
 
-**Opcion 1** configura automaticamente:
+**Opcion 1 - Instalacion Completa:**
 - Crea el entorno virtual `.venv`
 - Instala todas las dependencias
-- Configura VS Code con rutas portables
+- Configura VS Code automaticamente
 - Verifica la instalacion
+
+**Opcion 2 - Ejecutar Aplicacion:**
+- Inicia el programa directamente
+- Usa el entorno virtual configurado
+
+**Opcion 3 - Verificar Entorno:**
+- Muestra version de Python
+- Lista paquetes instalados
+- Verifica modulos requeridos
+
+**Opcion 4 - Configurar VS Code:**
+- Genera `settings.json` con configuracion portable
+- Genera `launch.json` para debugging
+- Configura Code Runner para funcionar como "Run Python File"
+- Configura PYTHONPATH automaticamente
 
 **Importante:** La configuracion funciona en **cualquier equipo y carpeta** sin modificaciones manuales.
 
@@ -127,12 +141,53 @@ python src/main.py
 
 Este proyecto esta **preconfigurado automaticamente** para funcionar en cualquier IDE. El script `setup.bat`/`setup.sh` configura VS Code automaticamente con rutas portables.
 
-### Visual Studio Code (Configurado Automaticamente)
-Despues de ejecutar `setup.bat` opcion 1:
-1. Abre la carpeta `databases-inventory-app` en VS Code
-2. El interprete de Python ya esta configurado
-3. Usa **Code Runner**: Abre `src/main.py` y presiona el boton Run (▶️)
-4. O presiona **F5** para ejecutar con debugging
+### Visual Studio Code (Recomendado - Configurado Automaticamente)
+
+#### Configuracion Inicial
+1. Ejecuta `setup.bat` (Windows) o `./setup.sh` (Linux/macOS)
+2. Selecciona **Opcion 1: Instalacion Completa**
+3. (Opcional) Selecciona **Opcion 4: Configurar VS Code** para regenerar configuracion
+4. Abre la carpeta del proyecto en VS Code
+5. Reinicia VS Code si es necesario (Ctrl+Shift+P > Developer: Reload Window)
+
+#### Configuraciones Automaticas Aplicadas
+
+**settings.json:**
+- Interprete Python configurado: `.venv/Scripts/python.exe`
+- PYTHONPATH automatico apuntando a `src/`
+- Code Runner configurado para funcionar igual que "Run Python File"
+- Activacion automatica del entorno virtual en terminales
+
+**launch.json:**
+- **"Python: Main Application"** - Ejecuta `src/main.py` siempre (F5)
+- **"Python: Current File"** - Ejecuta el archivo actual
+- Debugging completo con breakpoints
+- Variables de entorno configuradas
+
+#### Formas de Ejecutar en VS Code
+
+1. **Code Runner (▶️)** - Boton en esquina superior derecha
+   - Abre `src/main.py`
+   - Click en el boton Run
+   - Ejecuta usando el entorno virtual
+
+2. **Run Python File** - Boton nativo de VS Code
+   - Abre `src/main.py`
+   - Click derecho > Run Python File in Terminal
+   - O usa el boton de "play" en la esquina superior
+
+3. **Debugger (F5)** - Para debugging
+   - Presiona F5
+   - Selecciona "Python: Main Application"
+   - Permite usar breakpoints y depurar
+
+4. **Terminal Integrado**
+   ```powershell
+   # El entorno virtual se activa automaticamente
+   python src/main.py
+   ```
+
+**Nota:** Code Runner y Run Python File ahora usan la **misma configuracion**, ambos funcionan correctamente.
 
 ### PyCharm
 1. Abre el proyecto `databases-inventory-app`
@@ -227,7 +282,7 @@ databases-inventory-app/
 │
 ├── .vscode/                   # Configuracion de VS Code (generada por setup)
 │   ├── settings.json         # Configuracion portable automatica
-│   └── launch.json           # Configuracion de debugging
+│   └── launch.json           # Debugging y ejecucion
 │
 ├── setup.bat                 # Script maestro Windows
 ├── setup.sh                  # Script maestro Linux/macOS
@@ -298,23 +353,31 @@ La aplicacion incluye **3 usuarios predeterminados** con diferentes niveles de a
 
 **Solucion:**
 
-1. **Verificar que el entorno virtual este activado:**
+1. **Ejecutar desde VS Code correctamente:**
+   - Usa el boton **Run Python File** (▶️ en la esquina superior derecha)
+   - O usa **Code Runner** (debe estar configurado con `setup.bat` opcion 4)
+   - O presiona **F5** para debugging
+
+2. **Si el error persiste, verificar entorno virtual:**
    ```bash
-   # Deberias ver (.venv) al inicio del prompt
-   (.venv) PS C:\...\databases-inventory-app>
+   # Ejecutar setup.bat y seleccionar opcion 3: Verificar Entorno
+   setup.bat
    ```
 
-2. **Reinstalar dependencias:**
+3. **Reconfigurar VS Code:**
    ```bash
+   # Ejecutar setup.bat y seleccionar opcion 4: Configurar VS Code
+   setup.bat
+   # Luego reiniciar VS Code (Ctrl+Shift+P > Developer: Reload Window)
+   ```
+
+4. **Reinstalar dependencias manualmente:**
+   ```bash
+   .venv\Scripts\Activate.ps1
    pip install -r requirements.txt
    ```
 
-3. **En VS Code - Seleccionar interprete correcto:**
-   - Presiona `Ctrl+Shift+P`
-   - Escribe: `Python: Select Interpreter`
-   - Selecciona: `.venv\Scripts\python.exe`
-
-4. **Verificar instalacion:**
+5. **Verificar instalacion:**
    ```bash
    python -c "import tkcalendar; print('OK:', tkcalendar.__version__)"
    # Debe mostrar: OK: 1.5.0 (o superior)
@@ -351,7 +414,7 @@ chmod 755 database
 
 ### Script de Diagnostico Automatico
 
-**Windows:** Ejecuta `verificar_entorno.bat` para un diagnostico completo del entorno.
+Ejecuta `setup.bat` (Windows) o `./setup.sh` (Linux/macOS) y selecciona **Opcion 3: Verificar Entorno**.
 
 **Resultado esperado:**
 ```
@@ -361,6 +424,20 @@ chmod 755 database
 [OK] tkinter disponible
 [OK] sqlite3 version: 3.x.x
 ```
+
+### Problemas con Code Runner en VS Code
+
+**Sintoma:** Code Runner no ejecuta o da errores de sintaxis PowerShell.
+
+**Solucion:**
+```bash
+# Ejecutar setup.bat y seleccionar opcion 4
+setup.bat
+# Selecciona: 4) Configurar VS Code
+# Luego reinicia VS Code
+```
+
+Esto regenerara `settings.json` y `launch.json` con la configuracion correcta para que Code Runner funcione igual que "Run Python File".
 
 
 
