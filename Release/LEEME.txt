@@ -1,0 +1,24 @@
+============================================
+ SISTEMA DE INVENTARIO - UNISON
+============================================
+
+COMO EJECUTAR:
+
+1. Abre la carpeta "SistemaInventario_UNISON"
+2. Ejecuta SistemaInventario_UNISON.exe
+3. NO muevas el .exe fuera de su carpeta
+
+CREDENCIALES DE ACCESO:
+
+  Usuario: Admin       Password: admin23   (Acceso total)
+  Usuario: productos   Password: producto19 (Solo productos)
+  Usuario: almacen     Password: almacen11  (Solo almacenes)
+
+IMPORTANTE:
+- Todos los archivos en la carpeta son necesarios
+- La base de datos esta en: database\InventarioBD_2.db
+- Compatible con Windows 7/8/10/11
+
+Desarrollado por: Manuel Munguia Rubio
+Universidad de Sonora - Base de Datos I - 2025
+============================================

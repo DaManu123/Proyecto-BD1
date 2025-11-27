@@ -1,16 +1,8 @@
-# Ignorar archivos de compilación
+# Ignorar archivos de compilación temporales
 build/
 dist/
 *.spec
 temp_resources/
-
-# Carpeta de distribución (opcional - descomenta si no quieres incluirla en git)
-# Release/
-
-# Archivos de compilacion PyInstaller
-temp_resources/
-Release/
-*.spec
-dist/
-build/
 output/
+
+# La carpeta Release/ se incluye en Git para entregas/distribución
