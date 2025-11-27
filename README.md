@@ -4,7 +4,51 @@ Sistema de gestion de inventario desarrollado con **Python/Tkinter** y **SQLite*
 
 ---
 
-## Requisitos del Sistema
+## 🚀 Ejecutar el Programa (Metodo Recomendado)
+
+### **Opcion 1: Ejecutable Compilado (SIN INSTALAR PYTHON)** ⭐ RECOMENDADO
+
+La forma mas rapida y sencilla de ejecutar el programa es usar el **ejecutable precompilado** que se encuentra en la carpeta `Release/`:
+
+#### **Windows:**
+```cmd
+# 1. Clonar o descargar el repositorio
+git clone https://github.com/DaManu123/Proyecto-BD1.git
+cd Proyecto-BD1
+
+# 2. Navegar a la carpeta Release
+cd Release\SistemaInventario_UNISON
+
+# 3. Ejecutar el programa (doble clic o desde terminal)
+SistemaInventario_UNISON.exe
+```
+
+**✅ Ventajas del ejecutable:**
+- No requiere instalacion de Python
+- No requiere instalacion de dependencias
+- Todo incluido en una sola carpeta
+- Funciona inmediatamente
+- Compatible con Windows 7, 8, 10, 11
+
+**⚠️ IMPORTANTE:** 
+- NO muevas el archivo `.exe` fuera de su carpeta
+- Todos los archivos en la carpeta son necesarios
+- La base de datos se encuentra en la subcarpeta `database/`
+
+**Credenciales de acceso:**
+- Usuario: `Admin` | Password: `admin23` (ROL: ADMIN - Acceso completo)
+- Usuario: `productos` | Password: `producto19` (ROL: PRODUCTOS - Solo productos)
+- Usuario: `almacen` | Password: `almacen11` (ROL: ALMACEN - Solo almacenes)
+
+---
+
+### **Opcion 2: Ejecutar desde Codigo Fuente (Para Desarrollo)**
+
+Si deseas modificar el codigo o ejecutarlo desde Python:
+
+---
+
+## Requisitos del Sistema (Solo para Opcion 2)
 
 - **Python 3.7 o superior** (desarrollado y probado con Python 3.13.7)
 - **Sistema Operativo:** Windows, Linux o macOS
@@ -15,7 +59,7 @@ Sistema de gestion de inventario desarrollado con **Python/Tkinter** y **SQLite*
 
 ---
 
-## Inicio Rapido (Para Nuevos Usuarios)
+## Inicio Rapido (Para Desarrolladores)
 
 ### Instalacion y Configuracion Automatica
 
@@ -106,7 +150,14 @@ Al ejecutar `setup.bat` (Windows) o `./setup.sh` (Linux/macOS), obtendras un men
 
 ## Compilar a Ejecutable (.EXE)
 
-El proyecto incluye scripts para generar un **ejecutable standalone** que no requiere Python instalado.
+El proyecto incluye scripts para **recompilar** el ejecutable standalone. El ejecutable precompilado ya está disponible en `Release/SistemaInventario_UNISON/`.
+
+### ¿Cuándo recompilar?
+
+Solo necesitas recompilar si:
+- Modificaste el código fuente
+- Actualizaste la base de datos
+- Quieres generar una nueva versión
 
 ### Windows:
 
@@ -132,10 +183,14 @@ chmod +x build_exe.sh
 ### Resultado de la Compilación:
 
 El script genera una carpeta `Release/` que contiene:
-- **SistemaInventario_UNISON.exe** (Windows) - Ejecutable principal (~50-80 MB)
-- **database/** - Base de datos SQLite
-- **unilogo.gif** - Logo de la universidad
+- **SistemaInventario_UNISON/** - Carpeta con la aplicación completa
+  - **SistemaInventario_UNISON.exe** - Ejecutable principal
+  - **database/** - Base de datos SQLite
+  - **unilogo.gif** - Logo de la universidad
+  - **[archivos DLL y dependencias]** - Librerías necesarias
 - **LEEME.txt** - Instrucciones de uso
+
+**Tamaño aproximado:** ~100-150 MB
 
 ### Distribución:
 
@@ -144,11 +199,13 @@ Para distribuir el programa:
 2. Envía el ZIP a otros usuarios
 3. Los usuarios solo necesitan descomprimir y ejecutar el .exe
 
+**⚠️ IMPORTANTE:** El ejecutable NO debe moverse fuera de su carpeta. Todos los archivos son necesarios.
+
 **Ventajas del ejecutable:**
 - ✅ No requiere Python instalado
 - ✅ No requiere instalar dependencias
-- ✅ Ejecutable de un solo archivo (onefile)
 - ✅ Incluye todos los recursos necesarios
+- ✅ Base de datos accesible y modificable
 - ✅ Compatible con Windows 7, 8, 10, 11
 
 ---

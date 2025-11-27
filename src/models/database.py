@@ -1,11 +1,36 @@
 import sqlite3
 import os
+import sys
 
 class DatabaseModel:
     def __init__(self):
         """Inicializa la conexión a la base de datos SQLite"""
-        # Ruta relativa al archivo de base de datos
-        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'database', 'InventarioBD_2.db')
+        # Detectar si se está ejecutando desde un ejecutable PyInstaller
+        if getattr(sys, 'frozen', False):
+            # Cuando está compilado con PyInstaller - buscar en la carpeta del ejecutable
+            base_path = os.path.dirname(sys.executable)
+            print(f"[DEBUG] Modo ejecutable - Base path: {base_path}")
+        else:
+            # Cuando se ejecuta desde código fuente
+            base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            print(f"[DEBUG] Modo desarrollo - Base path: {base_path}")
+        
+        # Ruta a la base de datos
+        db_path = os.path.join(base_path, 'database', 'InventarioBD_2.db')
+        
+        # Si no existe, intentar en el directorio actual
+        if not os.path.exists(db_path):
+            print(f"[DEBUG] No encontrado en: {db_path}")
+            # Intentar en el directorio actual
+            db_path = os.path.join(os.getcwd(), 'database', 'InventarioBD_2.db')
+            print(f"[DEBUG] Intentando en: {db_path}")
+        
+        # Si aún no existe, intentar sin subcarpeta database
+        if not os.path.exists(db_path):
+            print(f"[DEBUG] No encontrado. Intentando sin subcarpeta...")
+            db_path = os.path.join(base_path, 'InventarioBD_2.db')
+            print(f"[DEBUG] Intentando en: {db_path}")
+        
         self.db_path = db_path
         self.connection = None
         self.connect()

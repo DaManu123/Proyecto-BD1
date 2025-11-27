@@ -1,0 +1,8 @@
+# Ignorar archivos de compilación
+build/
+dist/
+*.spec
+temp_resources/
+
+# Carpeta de distribución (opcional - descomenta si no quieres incluirla en git)
+# Release/

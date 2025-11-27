@@ -1,0 +1,23 @@
+SISTEMA DE INVENTARIO - UNIVERSIDAD DE SONORA
+===========================================
+
+INSTRUCCIONES DE USO:
+
+1. Abre la carpeta "SistemaInventario_UNISON"
+2. Ejecuta SistemaInventario_UNISON.exe
+3. Usa las credenciales de acceso:
+
+   Usuario: Admin       Password: admin23
+   Usuario: productos   Password: producto19
+   Usuario: almacen     Password: almacen11
+
+NOTAS IMPORTANTES:
+
+- NO muevas el ejecutable fuera de su carpeta
+- La base de datos se encuentra en la subcarpeta "database"
+- Todos los archivos en la carpeta son necesarios
+- No requiere instalacion de Python
+- Compatible con Windows 7, 8, 10, 11
+
+Desarrollado por: Manuel Munguia Rubio
+Universidad de Sonora - Base de Datos I - 2025
