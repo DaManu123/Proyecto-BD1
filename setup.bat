@@ -296,6 +296,7 @@ if not exist "%VSCODE_DIR%" (
 
 echo [INFO] Generando settings.json...
 REM Crear settings.json con configuracion funcional
+REM Nota: El caracter ^& se usa para escapar en batch, pero solo se escribe & en el archivo
 (
 echo {
 echo     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
@@ -308,7 +309,7 @@ echo     "python.terminal.activateEnvInCurrentTerminal": true,
 echo.    
 echo     // Configuracion de Code Runner - Compatible con Run Python File
 echo     "code-runner.executorMap": {
-echo         "python": "^& \"${workspaceFolder}/.venv/Scripts/python.exe\" \"$fullFileName\""
+echo         "python": "& \"${workspaceFolder}/.venv/Scripts/python.exe\" \"$fullFileName\""
 echo     },
 echo     "code-runner.runInTerminal": true,
 echo     "code-runner.clearPreviousOutput": true,
